@@ -1,20 +1,115 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>INVOICE 自動生成器（JC 美觀排序版）</title>
-  <!-- External dependencies -->
+  <!-- Tailwind & Fonts -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet">
   <!-- Extracted styles -->
   <link rel="stylesheet" href="invoice_generator.css">
 </head>
-<body>
-  <!-- 此處為原始 invoice_generator.html 的內容結構。為了保持專案清晰，CSS 與 JavaScript 已分離至外部檔案。 -->
-  <!-- TODO: 將原始 HTML 結構貼至此處。 -->
+<body class="bg-gray-100 p-4">
+  <div class="w-full max-w-6xl mx-auto">
+    <div class="bg-white p-8 rounded-xl shadow-lg mb-6 no-print">
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">INVOICE/PACKING 自動生成器</h1>
+      <p class="text-gray-600 mb-8">請選擇交易類型並輸入資訊，系統將自動處理並生成文件。（JC 系列自動啟用「美觀排序」）</p>
 
-  <!-- 引入外部 JavaScript -->
+      <!-- Section 1: Core Info -->
+      <fieldset class="border-t border-gray-200 pt-6">
+        <legend class="text-lg font-semibold text-gray-900 px-2">1. 核心資訊</legend>
+        <div class="grid md:grid-cols-3 gap-6 mt-4">
+          <div>
+            <label for="company" class="block text-sm font-medium text-gray-700 mb-1">選擇交易</label>
+            <select id="company" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+              <optgroup label="賣出 (Sales)">
+                <option value="anxin">An Xin (鞍鑫) (USD)</option>
+                <option value="anxin_eur">An Xin (鞍鑫) (EUR)</option>
+                <option value="winteam">WIN TEAM (旺緹) (USD)</option>
+                <option value="styleup">StyleUp (USD)</option>
+                <option value="converge">Converge (聚合雲) (USD)</option>
+              </optgroup>
+              <optgroup label="買進 (Purchase)">
+                <option value="buy_foreign_usd">向外國公司買進 (USD)</option>
+                <option value="buy_foreign_eur">向外國公司買進 (EUR)</option>
+              </optgroup>
+            </select>
+          </div>
+          <div>
+            <label for="date" class="block text-sm font-medium text-gray-700 mb-1">水單日期 (格式: YYYYMMDD)</label>
+            <input type="text" id="date" placeholder="例如: 20241206" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+          </div>
+          <div>
+            <label for="totalAmount" class="block text-sm font-medium text-gray-700 mb-1">總金額</label>
+            <input type="number" id="totalAmount" placeholder="例如: 153900" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Section 2: Document Details -->
+      <fieldset class="border-t border-gray-200 pt-6 mt-6">
+        <legend class="text-lg font-semibold text-gray-900 px-2">2. 文件與出貨資訊</legend>
+        <div class="grid md:grid-cols-3 gap-6 mt-4">
+          <div>
+            <label for="invoiceType" class="block text-sm font-medium text-gray-700 mb-1">文件類型</label>
+            <select id="invoiceType" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+              <option value="COMMERCIAL INVOICE">COMMERCIAL INVOICE</option>
+              <option value="PROFORMA INVOICE">PROFORMA INVOICE</option>
+            </select>
+          </div>
+          <div>
+            <label for="invoiceNo" class="block text-sm font-medium text-gray-700 mb-1">發票號碼 (自動生成)</label>
+            <input type="text" id="invoiceNo" placeholder="點擊日期後自動生成" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+          </div>
+          <div>
+            <label for="onBoardDate" class="block text-sm font-medium text-gray-700 mb-1">ON/ABOUT BOARD</label>
+            <input type="text" id="onBoardDate" placeholder="留空則同水單日期" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+          </div>
+          <div>
+            <label for="shippedFrom" class="block text-sm font-medium text-gray-700 mb-1">Shipped From</label>
+            <input type="text" id="shippedFrom" placeholder="例如: TAIPEI" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+          </div>
+          <div>
+            <label for="shippedTo" class="block text-sm font-medium text-gray-700 mb-1">Shipped To</label>
+            <input type="text" id="shippedTo" placeholder="例如: SINGAPORE" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+          </div>
+          <div class="md:col-span-1 flex flex-col justify-end">
+            <div class="flex items-start space-x-4">
+              <div class="flex items-center">
+                <input id="date-adjust-checkbox" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                <label for="date-adjust-checkbox" class="ml-2 block text-sm text-gray-900">發票日期提前5天</label>
+              </div>
+              <div class="flex items-center hidden" id="flexible-quantity-container">
+                <input id="flexible-quantity-checkbox" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                <label for="flexible-quantity-checkbox" class="ml-2 block text-sm text-gray-900">啟用彈性數量（JC）</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="mt-8 flex justify-end items-center space-x-4">
+        <button id="findNextBtn" class="bg-blue-100 text-blue-800 font-bold py-2 px-6 rounded-lg hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition hidden">尋找下個組合 🔃</button>
+        <button id="generateBtn" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-transform transform hover:scale-105">生成文件</button>
+      </div>
+      <div id="status" class="mt-4 text-center"></div>
+    </div>
+
+    <div id="invoice-wrapper" class="hidden">
+      <div class="bg-white p-8 rounded-xl shadow-lg invoice-box" id="invoice-preview"></div>
+      <div class="mt-6 text-center space-x-2 md:space-x-4 no-print flex flex-wrap justify-center gap-2">
+        <button id="printBtn" class="bg-gray-700 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-800">列印</button>
+        <button id="packingListBtn" class="bg-purple-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-purple-700">產生裝箱單</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Packing List -->
+  <div id="packingListModal" class="modal-backdrop hidden"></div>
+
+  <!-- External logic -->
   <script src="invoice_generator.js"></script>
 </body>
 </html>

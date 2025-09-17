@@ -1,4 +1,3 @@
-// JavaScript extracted from invoice_generator.html
 // --- GLOBAL STATE ---
 let currentInvoiceData = {};
 let generationArgs = {};
@@ -385,6 +384,18 @@ function generatePackingList(){
   }, 120);
 }
 
+// --- NEW: 發票號自動依據（可能-5天）日期重算 ---
+function recomputeInvoiceNoFromUI(){
+  const dateEl = document.getElementById('date');
+  const invEl = document.getElementById('invoiceNo');
+  const cb = document.getElementById('date-adjust-checkbox');
+  const v = dateEl.value;
+  if(/^\d{8}$/.test(v)){
+    const d = cb.checked ? adjustDate(v, -5) : v;
+    invEl.value = `TOP${d}001`;
+  }
+}
+
 // --- MAIN RENDER ---
 function renderInvoice(quantities){
   const { config, inputs, originalAmount } = generationArgs;
@@ -399,6 +410,11 @@ function renderInvoice(quantities){
 }
 
 // --- EVENTS ---
+// 預設「發票日期提前5天」為啟用
+const dateAdjustCb = document.getElementById('date-adjust-checkbox');
+if (dateAdjustCb) { dateAdjustCb.checked = true; }
+
+// 公司切換（維持原邏輯）
 document.getElementById('company').addEventListener('change', (e)=>{
   const key = e.target.value; const cfg = companyConfigs[key];
   const isJC = isJCConfig(cfg);
@@ -408,32 +424,53 @@ document.getElementById('company').addEventListener('change', (e)=>{
   else { flexBox.classList.add('hidden'); flexCb.checked = false; }
 });
 
-document.getElementById('date').addEventListener('input', (e)=>{
-  const v=e.target.value; if(/^\d{8}$/.test(v)){ document.getElementById('invoiceNo').value = `TOP${v}001`; }
-});
+// 日期輸入：自動依勾選（含-5天）更新 INV.No
+document.getElementById('date').addEventListener('input', recomputeInvoiceNoFromUI);
+// 切換是否-5天時，也即時更新 INV.No
+if (dateAdjustCb) {
+  dateAdjustCb.addEventListener('change', recomputeInvoiceNoFromUI);
+}
 
-// 初始觸發一次
+// 初始觸發一次（含公司 JC 彈性數量、以及 INV.No 預設邏輯）
 document.getElementById('company').dispatchEvent(new Event('change'));
+recomputeInvoiceNoFromUI();
 
+// 產生文件
 document.getElementById('generateBtn').addEventListener('click', ()=>{
   const companyKey = document.getElementById('company').value; const config = companyConfigs[companyKey];
   const dateInput = document.getElementById('date').value; const totalAmountInput = document.getElementById('totalAmount').value;
-  const invoiceType = document.getElementById('invoiceType').value; const invoiceNo = document.getElementById('invoiceNo').value;
+  const invoiceType = document.getElementById('invoiceType').value; let invoiceNo = document.getElementById('invoiceNo').value;
   const onBoardDate = document.getElementById('onBoardDate').value; const shippedFrom = document.getElementById('shippedFrom').value; const shippedTo = document.getElementById('shippedTo').value;
   const statusDiv = document.getElementById('status'); const invoiceWrapper = document.getElementById('invoice-wrapper'); const findNextBtn = document.getElementById('findNextBtn');
+
+  // 先依當前勾選狀態自動帶入（避免尚未輸入發票號導致驗證失敗）
+  if (/^\d{8}$/.test(dateInput)) {
+    const adjusted = document.getElementById('date-adjust-checkbox').checked ? adjustDate(dateInput, -5) : dateInput;
+    invoiceNo = `TOP${adjusted}001`;
+    document.getElementById('invoiceNo').value = invoiceNo;
+  }
+
   statusDiv.innerHTML=''; invoiceWrapper.classList.add('hidden'); findNextBtn.classList.add('hidden');
+
   let errors=[]; if(!/^\d{8}$/.test(dateInput)) errors.push('日期格式不正確 (需為 YYYYMMDD)。');
   if(!totalAmountInput || isNaN(parseFloat(totalAmountInput)) || parseFloat(totalAmountInput)<=0) errors.push('總金額必須是有效的正數。');
   if(!invoiceNo) errors.push('發票號碼為必填項。');
   if(errors.length>0){ statusDiv.innerHTML = '錯誤：<br>'+errors.join('<br>'); statusDiv.className='mt-4 text-center text-red-600 font-semibold'; return; }
+
   const isDateAdjusted = document.getElementById('date-adjust-checkbox').checked; let finalDateInput = dateInput; if(isDateAdjusted){ finalDateInput = adjustDate(dateInput, -5); }
+
   const totalAmount = parseFloat(totalAmountInput);
   statusDiv.textContent='請稍候，正在計算並生成文件...'; statusDiv.className='mt-4 text-center text-blue-600 font-semibold animate-pulse';
   setTimeout(()=>{
-    const inputs = { dateInput: finalDateInput, invoiceType, invoiceNo, onBoardDate, shippedFrom, shippedTo };
+    const autoInvNo = `TOP${finalDateInput}001`; // 最終強制以實際顯示日期生成 INV.No
+    document.getElementById('invoiceNo').value = autoInvNo;
+
+    const inputs = { dateInput: finalDateInput, invoiceType, invoiceNo: autoInvNo, onBoardDate, shippedFrom, shippedTo };
     generationArgs = { config, inputs, originalAmount: totalAmount };
+
     foundSolutions = config.findQuantities(totalAmount);
     if(!foundSolutions || foundSolutions.length===0){ statusDiv.textContent='錯誤：找不到符合條件的數量組合，請檢查總金額。'; statusDiv.className='mt-4 text-center text-red-600 font-semibold'; return; }
+
     currentSolutionIndex = 0; renderInvoice(foundSolutions[currentSolutionIndex]);
     if(!statusDiv.innerHTML.includes('注意')){ statusDiv.textContent='文件已成功生成！'; statusDiv.className='mt-4 text-center text-green-600 font-semibold'; }
     if(foundSolutions.length>1){ findNextBtn.classList.remove('hidden'); }
@@ -441,6 +478,7 @@ document.getElementById('generateBtn').addEventListener('click', ()=>{
   }, 100);
 });
 
+// 其他按鈕
 document.getElementById('findNextBtn').addEventListener('click', ()=>{
   if(foundSolutions.length===0) return; currentSolutionIndex = (currentSolutionIndex + 1) % foundSolutions.length; renderInvoice(foundSolutions[currentSolutionIndex]);
 });
