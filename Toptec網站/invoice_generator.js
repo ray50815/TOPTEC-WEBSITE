@@ -1,0 +1,449 @@
+// JavaScript extracted from invoice_generator.html
+// --- GLOBAL STATE ---
+let currentInvoiceData = {};
+let generationArgs = {};
+let foundSolutions = [];
+let currentSolutionIndex = 0;
+
+// --- COMPANY & PRICE CONFIGS ---
+const TOPTEC_GLOBAL = {
+  name: "TOPTEC GLOBAL PTE. LTD.(S.G.)",
+  address: "711 Geylang Road #03-01 Oriental Venture\nBuilding Singapore 389626",
+  tel: "65-6547-8633"
+};
+
+const companyConfigs = {
+  // --- SELL CONFIGS ---
+  'anxin': {
+    type: 'sell', name: "An Xin Enterprise Co.,Ltd", address: "9F., No. 222, Sec. 1, Fuxing S. Rd., Da’an Dist., Taipei City ,106458,Taiwan (R.O.C.)", tel: "886-968-353738", country: "TAIWAN", priceTerm: "FOB TAIPEI", paymentTerms: "T/T", currencySymbol: 'US$', currencyCode: 'USD',
+    products: [ { id: 'JC-108A-08', desc: 'Bottom Housing-JC-8GB', price: 1.65 }, { id: 'JC-108B-08', desc: 'Bottom Housing-JC-8GB', price: 1.55 }, { id: 'JC-109A-08', desc: 'Bottom Housing-JC-8GB', price: 2.10 } ],
+    findQuantities: findQuantitiesAnXinUSD, extraInvoiceLines: () => `<tr class="h-4"><td class="no-border"></td><td class="no-border"></td><td class="no-border"></td><td class="no-border"></td></tr>`,
+  },
+  'anxin_eur': {
+    type: 'sell', name: "An Xin Enterprise Co.,Ltd", address: "9F., No. 222, Sec. 1, Fuxing S. Rd., Da’an Dist., Taipei City ,106458,Taiwan (R.O.C.)", tel: "886-968-353738", country: "TAIWAN", priceTerm: "FOB TAIPEI", paymentTerms: "T/T", currencySymbol: '€', currencyCode: 'EUR',
+    products: [ { id: 'JC-108A-08', desc: 'Bottom Housing-JC-8GB', price: 1.55 }, { id: 'JC-108B-08', desc: 'Bottom Housing-JC-8GB', price: 1.45 }, { id: 'JC-109A-08', desc: 'Bottom Housing-JC-8GB', price: 2.00 } ],
+    findQuantities: findQuantitiesAnXinEur, extraInvoiceLines: () => `<tr class="h-4"><td class="no-border"></td><td class="no-border"></td><td class="no-border"></td><td class="no-border"></td></tr>`,
+  },
+  'winteam': {
+    type: 'sell', name: "WIN TEAM CO.,LTD.", address: "NO.117,KANGLE ST.,NEIHU DIST., Taipei City ,114038,Taiwan (R.O.C.)", tel: "886-2-26339869", country: "TAIWAN", priceTerm: "FOB TAIPEI", paymentTerms: "T/T", currencySymbol: 'US$', currencyCode: 'USD',
+    products: [ { id: 'K 2 - 0 6', desc: 'Intelligent cooking machine', price: 9000 }, { id: 'J D J - A 1', desc: 'Fully automatic intelligent egg fryer', price: 3000 }, { id: 'Accessories', desc: 'Feeding boxes and accessories', price: 600 } ],
+    findQuantities: findQuantitiesWinTeam, extraInvoiceLines: () => ``,
+  },
+  'styleup': {
+    type: 'sell', name: "StyleUp Technology Co., Ltd.", address: "10 F., No. 150, Sec. 2, Nanjing E. Rd., Zhongshan Dist., Taipei City 104695, Taiwan (R.O.C.)", tel: "886-989-553839", country: "TAIWAN", priceTerm: "FOB TAIPEI", paymentTerms: "T/T", currencySymbol: 'US$', currencyCode: 'USD',
+    products: [ { id: 'JC-108A-08', desc: 'Bottom Housing-JC-8GB', price: 1.65 }, { id: 'JC-108B-08', desc: 'Bottom Housing-JC-8GB', price: 1.60 }, { id: 'JC-109A-08', desc: 'Bottom Housing-JC-8GB', price: 2.10 } ],
+    findQuantities: findQuantitiesStyleUp, extraInvoiceLines: () => `<tr class="h-4"><td class="no-border"></td><td class="no-border"></td><td class="no-border"></td><td class="no-border"></td></tr>`,
+  },
+  'converge': {
+    type: 'sell', name: "Converge Cloud Co., Ltd.", address: "Morgan Tower, Floor 35th Unit 08B-11, Street Sopheak Mongkul,\nPhum 14, Sangkat Tonle Bassac, Khan Chamka Mon, Phnom Penh, Cambodia", tel: "088-590-9999", country: "Cambodia", priceTerm: "", paymentTerms: "T/T-USD/USTD", currencySymbol: 'US$', currencyCode: 'USD',
+    products: [ { id: 'AI Cloud storage and advertising service charges', desc: '', price: 0 } ],
+    findQuantities: (totalAmount) => ([{ q1: 1 }]), extraInvoiceLines: () => ``,
+  },
+  // --- BUY CONFIGS ---
+  'buy_foreign_usd': {
+    type: 'buy', name: "外國公司 (Foreign Company)", address: " ", tel: " ", country: " ", priceTerm: " ", paymentTerms: "T/T", currencySymbol: 'US$', currencyCode: 'USD',
+    products: [ { id: 'JC-108A-08', desc: 'Bottom Housing-JC-8GB', price: 1.5 }, { id: 'JC-108B-08', desc: 'Bottom Housing-JC-8GB', price: 1.4 }, { id: 'JC-109A-08', desc: 'Bottom Housing-JC-8GB', price: 2.0 } ],
+    findQuantities: findQuantitiesAnXinUSD, extraInvoiceLines: () => `<tr class="h-4"><td class="no-border"></td><td class="no-border"></td><td class="no-border"></td><td class="no-border"></td></tr>`,
+  },
+  'buy_foreign_eur': {
+    type: 'buy', name: "外國公司 (Foreign Company)", address: " ", tel: " ", country: " ", priceTerm: " ", paymentTerms: "T/T", currencySymbol: '€', currencyCode: 'EUR',
+    products: [ { id: 'JC-108A-08', desc: 'Bottom Housing-JC-8GB', price: 1.40 }, { id: 'JC-108B-08', desc: 'Bottom Housing-JC-8GB', price: 1.30 }, { id: 'JC-109A-08', desc: 'Bottom Housing-JC-8GB', price: 1.85 } ],
+    findQuantities: findQuantitiesAnXinEur, extraInvoiceLines: () => `<tr class="h-4"><td class="no-border"></td><td class="no-border"></td><td class="no-border"></td><td class="no-border"></td></tr>`,
+  },
+};
+
+// --- UTILITIES ---
+function adjustDate(yyyymmdd, days) {
+  const year = parseInt(yyyymmdd.substring(0, 4), 10);
+  const month = parseInt(yyyymmdd.substring(4, 6), 10) - 1;
+  const day = parseInt(yyyymmdd.substring(6, 8), 10);
+  const date = new Date(Date.UTC(year, month, day));
+  date.setUTCDate(date.getUTCDate() + days);
+  const newYear = date.getUTCFullYear();
+  const newMonth = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const newDay = String(date.getUTCDate()).padStart(2, '0');
+  return `${newYear}${newMonth}${newDay}`;
+}
+
+// ---- JC 美觀排序（僅套用 JC 系列） ----
+const BEAUTY_WEIGHTS = { roundness: 1, evenness: 6, gapSymmetry: 3, ratio: 2, spread: 2 };
+function dynamicBeautyLimits(totalAmount){
+  const baseSpread = totalAmount < 30000 ? 4000 : 6000;
+  return { maxRatio: 2.0, maxSpread: baseSpread };
+}
+function roundnessScore(q){ if(q%1000===0) return 4; if(q%100===0) return 3; if(q%10===0) return 2; if(q%5===0) return 1; return 0; }
+function computeBeautyFeatures(q1,q2,q3){
+  const mean=(q1+q2+q3)/3;
+  const sd=Math.sqrt(((q1-mean)**2+(q2-mean)**2+(q3-mean)**2)/3);
+  const gap1=q1-q2, gap2=q2-q3; const gapAsym=Math.abs(gap1-gap2);
+  const ratio=q3>0? q1/q3: Infinity; const spread=Math.max(q1,q2,q3)-Math.min(q1,q2,q3);
+  const roundness=roundnessScore(q1)+roundnessScore(q2)+roundnessScore(q3);
+  return {mean, sd, gap1, gap2, gapAsym, ratio, spread, roundness};
+}
+function compositeScore(feat,weights=BEAUTY_WEIGHTS){
+  const denom=feat.mean||1;
+  return (
+    weights.roundness*feat.roundness
+    - weights.evenness*(feat.sd/denom)
+    - weights.gapSymmetry*(feat.gapAsym/denom)
+    - weights.ratio*Math.max(0,(feat.ratio-1))
+    - weights.spread*(feat.spread/denom)
+  );
+}
+
+// 基礎排序(非 JC)：先看 roundness，再看標準差（小→大）
+function basicRoundEvenSort(solutions){
+  const getRound = (q)=> roundnessScore(q);
+  const evenness = (a,b,c)=>{ const m=(a+b+c)/3; return Math.sqrt(((a-m)**2+(b-m)**2+(c-m)**2)/3); };
+  return solutions.slice().sort((A,B)=>{
+    const rA=getRound(A.q1)+getRound(A.q2)+getRound(A.q3);
+    const rB=getRound(B.q1)+getRound(B.q2)+getRound(B.q3);
+    if(rB!==rA) return rB-rA; // roundness 多者優先
+    const sA=evenness(A.q1,A.q2,A.q3), sB=evenness(B.q1,B.q2,B.q3);
+    return sA-sB; // 標準差小者優先
+  });
+}
+
+function isJCConfig(config){
+  // 只要產品 id 以 "JC-" 開頭就視為 JC 系列（至少一個即可）
+  return (config.products||[]).some(p=> typeof p.id === 'string' && p.id.startsWith('JC-'));
+}
+
+function scoreAndSortSolutionsForConfig(config, solutions, totalAmount){
+  if(!solutions || solutions.length===0) return [];
+  if(isJCConfig(config)){
+    const LIMITS = dynamicBeautyLimits(totalAmount);
+    const filtered = solutions.filter(s=>{
+      const {q1,q2,q3}=s; if(q3<=0) return false; const f=computeBeautyFeatures(q1,q2,q3);
+      return f.ratio<=LIMITS.maxRatio && f.spread<=LIMITS.maxSpread;
+    });
+    const base = filtered.length? filtered: solutions;
+    return base.map(s=>{ const f=computeBeautyFeatures(s.q1,s.q2,s.q3); return {
+      ...s,
+      scores: {
+        roundness: f.roundness,
+        stddev: +f.sd.toFixed(2),
+        gapAsym: +((f.gap1 - f.gap2)).toFixed(2),
+        ratio: +f.ratio.toFixed(2),
+        spread: f.spread,
+        composite: +compositeScore(f).toFixed(2)
+      }
+    }; }).sort((a,b)=> b.scores.composite - a.scores.composite);
+  } else {
+    return basicRoundEvenSort(solutions);
+  }
+}
+
+// ---- 求解器們 ----
+function findQuantitiesAnXinUSD(totalAmount) {
+  const companyKey = document.getElementById('company').value;
+  const config = companyConfigs[companyKey];
+  const prices = config.products.map(p=>p.price);
+  const useFlexibleUnits = document.getElementById('flexible-quantity-checkbox').checked;
+
+  const solveByUnit = (amount, unit) => {
+    let solutions = [];
+    const diffLimit = unit >= 1000 ? 10 : (unit >= 100 ? 100 : 1000);
+    const p_unit = { p1: prices[0]*unit, p2: prices[1]*unit, p3: prices[2]*unit };
+    const minQtyUnit = unit >= 1000 ? 1 : (unit >= 100 ? 10 : (unit >= 10 ? 10 : 1));
+    let maxQ1 = Math.floor(amount / (prices[0]*unit));
+    for(let q1=maxQ1; q1>=minQtyUnit; q1--){
+      const maxQ2 = Math.min(q1, Math.floor((amount - q1*p_unit.p1)/p_unit.p2));
+      for(let q2=maxQ2; q2>=minQtyUnit; q2--){
+        const remainder = amount - (q1*p_unit.p1) - (q2*p_unit.p2);
+        const q3c = remainder / p_unit.p3;
+        if(q3c>0 && Math.abs(q3c - Math.round(q3c)) < 0.001){
+          const q3 = Math.round(q3c);
+          if(q1>=q2 && q2>q3 && q3>=minQtyUnit && (q1 - q3) <= diffLimit){
+            solutions.push({ q1:q1*unit, q2:q2*unit, q3:q3*unit });
+            if(solutions.length>=600) return solutions;
+          }
+        }
+      }
+    }
+    return solutions;
+  };
+
+  const dedup = (arr)=>{ const seen=new Set(); const out=[]; for(const s of arr){ const k=`${s.q1}-${s.q2}-${s.q3}`; if(!seen.has(k)){ seen.add(k); out.push(s);} } return out; };
+
+  const solveForAmount = (amount)=>{
+    let all=[];
+    if(useFlexibleUnits){
+      for(const unit of [1000,100,10,1]) all = all.concat(solveByUnit(amount, unit));
+      all = dedup(all);
+    } else {
+      all = solveByUnit(amount, 1000);
+      if(all.length===0 && Math.abs((amount % 1000) - 500) < 0.01) all = all.concat(solveByUnit(amount, 100));
+      if(all.length<5) all = all.concat(solveByUnit(amount, 10));
+      all = dedup(all);
+    }
+    return all;
+  };
+
+  let solutions = solveForAmount(totalAmount);
+  if(solutions && solutions.length>0){
+    return scoreAndSortSolutionsForConfig(config, solutions, totalAmount);
+  }
+
+  // 向上微調尋找
+  let adjustedAmount = totalAmount; const searchLimit = totalAmount + 200;
+  while(adjustedAmount < searchLimit){
+    adjustedAmount = parseFloat((adjustedAmount + 0.05).toFixed(2));
+    solutions = solveForAmount(adjustedAmount);
+    if(solutions && solutions.length>0){
+      const statusDiv = document.getElementById('status');
+      statusDiv.innerHTML = `<span class="font-bold">注意：</span>您輸入的金額 ${totalAmount.toLocaleString()} 無法找到組合。<br>已自動<span class="font-bold">向上調整</span>為最接近的有效金額 <span class="font-bold">${adjustedAmount.toLocaleString()}</span> 並生成發票。`;
+      statusDiv.className = 'mt-4 text-center text-orange-600 font-semibold';
+      const sorted = scoreAndSortSolutionsForConfig(config, solutions, adjustedAmount);
+      sorted.forEach(s=> s.adjustedAmount = adjustedAmount);
+      return sorted;
+    }
+  }
+  return [];
+}
+
+function findQuantitiesAnXinEur(totalAmount){
+  const companyKey = document.getElementById('company').value;
+  const config = companyConfigs[companyKey];
+  const prices = config.products; const p1=prices[0].price, p2=prices[1].price, p3=prices[2].price;
+  const p1_c=p1*100, p2_c=p2*100, p3_c=p3*100; const sum_p_c=p1_c+p2_c+p3_c; const p2p3_c=p2_c+p3_c;
+  const searchLimit=2000; let solutions=[]; const seen=new Set();
+  for(let d1=0; d1<=searchLimit; d1++){
+    for(let d2=1; d2<=searchLimit; d2++){
+      const numerator = (totalAmount*100) + (p2p3_c*d1) + (p3_c*d2);
+      if(numerator>0 && numerator % sum_p_c === 0){
+        const q1 = numerator / sum_p_c; const q2 = q1 - d1; const q3 = q2 - d2;
+        if(q1>0 && q2>0 && q3>0 && Number.isInteger(q1) && Number.isInteger(q2) && Number.isInteger(q3)){
+          const key=`${q1}-${q2}-${q3}`; if(!seen.has(key)){ solutions.push({q1,q2,q3}); seen.add(key);} }
+      }
+      if(solutions.length>400) break;
+    }
+    if(solutions.length>400) break;
+  }
+  return scoreAndSortSolutionsForConfig(config, solutions, totalAmount);
+}
+
+function findQuantitiesWinTeam(totalAmount){
+  const config = companyConfigs.winteam;
+  const prices = config.products.map(p=>p.price);
+  const [p1,p2,p3] = prices; const gcd=600; let solutions=[]; const seen=new Set();
+  let adjustedAmount = totalAmount; if(totalAmount % gcd !== 0){ adjustedAmount = totalAmount - (totalAmount % gcd) + gcd; }
+  const p_set = p1 + p2; const max_sets = Math.floor(adjustedAmount / p_set);
+  for(let q_set = max_sets; q_set>0; q_set--){
+    const rem = adjustedAmount - (q_set*p_set); if(rem>=0 && rem%p3===0){
+      const q3 = rem / p3; const sol={q1:q_set, q2:q_set, q3}; const key=`${sol.q1}-${sol.q2}-${sol.q3}`; if(!seen.has(key)){ solutions.push(sol); seen.add(key);} }
+  }
+  const maxQ1 = Math.floor(adjustedAmount / p1);
+  for(let q1=maxQ1; q1>=0; q1--){
+    const r1 = adjustedAmount - (q1*p1); const maxQ2 = Math.floor(r1/p2);
+    for(let q2=maxQ2; q2>=0; q2--){ const r2 = r1 - (q2*p2); if(r2>=0 && r2%p3===0){ const q3=r2/p3; if(q1===0&&q2===0&&q3===0) continue; const sol={q1,q2,q3}; const key=`${sol.q1}-${sol.q2}-${sol.q3}`; if(!seen.has(key)){ solutions.push(sol); seen.add(key);} } }
+  }
+  if(solutions.length>0 && totalAmount!==adjustedAmount){
+    const statusDiv=document.getElementById('status');
+    statusDiv.innerHTML = `<span class="font-bold">注意：</span>您輸入的金額 ${totalAmount.toLocaleString()} 無法整除。<br>已自動<span class="font-bold">向上調整</span>為最接近的有效金額 <span class="font-bold">${adjustedAmount.toLocaleString()}</span> 並生成發票。`;
+    statusDiv.className='mt-4 text-center text-orange-600 font-semibold';
+    solutions.forEach(s=> s.adjustedAmount = adjustedAmount);
+  }
+  // 非 JC，採用 basic 排序
+  return scoreAndSortSolutionsForConfig(config, solutions, adjustedAmount);
+}
+
+function findQuantitiesStyleUp(totalAmount){
+  const companyKey = document.getElementById('company').value;
+  const config = companyConfigs[companyKey];
+  const prices = config.products.map(p=>p.price);
+  const priceSum = prices[0]+prices[1]+prices[2];
+  let solutions=[];
+  if(totalAmount>0 && totalAmount % priceSum === 0){ const q = totalAmount / priceSum; if(q>0) solutions.push({q1:q, q2:q, q3:q}); }
+  return scoreAndSortSolutionsForConfig(config, solutions, totalAmount);
+}
+
+// ---- 格式化 ----
+function formatDate(yyyymmdd){ if(!yyyymmdd||yyyymmdd.length!==8) return ''; const y=yyyymmdd.substring(0,4); const m=yyyymmdd.substring(4,6); const d=yyyymmdd.substring(6,8); const date=new Date(`${y}-${m}-${d}T00:00:00Z`); const monthNames=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]; return `${monthNames[date.getUTCMonth()]}.${d}.${y}`; }
+function formatCurrency(num, symbol='US$'){ return `${symbol}${num.toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2})}`; }
+function numberToCurrency(num){ return num.toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+function generateInvoiceHTML(config, inputs, totalAmount, quantities){
+  const { dateInput, invoiceType, invoiceNo, onBoardDate, shippedFrom, shippedTo } = inputs;
+  const formattedDate = formatDate(dateInput); const formattedOnBoardDate = formatDate(onBoardDate || dateInput);
+  const isBuyInvoice = config.type === 'buy';
+  const seller = isBuyInvoice ? { name: config.name, address: config.address, tel: config.tel } : TOPTEC_GLOBAL;
+  const buyer  = isBuyInvoice ? TOPTEC_GLOBAL : { name: config.name, address: config.address, tel: config.tel };
+  const sellerLogoHTML = isBuyInvoice
+    ? `<div class="text-left font-bold text-lg">${seller.name}</div>`
+    : `<svg width="120" height="80" viewBox="0 0 250 100" class="mr-2"><rect width="100%" height="100%" fill="none"/><text x="125" y="60" text-anchor="middle" font-size="40" font-weight="bold" font-family="sans-serif">TOPTEC</text></svg>`;
+
+  let tableRows='';
+  if(quantities && Object.keys(quantities).length>0){
+    tableRows = config.products.map((p,i)=>{
+      const qty = quantities[`q${i+1}`]; if(!qty||qty===0) return '';
+      const unitPrice = (config.name.startsWith("Converge")) ? totalAmount : p.price; // Converge 特案
+      const amount = qty * unitPrice;
+      return `
+        <tr><td>${p.id}</td><td>${qty.toLocaleString()}</td><td>${numberToCurrency(unitPrice)}</td><td>${numberToCurrency(amount)}</td></tr>
+        ${p.desc ? `<tr><td class="text-left pl-4">${p.desc}</td><td></td><td></td><td></td></tr>` : ''}
+      `;
+    }).join('');
+  }
+
+  const headerDetailsHTML = `
+    <div class="flex justify-between">
+      ${config.country.trim()? `<p class="w-1/3"><strong>Country of Origin:</strong> ${config.country}</p>` : '<p class="w-1/3"></p>'}
+      ${config.priceTerm.trim()? `<p class="w-1/3"><strong>PRICE TERM:</strong> ${config.priceTerm}</p>` : '<p class="w-1/3"></p>'}
+      ${config.paymentTerms.trim()? `<p class="w-1/3"><strong>Payment Terms:</strong> ${config.paymentTerms}</p>` : '<p class="w-1/3"></p>'}
+    </div>
+    ${config.priceTerm.trim()? `<div class="flex justify-between"><p class="w-1/3"><strong>SHIPPED FROM:</strong> ${shippedFrom}</p><p class="w-1/3"><strong>SHIPPED TO:</strong> ${shippedTo}</p><p class="w-1/3"><strong>ON/ABOUT BOARD:</strong> ${formattedOnBoardDate}</p></div>` : ''}
+  `;
+
+  const scoresHTML = quantities.scores ? `
+    <div class="text-xs text-gray-500 mt-1 no-print">
+      Score: ${quantities.scores.composite} |
+      StdDev: ${quantities.scores.stddev} |
+      Ratio: ${quantities.scores.ratio} |
+      Spread: ${quantities.scores.spread}
+    </div>` : '';
+
+  const invoiceHTML = `
+    <div class="flex justify-between items-start mb-4">
+      <div class="flex items-center">${sellerLogoHTML}</div>
+      <div class="text-left text-xs">
+        <p class="font-bold text-base">${seller.name}</p>
+        <p>${seller.address.replace(/\n/g,'<br>')}</p>
+        <p>TEL: ${seller.tel}</p>
+      </div>
+    </div>
+    <h1 class="text-center font-bold text-xl mb-4 underline">${invoiceType}</h1>
+    <div class="flex justify-between mb-2">
+      <div class="w-2/3">
+        <p><strong>BUYER:</strong> ${buyer.name}</p>
+        <p><strong>BUYER ADD:</strong> ${buyer.address.replace(/\n/g,'<br>')}</p>
+        <p><strong>TEL:</strong> ${buyer.tel}</p>
+      </div>
+      <div class="w-1/3 text-left">
+        <p><strong>INV.No.:</strong> <span id="inv-no">${invoiceNo}</span></p>
+        <p><strong>Date:</strong> ${formattedDate}</p>
+        ${scoresHTML}
+      </div>
+    </div>
+    <div class="border-y-2 border-black py-1 mb-2">${headerDetailsHTML}</div>
+    <table class="w-full invoice-table mb-2">
+      <thead>
+        <tr class="font-bold"><td class="w-1/4">ITEM NO.</td><td class="w-1/4">Q'TY</td><td class="w-1/4">UNIT PRC</td><td class="w-1/4">TTL AMT</td></tr>
+        <tr class="font-bold"><td></td><td>PCS</td><td>${config.currencyCode}/PCS</td><td>${config.currencyCode}</td></tr>
+      </thead>
+      <tbody>${tableRows}</tbody>
+    </table>
+    <div class="flex justify-end mt-4">
+      <div class="w-2/5">
+        <div class="flex justify-between"><strong>SAY TOTAL:</strong><strong id="say-total-amount" class="text-right flex-1 ml-2"></strong></div>
+        <div class="flex justify-between border-t border-black pt-1 mt-1"><strong>TOTAL:</strong><strong>${formatCurrency(totalAmount, config.currencySymbol)}</strong></div>
+      </div>
+    </div>
+    <div class="flex justify-end" style="margin-top:60px;"><div class="w-1/3 text-center"><div class="border-t border-black pt-1">AUTHORIZED SIGNATURE</div></div></div>
+  `;
+  document.getElementById('invoice-preview').innerHTML = invoiceHTML;
+}
+
+// 金額英文
+function numberToWords(amount, currencyCode){
+  const currencyNames = { 'USD': 'US DOLLARS', 'EUR': 'EUROS' };
+  const ones=['','ONE','TWO','THREE','FOUR','FIVE','SIX','SEVEN','EIGHT','NINE'];
+  const teens=['TEN','ELEVEN','TWELVE','THIRTEEN','FOURTEEN','FIFTEEN','SIXTEEN','SEVENTEEN','EIGHTEEN','NINETEEN'];
+  const tens=['','', 'TWENTY','THIRTY','FORTY','FIFTY','SIXTY','SEVENTY','EIGHTY','NINETY'];
+  const thousands=['','THOUSAND','MILLION','BILLION','TRILLION'];
+  function convertGroup(n){ if(n===0) return ''; let str=''; if(n>=100){ str+=ones[Math.floor(n/100)]+' HUNDRED '; n%=100; }
+    if(n>=10 && n<=19){ str+=teens[n-10]+' '; } else { if(n>=20){ str+=tens[Math.floor(n/10)]+' '; n%=10; } if(n>=1 && n<=9){ str+=ones[n]+' '; } } return str; }
+  const num=parseFloat(amount); if(isNaN(num)) return '';
+  const currencyName=(currencyNames[currencyCode]||currencyCode).toUpperCase();
+  if(num===0) return currencyName+' ZERO ONLY';
+  const integerPart=Math.floor(num); const fractionalPart=Math.round((num-integerPart)*100);
+  let words=''; if(integerPart>0){ let temp=integerPart; let i=0; while(temp>0){ if(temp%1000!==0){ words = convertGroup(temp%1000)+thousands[i]+' '+words; } temp=Math.floor(temp/1000); i++; } }
+  let result=currencyName+' '+words.trim(); if(fractionalPart>0){ if(integerPart>0){ result+=' AND '+String(fractionalPart).padStart(2,'0')+'/100'; } else { result=currencyName+' '+String(fractionalPart).padStart(2,'0')+'/100'; } }
+  result+=' ONLY'; return result.replace(/\s\s+/g,' ').trim().toUpperCase();
+}
+function generateSayTotal(amount, currencyCode){ const el=document.getElementById('say-total-amount'); if(!el) return; const txt=numberToWords(amount, currencyCode); el.textContent = txt || 'Could not generate.'; }
+
+// Packing List（以保守估算）
+function showModal(id, content){ const m=document.getElementById(id); m.innerHTML=content; m.classList.remove('hidden'); }
+function closeModal(id){ document.getElementById(id).classList.add('hidden'); }
+function generatePackingList(){
+  const modalId='packingListModal';
+  showModal(modalId, `<div class="modal-content"><h2 class="text-xl font-bold mb-4">✨ 正在生成裝箱單...</h2><div class="flex justify-center items-center h-24"><div class="loader"></div></div></div>`);
+  const EST = { 'default': { pcs_per_carton: 1000, net_weight_per_pc_kg: 0.085, packaging_weight_per_carton_kg: 2, volume_per_carton_cbm: 0.06 } };
+  const items = (currentInvoiceData.items||[]).filter(x=>x && x.qty>0);
+  let rows=[], sum={ total_cartons:0, total_net_weight:0, total_gross_weight:0, total_volume:0 };
+  items.forEach(it=>{
+    const est = EST[it.id] || EST['default']; const q = it.qty; const cartons=Math.ceil(q/est.pcs_per_carton);
+    const nw = q*est.net_weight_per_pc_kg; const gw = nw + cartons*est.packaging_weight_per_carton_kg; const vol=cartons*est.volume_per_carton_cbm;
+    rows.push({ item_no:it.id, description:'Bottom Housing-JC-8GB', cartons, total_quantity:q, net_weight_kgs:nw, gross_weight_kgs:gw, volume_cbm:vol });
+    sum.total_cartons+=cartons; sum.total_net_weight+=nw; sum.total_gross_weight+=gw; sum.total_volume+=vol;
+  });
+  setTimeout(()=>{
+    const body = rows.map(r=>`<tr><td>${r.item_no}</td><td>${r.description}</td><td>${r.cartons}</td><td>${r.total_quantity.toLocaleString()}</td><td>${r.net_weight_kgs.toFixed(2)}</td><td>${r.gross_weight_kgs.toFixed(2)}</td><td>${r.volume_cbm.toFixed(3)}</td></tr>`).join('');
+    const total = `<tr class="font-bold bg-gray-100"><td colspan="2">TOTAL</td><td>${sum.total_cartons}</td><td></td><td>${sum.total_net_weight.toFixed(2)}</td><td>${sum.total_gross_weight.toFixed(2)}</td><td>${sum.total_volume.toFixed(3)}</td></tr>`;
+    showModal(modalId, `<div class="modal-content"><div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold">裝箱單</h2><button onclick="closeModal('${modalId}')" class="text-gray-500 hover:text-gray-800 font-bold text-2xl">×</button></div><div class="overflow-x-auto"><table class="w-full packing-table"><thead><tr><th>品項號碼</th><th>描述</th><th>箱數 (CTN)</th><th>總數量 (PCS)</th><th>淨重 (KGS)</th><th>毛重 (KGS)</th><th>體積 (CBM)</th></tr></thead><tbody>${body}${total}</tbody></table></div></div>`);
+  }, 120);
+}
+
+// --- MAIN RENDER ---
+function renderInvoice(quantities){
+  const { config, inputs, originalAmount } = generationArgs;
+  const finalTotalAmount = quantities.adjustedAmount || originalAmount;
+  generateInvoiceHTML(config, inputs, finalTotalAmount, quantities);
+  generateSayTotal(finalTotalAmount, config.currencyCode);
+  const buyerForData = config.type === 'buy' ? TOPTEC_GLOBAL.name : config.name;
+  currentInvoiceData = {
+    date: formatDate(inputs.dateInput), invoiceNo: inputs.invoiceNo, totalAmount: formatCurrency(finalTotalAmount, config.currencySymbol), buyer: buyerForData,
+    items: config.products.map((p,i)=> ({ id:p.id, qty: quantities[`q${i+1}`] }))
+  };
+}
+
+// --- EVENTS ---
+document.getElementById('company').addEventListener('change', (e)=>{
+  const key = e.target.value; const cfg = companyConfigs[key];
+  const isJC = isJCConfig(cfg);
+  const flexBox = document.getElementById('flexible-quantity-container');
+  const flexCb  = document.getElementById('flexible-quantity-checkbox');
+  if(isJC){ flexBox.classList.remove('hidden'); flexCb.checked = true; }
+  else { flexBox.classList.add('hidden'); flexCb.checked = false; }
+});
+
+document.getElementById('date').addEventListener('input', (e)=>{
+  const v=e.target.value; if(/^\d{8}$/.test(v)){ document.getElementById('invoiceNo').value = `TOP${v}001`; }
+});
+
+// 初始觸發一次
+document.getElementById('company').dispatchEvent(new Event('change'));
+
+document.getElementById('generateBtn').addEventListener('click', ()=>{
+  const companyKey = document.getElementById('company').value; const config = companyConfigs[companyKey];
+  const dateInput = document.getElementById('date').value; const totalAmountInput = document.getElementById('totalAmount').value;
+  const invoiceType = document.getElementById('invoiceType').value; const invoiceNo = document.getElementById('invoiceNo').value;
+  const onBoardDate = document.getElementById('onBoardDate').value; const shippedFrom = document.getElementById('shippedFrom').value; const shippedTo = document.getElementById('shippedTo').value;
+  const statusDiv = document.getElementById('status'); const invoiceWrapper = document.getElementById('invoice-wrapper'); const findNextBtn = document.getElementById('findNextBtn');
+  statusDiv.innerHTML=''; invoiceWrapper.classList.add('hidden'); findNextBtn.classList.add('hidden');
+  let errors=[]; if(!/^\d{8}$/.test(dateInput)) errors.push('日期格式不正確 (需為 YYYYMMDD)。');
+  if(!totalAmountInput || isNaN(parseFloat(totalAmountInput)) || parseFloat(totalAmountInput)<=0) errors.push('總金額必須是有效的正數。');
+  if(!invoiceNo) errors.push('發票號碼為必填項。');
+  if(errors.length>0){ statusDiv.innerHTML = '錯誤：<br>'+errors.join('<br>'); statusDiv.className='mt-4 text-center text-red-600 font-semibold'; return; }
+  const isDateAdjusted = document.getElementById('date-adjust-checkbox').checked; let finalDateInput = dateInput; if(isDateAdjusted){ finalDateInput = adjustDate(dateInput, -5); }
+  const totalAmount = parseFloat(totalAmountInput);
+  statusDiv.textContent='請稍候，正在計算並生成文件...'; statusDiv.className='mt-4 text-center text-blue-600 font-semibold animate-pulse';
+  setTimeout(()=>{
+    const inputs = { dateInput: finalDateInput, invoiceType, invoiceNo, onBoardDate, shippedFrom, shippedTo };
+    generationArgs = { config, inputs, originalAmount: totalAmount };
+    foundSolutions = config.findQuantities(totalAmount);
+    if(!foundSolutions || foundSolutions.length===0){ statusDiv.textContent='錯誤：找不到符合條件的數量組合，請檢查總金額。'; statusDiv.className='mt-4 text-center text-red-600 font-semibold'; return; }
+    currentSolutionIndex = 0; renderInvoice(foundSolutions[currentSolutionIndex]);
+    if(!statusDiv.innerHTML.includes('注意')){ statusDiv.textContent='文件已成功生成！'; statusDiv.className='mt-4 text-center text-green-600 font-semibold'; }
+    if(foundSolutions.length>1){ findNextBtn.classList.remove('hidden'); }
+    invoiceWrapper.classList.remove('hidden'); invoiceWrapper.scrollIntoView({ behavior:'smooth' });
+  }, 100);
+});
+
+document.getElementById('findNextBtn').addEventListener('click', ()=>{
+  if(foundSolutions.length===0) return; currentSolutionIndex = (currentSolutionIndex + 1) % foundSolutions.length; renderInvoice(foundSolutions[currentSolutionIndex]);
+});
+
+document.getElementById('printBtn').addEventListener('click', ()=> window.print());
+document.getElementById('packingListBtn').addEventListener('click', generatePackingList);
