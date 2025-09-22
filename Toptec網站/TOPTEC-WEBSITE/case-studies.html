@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Toptec Global — Case Studies</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="assets/js/main.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="index.html">TOPTEC</a>
+      <nav class="primary-nav" aria-label="Main navigation">
+        <ul class="primary-nav__list">
+          <li><a class="primary-nav__link" href="index.html" data-i18n-key="nav.home">Home</a></li>
+          <li><a class="primary-nav__link is-active" href="case-studies.html" data-i18n-key="nav.caseStudies">Case Studies</a></li>
+          <li><a class="primary-nav__link" href="index.html#partners" data-i18n-key="nav.partners">Partners</a></li>
+          <li><a class="primary-nav__link" href="index.html#contact" data-i18n-key="nav.contact">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="lang-switch" role="group" aria-label="Language toggle">
+        <button type="button" class="lang-toggle is-active" data-lang="en" aria-pressed="true" data-i18n-key="lang.en">EN</button>
+        <button type="button" class="lang-toggle" data-lang="zh" aria-pressed="false" data-i18n-key="lang.zh">繁中</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="case-hero">
+      <h1 data-i18n-key="caseStudies.pageTitle">Case studies</h1>
+      <p data-i18n-key="caseStudies.pageIntro">A sample of the transformations we have shipped with our partners.</p>
+    </section>
+
+    <section class="case-grid">
+      <article id="case-anxin" class="case-card">
+        <header>
+          <h2 data-i18n-key="caseStudies.anxin.title">AN XIN • Smart Factory Scheduling</h2>
+          <p><span data-i18n-key="caseStudies.anxin.clientLabel">Client:</span> <span data-i18n-key="caseStudies.anxin.clientName">AN XIN</span></p>
+          <p><span data-i18n-key="caseStudies.anxin.industryLabel">Industry:</span> <span data-i18n-key="caseStudies.anxin.industry">Precision metal machining</span></p>
+          <p><span data-i18n-key="caseStudies.anxin.servicesLabel">Toptec services:</span> <span data-i18n-key="caseStudies.anxin.services">Factory data integration, scheduling AI, operator cockpit</span></p>
+        </header>
+        <div class="case-card__body">
+          <h3 data-i18n-key="caseStudies.anxin.challengeTitle">Challenge</h3>
+          <p data-i18n-key="caseStudies.anxin.challenge">An Xin’s planners juggled purchase, CNC, and finishing schedules in disconnected spreadsheets, creating last-minute overtime and scrap risk.</p>
+          <h3 data-i18n-key="caseStudies.anxin.solutionTitle">Solution</h3>
+          <p data-i18n-key="caseStudies.anxin.solution">Toptec wired ERP, MES, and sensor feeds into a digital twin that drives an optimisation engine; supervisors manage shifts through a bilingual cockpit with automatic alerts.</p>
+          <h3 data-i18n-key="caseStudies.anxin.resultsTitle">Results</h3>
+          <ul>
+            <li data-i18n-key="caseStudies.anxin.results1">Average lead time shortened by 22% within two quarters.</li>
+            <li data-i18n-key="caseStudies.anxin.results2">On-time shipments held steady at 97% after the first three months.</li>
+            <li data-i18n-key="caseStudies.anxin.results3">Line supervisors reclaimed two hours per shift previously spent on manual sequencing.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article id="case-winteam" class="case-card">
+        <header>
+          <h2 data-i18n-key="caseStudies.winteam.title">WINTEAM • Connected Kitchen Launch</h2>
+          <p><span data-i18n-key="caseStudies.winteam.clientLabel">Client:</span> <span data-i18n-key="caseStudies.winteam.clientName">WINTEAM</span></p>
+          <p><span data-i18n-key="caseStudies.winteam.industryLabel">Industry:</span> <span data-i18n-key="caseStudies.winteam.industry">Smart kitchen appliances</span></p>
+          <p><span data-i18n-key="caseStudies.winteam.servicesLabel">Toptec services:</span> <span data-i18n-key="caseStudies.winteam.services">IoT orchestration, showroom analytics, service playbooks</span></p>
+        </header>
+        <div class="case-card__body">
+          <h3 data-i18n-key="caseStudies.winteam.challengeTitle">Challenge</h3>
+          <p data-i18n-key="caseStudies.winteam.challenge">WINTEAM’s robotics line debuted across flagship stores, yet firmware updates, menu content, and maintenance tickets were all handled by separate teams without telemetry.</p>
+          <h3 data-i18n-key="caseStudies.winteam.solutionTitle">Solution</h3>
+          <p data-i18n-key="caseStudies.winteam.solution">We delivered a central orchestration plane that synchronises device fleets, digital signage, and service diagnostics; field teams receive predictive alerts in a single app.</p>
+          <h3 data-i18n-key="caseStudies.winteam.resultsTitle">Results</h3>
+          <ul>
+            <li data-i18n-key="caseStudies.winteam.results1">Store configuration time dropped from four hours to forty-five minutes.</li>
+            <li data-i18n-key="caseStudies.winteam.results2">Demo-to-order conversions improved by 23% during the launch quarter.</li>
+            <li data-i18n-key="caseStudies.winteam.results3">Predictive maintenance avoided eighteen urgent service escalations in the first season.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article id="case-styleup" class="case-card">
+        <header>
+          <h2 data-i18n-key="caseStudies.styleup.title">Style Up • Retail-as-a-Service Accelerator</h2>
+          <p><span data-i18n-key="caseStudies.styleup.clientLabel">Client:</span> <span data-i18n-key="caseStudies.styleup.clientName">Style Up</span></p>
+          <p><span data-i18n-key="caseStudies.styleup.industryLabel">Industry:</span> <span data-i18n-key="caseStudies.styleup.industry">Omni-channel fashion retail</span></p>
+          <p><span data-i18n-key="caseStudies.styleup.servicesLabel">Toptec services:</span> <span data-i18n-key="caseStudies.styleup.services">Headless commerce, digital asset pipeline, pop-up analytics</span></p>
+        </header>
+        <div class="case-card__body">
+          <h3 data-i18n-key="caseStudies.styleup.challengeTitle">Challenge</h3>
+          <p data-i18n-key="caseStudies.styleup.challenge">Style Up planned monthly capsule drops but lacked a unified system to coordinate designers, pop-up stores, and influencers.</p>
+          <h3 data-i18n-key="caseStudies.styleup.solutionTitle">Solution</h3>
+          <p data-i18n-key="caseStudies.styleup.solution">Toptec launched a headless commerce stack with automated lookbook generation and unified loyalty IDs, giving the merchandising team real-time performance dashboards.</p>
+          <h3 data-i18n-key="caseStudies.styleup.resultsTitle">Results</h3>
+          <ul>
+            <li data-i18n-key="caseStudies.styleup.results1">Sample development cycles shrank by 35% through digital asset reuse.</li>
+            <li data-i18n-key="caseStudies.styleup.results2">Limited drop conversion rates climbed 2.4× compared with the previous season.</li>
+            <li data-i18n-key="caseStudies.styleup.results3">Pop-up activations now capture verified member identities on day one.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article id="case-rcedao" class="case-card">
+        <header>
+          <h2 data-i18n-key="caseStudies.rcedao.title">RCEDAO • Regulated Treasury Automation</h2>
+          <p><span data-i18n-key="caseStudies.rcedao.clientLabel">Client:</span> <span data-i18n-key="caseStudies.rcedao.clientName">RCEDAO</span></p>
+          <p><span data-i18n-key="caseStudies.rcedao.industryLabel">Industry:</span> <span data-i18n-key="caseStudies.rcedao.industry">Web3 investment cooperative</span></p>
+          <p><span data-i18n-key="caseStudies.rcedao.servicesLabel">Toptec services:</span> <span data-i18n-key="caseStudies.rcedao.services">Policy engine, on/off-chain reconciliation, MAS reporting</span></p>
+        </header>
+        <div class="case-card__body">
+          <h3 data-i18n-key="caseStudies.rcedao.challengeTitle">Challenge</h3>
+          <p data-i18n-key="caseStudies.rcedao.challenge">RCEDAO wanted access to Singapore-dollar rails without compromising decentralised governance or triggering compliance gaps.</p>
+          <h3 data-i18n-key="caseStudies.rcedao.solutionTitle">Solution</h3>
+          <p data-i18n-key="caseStudies.rcedao.solution">We implemented a policy-aware multisig that enforces Travel Rule checks, automated reconciliation between custodians and DeFi pools, and regulator-ready dashboards.</p>
+          <h3 data-i18n-key="caseStudies.rcedao.resultsTitle">Results</h3>
+          <ul>
+            <li data-i18n-key="caseStudies.rcedao.results1">Regulatory review cycles shortened by 50% after automation.</li>
+            <li data-i18n-key="caseStudies.rcedao.results2">Unlocked SGD settlement through four partner banks.</li>
+            <li data-i18n-key="caseStudies.rcedao.results3">Treasury yield reporting now completes within fifteen minutes.</li>
+          </ul>
+        </div>
+      </article>
+    </section>
+
+    <section class="supporting">
+      <h2 data-i18n-key="caseStudies.supportingTitle">Additional collaborations</h2>
+      <p data-i18n-key="caseStudies.supportingIntro">We are also deep in the trenches with these teams.</p>
+      <ul class="supporting-list">
+        <li>
+          <strong data-i18n-key="partners.cococloud.name">COCOCLOUD</strong>
+          <span data-i18n-key="supporting.cococloud">Joint go-to-market for multi-cloud marketing automation.</span>
+        </li>
+        <li>
+          <strong data-i18n-key="partners.geek.name">GEEK</strong>
+          <span data-i18n-key="supporting.geek">Co-developing an AI concierge that powers campus operations.</span>
+        </li>
+        <li>
+          <strong data-i18n-key="partners.mdmv.name">MDM V</strong>
+          <span data-i18n-key="supporting.mdmv">Delivering immersive patient education experiences for regional hospitals.</span>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p data-i18n-key="footer.copy">© 2025 Toptec Global. All rights reserved.</p>
+    <p data-i18n-key="footer.address">711 Geylang Road #03-01 Oriental Venture Building, Singapore 389626</p>
+  </footer>
+</body>
+</html>
