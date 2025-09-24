@@ -262,7 +262,7 @@ nav.primary-nav a.active::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: url('https://images.unsplash.com/photo-1581092795360-635c7031f3f8?auto=format&fit=crop&w=1600&q=80') center/cover;
+  background: url('../img/hero-trade.svg') center/cover, linear-gradient(135deg, rgba(11,29,60,0.95), rgba(0,87,184,0.78));
   opacity: 0.18;
   z-index: 0;
 }
@@ -1019,4 +1019,5 @@ nav.primary-nav a.active::after {
     scroll-behavior: auto !important;
   }
 }
+
 
