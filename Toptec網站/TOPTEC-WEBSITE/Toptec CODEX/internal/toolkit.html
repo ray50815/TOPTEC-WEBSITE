@@ -1,18 +1,41 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>INVOICE 自動生成器（JC 美觀排序版）</title>
-  <!-- Tailwind & Fonts -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet">
-  <!-- Extracted styles -->
-  <link rel="stylesheet" href="invoice_generator.css">
-</head>
-<body class="bg-gray-100 p-4">
-  <div class="w-full max-w-6xl mx-auto">
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Toptec Internal ToolKit</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../assets/internal/invoice.css" id="toolkit-stylesheet" media="print" />
+  </head>
+  <body class="bg-gray-100 min-h-screen">
+    <div id="access-gate" class="fixed inset-0 flex items-center justify-center bg-slate-900/80 p-4">
+      <div class="w-full max-w-md rounded-xl bg-white p-8 shadow-xl">
+        <h1 class="text-2xl font-semibold text-slate-900">ToolKit</h1>
+        <p class="mt-3 text-sm text-slate-600">
+          此工具僅供內部使用，請輸入授權碼後繼續。
+        </p>
+        <form id="access-form" class="mt-6 space-y-4" autocomplete="off">
+          <label class="block text-sm font-medium text-slate-700" for="access-code">存取碼</label>
+          <input
+            id="access-code"
+            type="password"
+            required
+            class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            placeholder="Enter access code"
+          />
+          <p id="access-error" class="hidden text-sm font-medium text-red-600"></p>
+          <button
+            type="submit"
+            class="w-full rounded-md bg-blue-600 py-2 text-sm font-semibold text-white shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            確認
+          </button>
+        </form>
+      </div>
+    </div>
+    <div id="toolkit-app" hidden>
+<div class="w-full max-w-6xl mx-auto">
     <div class="bg-white p-8 rounded-xl shadow-lg mb-6 no-print">
       <h1 class="text-3xl font-bold text-gray-800 mb-2">INVOICE/PACKING 自動生成器</h1>
       <p class="text-gray-600 mb-8">請選擇交易類型並輸入資訊，系統將自動處理並生成文件。（JC 系列自動啟用「美觀排序」）</p>
@@ -108,8 +131,76 @@
 
   <!-- Modal for Packing List -->
   <div id="packingListModal" class="modal-backdrop hidden"></div>
+    </div>
+    <script>
+      (function () {
+        const ACCESS_STORAGE_KEY = 'toptec-toolkit-access';
+        const ACCESS_HASH = '225db660eb967a2f8b04e9380faea8d699d0f6ce64aba32559b4999cd3f24aef';
+        const overlay = document.getElementById('access-gate');
+        const accessForm = document.getElementById('access-form');
+        const accessInput = document.getElementById('access-code');
+        const accessError = document.getElementById('access-error');
+        const toolkitApp = document.getElementById('toolkit-app');
+        const stylesheet = document.getElementById('toolkit-stylesheet');
+        let assetsLoaded = false;
 
-  <!-- External logic -->
-  <script src="invoice_generator.js"></script>
-</body>
+        const toHex = (buffer) => Array.from(new Uint8Array(buffer)).map((b) => b.toString(16).padStart(2, '0')).join('');
+
+        const hashString = async (value) => {
+          if (!window.crypto?.subtle) {
+            throw new Error('no-crypto');
+          }
+          const encoded = new TextEncoder().encode(value.trim());
+          const digest = await crypto.subtle.digest('SHA-256', encoded);
+          return toHex(digest);
+        };
+
+        const loadToolkitAssets = () => {
+          if (assetsLoaded) return;
+          assetsLoaded = true;
+          if (stylesheet) {
+            stylesheet.media = 'all';
+          }
+          const script = document.createElement('script');
+          script.src = '../assets/internal/invoice.js';
+          script.defer = true;
+          document.body.appendChild(script);
+        };
+
+        const unlockApp = () => {
+          overlay.remove();
+          toolkitApp.hidden = false;
+          loadToolkitAssets();
+        };
+
+        const storedHash = localStorage.getItem(ACCESS_STORAGE_KEY);
+        if (storedHash && storedHash === ACCESS_HASH) {
+          unlockApp();
+        }
+
+        accessForm?.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          accessError.classList.add('hidden');
+          accessError.textContent = '';
+          try {
+            const hashedInput = await hashString(accessInput.value);
+            if (hashedInput === ACCESS_HASH) {
+              localStorage.setItem(ACCESS_STORAGE_KEY, ACCESS_HASH);
+              unlockApp();
+            } else {
+              accessError.textContent = '存取碼錯誤，請再試一次。';
+              accessError.classList.remove('hidden');
+              accessInput.focus();
+            }
+          } catch (error) {
+            accessError.textContent = error.message === 'no-crypto'
+              ? '此瀏覽器不支援加密功能，請改用較新的瀏覽器。'
+              : '系統錯誤，請重新嘗試。';
+            accessError.classList.remove('hidden');
+          }
+        });
+      })();
+    </script>
+  </body>
 </html>
+
