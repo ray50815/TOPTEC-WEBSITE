@@ -1,15 +1,4 @@
 ﻿const translations = {
-  en: {
-    general: {
-      newsletterSuccess: 'Thank you for subscribing. Stay tuned for our updates.',
-      form: {
-        required: 'Please fill out this field.',
-        email: 'Please enter a valid email address.',
-        submitting: 'Submitting…',
-        success: 'Your message has been sent. We will respond shortly.'
-      }
-    }
-  },
   'zh-Hant': {
     nav: {
       brand: 'TOPTEC GLOBAL',
@@ -156,7 +145,7 @@
         button: '立即致電'
       }
     },
-    solutions: {
+    solutions": {
       hero: {
         eyebrow: '底蓋專業',
         title: '為各類裝置打造專屬方案',
@@ -287,32 +276,15 @@
         success: '訊息已送出，我們將儘快與您聯繫。'
       }
     }
-  }
-};
+  }};
+
 document.addEventListener('DOMContentLoaded', () => {
   const body = document.body;
   const nav = document.querySelector('nav.primary-nav');
   const toggle = document.querySelector('.mobile-toggle');
   const langButtons = document.querySelectorAll('.language-switcher button[data-lang]');
   const htmlElement = document.documentElement;
-  const currentPage = body.dataset.page || '';
-
-  let formMessages = {};
-
-  const updateFormMessages = (lang) => {
-    const target = lang || body.dataset.lang || 'en';
-    const translation = translations[target]?.general?.form || {};
-    formMessages = {
-      required: translation.required || translations.en.general.form.required,
-      email: translation.email || translations.en.general.form.email,
-      submitting: translation.submitting || translations.en.general.form.submitting,
-      success: translation.success || translations.en.general.form.success
-    };
-  };
-
-  updateFormMessages(body.dataset.lang || 'en');
-
-  const navLinks = nav ? nav.querySelectorAll('a[data-page]') : [];
+  const currentPage = body.dataset.page;\r\n\r\n  let formMessages = {};\r\n  function updateFormMessages(lang) {\r\n    const target = lang || body.dataset.lang || 'en';\r\n    formMessages = {\r\n      required: getTranslation(target, 'general.form.required') || 'Please fill out this field.',\r\n      email: getTranslation(target, 'general.form.email') || 'Please enter a valid email address.',\r\n      submitting: getTranslation(target, 'general.form.submitting') || 'Submitting…',\r\n      success: getTranslation(target, 'general.form.success') || 'Your message has been sent. We will respond shortly.'\r\n    };\r\n  }\r\n\r\n  updateFormMessages(body.dataset.lang || 'en');\r\n\r\n  const navLinks = nav ? nav.querySelectorAll('a[data-page]') : [];
   navLinks.forEach((link) => {
     if (link.dataset.page === currentPage) {
       link.classList.add('active');
@@ -349,23 +321,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  const getTranslation = (lang, key) => {
+  function getTranslation(lang, key) {
     const parts = key.split('.');
     let value = translations[lang];
     for (const part of parts) {
-      if (!value) return undefined;
+      if (!value) {
+        return undefined;
+      }
       value = value[part];
     }
     return typeof value === 'string' ? value : undefined;
-  };
+  }
 
-  const setLanguage = (lang) => {
+  function setLanguage(lang) {
     const targetLang = lang === 'zh-Hant' ? 'zh-Hant' : 'en';
-    htmlElement.setAttribute('lang', targetLang);
-    body.dataset.lang = targetLang;
-    updateFormMessages(targetLang);
-
-    langButtons.forEach((btn) => {
+    htmlElement.setAttribute('lang', targetLang === 'zh-Hant' ? 'zh-Hant' : 'en');
+    body.dataset.lang = targetLang;\r\n\r\n    updateFormMessages(targetLang);\r\n\r\n    langButtons.forEach((btn) => {
       btn.classList.toggle('active', btn.dataset.lang === targetLang);
     });
 
@@ -392,9 +363,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     localStorage.setItem('toptec-lang', targetLang);
-  };
+  }
 
-  const savedLang = localStorage.getItem('toptec-lang') || body.dataset.lang || 'en';
+  const savedLang = localStorage.getItem('toptec-lang') || 'en';
   setLanguage(savedLang);
 
   langButtons.forEach((btn) => {
@@ -406,7 +377,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const faqItems = document.querySelectorAll('.faq-item');
   faqItems.forEach((item) => {
-    item.addEventListener('click', () => item.classList.toggle('open'));
+    item.addEventListener('click', () => {
+      item.classList.toggle('open');
+    });
     item.addEventListener('keypress', (event) => {
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
@@ -420,22 +393,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const nextBtn = document.querySelector('.testimonial-next');
   let testimonialIndex = 0;
 
-  const showTestimonial = (index) => {
+  function showTestimonial(index) {
     testimonialSlides.forEach((slide, idx) => {
       slide.classList.toggle('active', idx === index);
     });
-  };
+  }
 
   if (testimonialSlides.length > 0) {
     showTestimonial(testimonialIndex);
+
     prevBtn?.addEventListener('click', () => {
       testimonialIndex = (testimonialIndex - 1 + testimonialSlides.length) % testimonialSlides.length;
       showTestimonial(testimonialIndex);
     });
+
     nextBtn?.addEventListener('click', () => {
       testimonialIndex = (testimonialIndex + 1) % testimonialSlides.length;
       showTestimonial(testimonialIndex);
     });
+
     setInterval(() => {
       testimonialIndex = (testimonialIndex + 1) % testimonialSlides.length;
       showTestimonial(testimonialIndex);
@@ -448,7 +424,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitButton = contactForm.querySelector('button[type="submit"]');
 
     formFields.forEach((field) => {
-      field.addEventListener('input', () => field.setCustomValidity(''));
+      field.addEventListener('input', () => {
+        field.setCustomValidity('');
+      });
+
       field.addEventListener('invalid', () => {
         const message = field.type === 'email' ? formMessages.email : formMessages.required;
         if (field.validity.valueMissing || field.validity.typeMismatch) {
@@ -460,7 +439,7 @@ document.addEventListener('DOMContentLoaded', () => {
     contactForm.addEventListener('submit', (event) => {
       event.preventDefault();
       if (submitButton) {
-        submitButton.dataset.originalLabel = submitButton.textContent || '';
+        submitButton.dataset.originalLabel = submitButton.textContent;
         submitButton.disabled = true;
         submitButton.textContent = formMessages.submitting;
       }
@@ -476,25 +455,39 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (submitButton) {
+        const resetText = submitButton.dataset.originalLabel || submitButton.textContent;
         setTimeout(() => {
           submitButton.disabled = false;
-          setLanguage(body.dataset.lang);
+          submitButton.textContent = resetText;
         }, 600);
       }
     });
   }
-
   const newsletterForms = document.querySelectorAll('.newsletter-form');
   newsletterForms.forEach((form) => {
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       form.reset();
       const lang = body.dataset.lang || 'en';
-      const message = lang === 'zh-Hant'
-        ? translations['zh-Hant'].general.newsletterSuccess
-        : translations.en.general.newsletterSuccess;
+      const message =
+        lang === 'zh-Hant'
+          ? getTranslation('zh-Hant', 'general.newsletterSuccess') || '感謝訂閱，我們將持續提供最新訊息。'
+          : 'Thank you for subscribing. Stay tuned for our updates.';
       window.alert(message);
     });
   });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
 
