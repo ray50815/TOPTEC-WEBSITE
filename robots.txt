@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /internal/
+Allow: /
+
+Sitemap: https://www.toptecglobal.com/sitemap.xml

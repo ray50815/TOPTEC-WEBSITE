@@ -8,7 +8,7 @@
       solutions: '解決方案',
       cases: '成功案例',
       contactMenu: '聯絡我們',
-      contactCta: '立即洽詢'
+      contactCta: '取得採購方案'
     },
     home: {
       hero: {
@@ -118,13 +118,15 @@
         messageLabel: '我們可以如何協助？',
         messagePlaceholder: '請描述需求或時程',
         successMessage: '感謝您的來信，我們會在一個工作天內與您聯繫。',
-        submit: '送出詢問'
+        submit: '送出詢問',
+        assurance: '提交料號或圖面，我們會於 24 小時內回覆採購方案（週一至週五，GMT+8）。',
+        privacyLabel: '我已閱讀並同意 <a href="privacy.html">隱私權政策</a>。'
       },
       details: {
         title: '直接聯繫方式',
-        text: '週一至週五（GMT+8）09:00–18:00，我們的專家皆在線待命。',
+        text: '週一至週五（GMT+8）09:00-18:00，專家在線待命。',
         phoneLabel: '電話：',
-        phoneValue: '+65 6123 4567',
+        phoneValue: '+65 6970 3201',
         emailLabel: 'Email：',
         emailValue: 'hello@toptecglobal.com',
         addressLabel: '地址：',
@@ -142,7 +144,8 @@
       cta: {
         title: '我們隨時支援您的下一個專案',
         subtitle: '無論緊急採購或長期合作，現在就與我們聯繫。',
-        button: '立即致電'
+        button: '立即致電',
+        commit: '提交料號或圖面，我們會於 24 小時內回覆（週一至週五，GMT+8）。'
       }
     },
     solutions": {
@@ -284,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggle = document.querySelector('.mobile-toggle');
   const langButtons = document.querySelectorAll('.language-switcher button[data-lang]');
   const htmlElement = document.documentElement;
-  const currentPage = body.dataset.page;\r\n\r\n  let formMessages = {};\r\n  function updateFormMessages(lang) {\r\n    const target = lang || body.dataset.lang || 'en';\r\n    formMessages = {\r\n      required: getTranslation(target, 'general.form.required') || 'Please fill out this field.',\r\n      email: getTranslation(target, 'general.form.email') || 'Please enter a valid email address.',\r\n      submitting: getTranslation(target, 'general.form.submitting') || 'Submitting…',\r\n      success: getTranslation(target, 'general.form.success') || 'Your message has been sent. We will respond shortly.'\r\n    };\r\n  }\r\n\r\n  updateFormMessages(body.dataset.lang || 'en');\r\n\r\n  const navLinks = nav ? nav.querySelectorAll('a[data-page]') : [];
+  const currentPage = body.dataset.page;\r\n\r\n  let formMessages = {};\r\n  function updateFormMessages(lang) {\r\n    const target = lang || body.dataset.lang || 'en';\r\n    formMessages = {\r\n      required: getTranslation(target, 'general.form.required') || 'Please fill out this field.',\r\n      email: getTranslation(target, 'general.form.email') || 'Please enter a valid email address.',\n      businessEmail: getTranslation(target, 'general.form.businessEmail') || 'Please use your business email address.',\n      privacy: getTranslation(target, 'general.form.privacy') || 'Please agree to the Privacy Policy before submitting.',\r\n      submitting: getTranslation(target, 'general.form.submitting') || 'Submitting...',\r\n      success: getTranslation(target, 'general.form.success') || 'Your message has been sent. We will respond shortly.'\r\n    };\r\n  }\r\n\r\n  updateFormMessages(body.dataset.lang || 'en');\r\n\r\n  const navLinks = nav ? nav.querySelectorAll('a[data-page]') : [];
   navLinks.forEach((link) => {
     if (link.dataset.page === currentPage) {
       link.classList.add('active');
@@ -421,7 +424,38 @@ document.addEventListener('DOMContentLoaded', () => {
   const contactForm = document.querySelector('#contact-form');
   if (contactForm) {
     const formFields = contactForm.querySelectorAll('input[required], textarea[required]');
-    const submitButton = contactForm.querySelector('button[type="submit"]');
+    const submitButton = contactForm.querySelector("button[type='submit']");
+    const emailField = contactForm.querySelector('#email');
+    const privacyCheckbox = contactForm.querySelector('#agree-privacy');
+    const freeEmailDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com', 'aol.com', 'qq.com', '163.com', '126.com', 'protonmail.com', 'hey.com', 'msn.com', 'live.com', 'me.com', 'gmx.com'];
+
+    const isFreeDomain = (address) => {
+      const atIndex = address.indexOf('@');
+      if (atIndex === -1) return false;
+      const domain = address.slice(atIndex + 1).toLowerCase();
+      return freeEmailDomains.some((freeDomain) => domain === freeDomain || domain.endsWith('.' + freeDomain));
+    };
+
+    const validateBusinessEmail = () => {
+      if (!emailField) return;
+      const value = emailField.value.trim().toLowerCase();
+      if (value && isFreeDomain(value)) {
+        emailField.setCustomValidity(formMessages.businessEmail);
+      } else {
+        emailField.setCustomValidity('');
+      }
+    };
+
+    if (emailField) {
+      emailField.addEventListener('input', validateBusinessEmail);
+      emailField.addEventListener('blur', validateBusinessEmail);
+    }
+
+    if (privacyCheckbox) {
+      privacyCheckbox.addEventListener('change', () => {
+        privacyCheckbox.setCustomValidity('');
+      });
+    }
 
     formFields.forEach((field) => {
       field.addEventListener('input', () => {
@@ -429,14 +463,33 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       field.addEventListener('invalid', () => {
-        const message = field.type === 'email' ? formMessages.email : formMessages.required;
-        if (field.validity.valueMissing || field.validity.typeMismatch) {
-          field.setCustomValidity(message);
+        if (field.validity.customError) return;
+        let message = formMessages.required;
+        if (field.type === 'email') {
+          message = formMessages.email;
+        } else if (privacyCheckbox && field === privacyCheckbox) {
+          message = formMessages.privacy;
         }
+        field.setCustomValidity(message);
       });
     });
 
     contactForm.addEventListener('submit', (event) => {
+      validateBusinessEmail();
+      if (privacyCheckbox) {
+        if (!privacyCheckbox.checked) {
+          privacyCheckbox.setCustomValidity(formMessages.privacy);
+        } else {
+          privacyCheckbox.setCustomValidity('');
+        }
+      }
+
+      if (!contactForm.checkValidity()) {
+        event.preventDefault();
+        contactForm.reportValidity();
+        return;
+      }
+
       event.preventDefault();
       if (submitButton) {
         submitButton.dataset.originalLabel = submitButton.textContent;
@@ -477,17 +530,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
