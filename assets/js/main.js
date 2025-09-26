@@ -91,7 +91,7 @@
       newsletterLabel: '電子郵件',
       newsletterPlaceholder: '請輸入公司電子郵件',
       newsletterCta: '訂閱',
-      copy: '© 2024 TOPTEC GLOBAL PTE. LTD. 版權所有。',
+      copy: '&copy; 2024 TOPTEC GLOBAL PTE. LTD. 版權所有。',
       privacy: '隱私權政策',
       terms: '使用條款'
     },
@@ -287,7 +287,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggle = document.querySelector('.mobile-toggle');
   const langButtons = document.querySelectorAll('.language-switcher button[data-lang]');
   const htmlElement = document.documentElement;
-  const currentPage = body.dataset.page;\r\n\r\n  let formMessages = {};\r\n  function updateFormMessages(lang) {\r\n    const target = lang || body.dataset.lang || 'en';\r\n    formMessages = {\r\n      required: getTranslation(target, 'general.form.required') || 'Please fill out this field.',\r\n      email: getTranslation(target, 'general.form.email') || 'Please enter a valid email address.',\n      businessEmail: getTranslation(target, 'general.form.businessEmail') || 'Please use your business email address.',\n      privacy: getTranslation(target, 'general.form.privacy') || 'Please agree to the Privacy Policy before submitting.',\r\n      submitting: getTranslation(target, 'general.form.submitting') || 'Submitting...',\r\n      success: getTranslation(target, 'general.form.success') || 'Your message has been sent. We will respond shortly.'\r\n    };\r\n  }\r\n\r\n  updateFormMessages(body.dataset.lang || 'en');\r\n\r\n  const navLinks = nav ? nav.querySelectorAll('a[data-page]') : [];
+  const currentPage = body.dataset.page;
+
+  let formMessages = {};
+  function updateFormMessages(lang) {
+    const target = lang || body.dataset.lang || 'en';
+    formMessages = {
+      required: getTranslation(target, 'general.form.required') || 'Please fill out this field.',
+      email: getTranslation(target, 'general.form.email') || 'Please enter a valid email address.',\n      businessEmail: getTranslation(target, 'general.form.businessEmail') || 'Please use your business email address.',\n      privacy: getTranslation(target, 'general.form.privacy') || 'Please agree to the Privacy Policy before submitting.',
+      submitting: getTranslation(target, 'general.form.submitting') || 'Submitting...',
+      success: getTranslation(target, 'general.form.success') || 'Your message has been sent. We will respond shortly.'
+    };
+  }
+
+  updateFormMessages(body.dataset.lang || 'en');
+
+  const navLinks = nav ? nav.querySelectorAll('a[data-page]') : [];
   navLinks.forEach((link) => {
     if (link.dataset.page === currentPage) {
       link.classList.add('active');
@@ -339,7 +354,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function setLanguage(lang) {
     const targetLang = lang === 'zh-Hant' ? 'zh-Hant' : 'en';
     htmlElement.setAttribute('lang', targetLang === 'zh-Hant' ? 'zh-Hant' : 'en');
-    body.dataset.lang = targetLang;\r\n\r\n    updateFormMessages(targetLang);\r\n\r\n    langButtons.forEach((btn) => {
+    body.dataset.lang = targetLang;
+
+    updateFormMessages(targetLang);
+
+    langButtons.forEach((btn) => {
       btn.classList.toggle('active', btn.dataset.lang === targetLang);
     });
 
@@ -532,18 +551,131 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   initScrollAnimations();
   initCountUp();
+  initHeroInteractions();
 
+  function initHeroInteractions() {
+    const hero = document.querySelector('.hero');
+    if (!hero) {
+      return;
+    }
+
+    const heroContainer = hero.querySelector('.container');
+    if (!heroContainer) {
+      return;
+    }
+
+    const heroMedia = hero.querySelector('.hero-media');
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let prefersReducedMotion = motionQuery.matches;
+
+    const resetHeroState = () => {
+      heroContainer.style.setProperty('--hero-tilt-x', '0deg');
+      heroContainer.style.setProperty('--hero-tilt-y', '0deg');
+      hero.style.setProperty('--hero-highlight-opacity', '0');
+      hero.style.setProperty('--hero-highlight-x', '50%');
+      hero.style.setProperty('--hero-highlight-y', '50%');
+      if (heroMedia) {
+        heroMedia.style.setProperty('--hero-parallax-x', '0px');
+        heroMedia.style.setProperty('--hero-parallax-y', '0px');
+      }
+    };
+
+    resetHeroState();
+
+    hero.addEventListener('focusin', () => {
+      hero.style.setProperty('--hero-highlight-opacity', '0.65');
+    });
+
+    hero.addEventListener('focusout', () => {
+      resetHeroState();
+    });
+
+    let rafId;
+
+    const applyHeroInteraction = (clientX, clientY) => {
+      cancelAnimationFrame(rafId);
+      rafId = window.requestAnimationFrame(() => {
+        const rect = heroContainer.getBoundingClientRect();
+        if (!rect.width || !rect.height) {
+          return;
+        }
+
+        const relativeX = Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1);
+        const relativeY = Math.min(Math.max((clientY - rect.top) / rect.height, 0), 1);
+        const tiltX = ((relativeY - 0.5) * -10).toFixed(2);
+        const tiltY = ((relativeX - 0.5) * 10).toFixed(2);
+        heroContainer.style.setProperty('--hero-tilt-x', `${tiltX}deg`);
+        heroContainer.style.setProperty('--hero-tilt-y', `${tiltY}deg`);
+
+        hero.style.setProperty('--hero-highlight-opacity', '0.9');
+        hero.style.setProperty('--hero-highlight-x', `${(relativeX * 100).toFixed(2)}%`);
+        hero.style.setProperty('--hero-highlight-y', `${(relativeY * 100).toFixed(2)}%`);
+
+        if (heroMedia) {
+          const parallaxX = ((relativeX - 0.5) * 26).toFixed(2);
+          const parallaxY = ((relativeY - 0.5) * 26).toFixed(2);
+          heroMedia.style.setProperty('--hero-parallax-x', `${parallaxX}px`);
+          heroMedia.style.setProperty('--hero-parallax-y', `${parallaxY}px`);
+        }
+      });
+    };
+
+    const onPointerEnter = (event) => {
+      applyHeroInteraction(event.clientX, event.clientY);
+    };
+
+    const onPointerMove = (event) => {
+      applyHeroInteraction(event.clientX, event.clientY);
+    };
+
+    const onPointerLeave = () => {
+      cancelAnimationFrame(rafId);
+      resetHeroState();
+    };
+
+    const enablePointerEffects = () => {
+      hero.addEventListener('pointerenter', onPointerEnter);
+      hero.addEventListener('pointermove', onPointerMove);
+      hero.addEventListener('pointerleave', onPointerLeave);
+    };
+
+    const disablePointerEffects = () => {
+      hero.removeEventListener('pointerenter', onPointerEnter);
+      hero.removeEventListener('pointermove', onPointerMove);
+      hero.removeEventListener('pointerleave', onPointerLeave);
+    };
+
+    if (!prefersReducedMotion) {
+      enablePointerEffects();
+    }
+
+    const handleMotionPreference = (event) => {
+      prefersReducedMotion = event?.matches ?? motionQuery.matches;
+      disablePointerEffects();
+      resetHeroState();
+      if (!prefersReducedMotion) {
+        enablePointerEffects();
+      }
+    };
+
+    if (motionQuery.addEventListener) {
+      motionQuery.addEventListener('change', handleMotionPreference);
+    } else {
+      motionQuery.addListener(handleMotionPreference);
+    }
+  }
   function initScrollAnimations() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const animationGroups = [
       { selector: '.hero-content > *', stagger: 0.08 },
-      { selector: '.hero img', origin: 'right', startDelay: 0.3 },
+      { selector: '.hero-media', origin: 'right', startDelay: 0.3 },
       { selector: '.hero-stats .stat', startDelay: 0.25, stagger: 0.08 },
       { selector: '.section-title', startDelay: 0.1 },
       { selector: '.section-subtitle', startDelay: 0.15 },
       { selector: '.card-grid .card', stagger: 0.12 },
       { selector: '.split-grid > *', stagger: 0.12 },
       { selector: '.badge-list .badge', stagger: 0.05 },
+      { selector: '.timeline .timeline-item', stagger: 0.1 },
       { selector: '.logo-wall-track', origin: 'right', startDelay: 0.3 },
       { selector: '.industry-grid .industry-card', stagger: 0.12 },
       { selector: '.case-carousel .case-card', stagger: 0.12 },
@@ -750,6 +882,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
