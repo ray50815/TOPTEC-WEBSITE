@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Toptec Internal Tools</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-100 min-h-screen">
+    <div id="access-gate" class="fixed inset-0 flex items-center justify-center bg-slate-900/80 p-4">
+      <div class="w-full max-w-md rounded-xl bg-white p-8 shadow-xl">
+        <h1 class="text-2xl font-semibold text-slate-900">Tool Access</h1>
+        <p class="mt-3 text-sm text-slate-600">
+          請輸入授權碼以檢視內部工具。
+        </p>
+        <form id="access-form" class="mt-6 space-y-4" autocomplete="off">
+          <label class="block text-sm font-medium text-slate-700" for="access-code">授權碼</label>
+          <input
+            id="access-code"
+            type="password"
+            required
+            class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            placeholder="Enter access code"
+          />
+          <p id="access-error" class="hidden text-sm font-medium text-red-600"></p>
+          <button
+            type="submit"
+            class="w-full rounded-md bg-blue-600 py-2 text-sm font-semibold text-white shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            確認
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <main id="tool-list" hidden>
+      <div class="max-w-5xl mx-auto px-6 py-16">
+        <header class="mb-10">
+          <h1 class="text-4xl font-bold text-slate-900 mb-2">Toptec Internal Tool Suite</h1>
+          <p class="text-slate-600">選擇需要的工具以繼續。</p>
+        </header>
+
+        <section class="grid gap-6 md:grid-cols-2">
+          <article class="rounded-2xl bg-white p-8 shadow-lg border border-slate-100 hover:shadow-xl transition">
+            <h2 class="text-2xl font-semibold text-slate-900">Invoice / Packing 自動化工具</h2>
+            <p class="mt-3 text-sm text-slate-600 leading-relaxed">
+              建立商業發票、形式發票與裝箱明細，快速生成標準化文件與列印版面。
+            </p>
+            <a
+              href="toolkit.html"
+              class="mt-6 inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              開啟工具
+            </a>
+          </article>
+
+          <article class="rounded-2xl bg-white p-8 shadow-lg border border-slate-100 hover:shadow-xl transition">
+            <h2 class="text-2xl font-semibold text-slate-900">國際契約雙語翻譯工具</h2>
+            <p class="mt-3 text-sm text-slate-600 leading-relaxed">
+              使用 AI 協助將英文契約翻譯為繁體中文，並自動輸出雙語對照的 Word 與 PDF 檔案。
+            </p>
+            <a
+              href="toolkit2.html"
+              class="mt-6 inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              開啟工具
+            </a>
+          </article>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      (function () {
+        const ACCESS_STORAGE_KEY = 'toptec-toolkit-access';
+        const ACCESS_HASH = '225db660eb967a2f8b04e9380faea8d699d0f6ce64aba32559b4999cd3f24aef';
+
+        const overlay = document.getElementById('access-gate');
+        const form = document.getElementById('access-form');
+        const input = document.getElementById('access-code');
+        const error = document.getElementById('access-error');
+        const toolList = document.getElementById('tool-list');
+
+        const toHex = (buffer) => Array.from(new Uint8Array(buffer)).map((b) => b.toString(16).padStart(2, '0')).join('');
+
+        const hashString = async (value) => {
+          if (!window.crypto?.subtle) {
+            throw new Error('no-crypto');
+          }
+          const encoded = new TextEncoder().encode(value.trim());
+          const digest = await crypto.subtle.digest('SHA-256', encoded);
+          return toHex(digest);
+        };
+
+        const unlock = () => {
+          overlay.remove();
+          toolList.hidden = false;
+        };
+
+        const storedHash = localStorage.getItem(ACCESS_STORAGE_KEY);
+        if (storedHash && storedHash === ACCESS_HASH) {
+          unlock();
+        }
+
+        form?.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          error.classList.add('hidden');
+          try {
+            const hashedInput = await hashString(input.value);
+            if (hashedInput === ACCESS_HASH) {
+              localStorage.setItem(ACCESS_STORAGE_KEY, ACCESS_HASH);
+              unlock();
+            } else {
+              error.textContent = '授權碼錯誤，請再試一次。';
+              error.classList.remove('hidden');
+              input.select();
+            }
+          } catch (err) {
+            error.textContent = err.message === 'no-crypto'
+              ? '瀏覽器不支援必要的安全功能，請改用其他瀏覽器。'
+              : '系統錯誤，請稍候再試。';
+            error.classList.remove('hidden');
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

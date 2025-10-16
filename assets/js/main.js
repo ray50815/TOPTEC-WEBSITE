@@ -86,11 +86,6 @@
       resource2: '永續承諾',
       resource3: '合規與認證',
       resource4: '新聞與洞察',
-      newsletterTitle: '掌握最新消息',
-      newsletterText: '訂閱產業情報與底蓋製造動態。',
-      newsletterLabel: '電子郵件',
-      newsletterPlaceholder: '請輸入公司電子郵件',
-      newsletterCta: '訂閱',
       copy: '&copy; 2024 TOPTEC GLOBAL PTE. LTD. 版權所有。',
       privacy: '隱私權政策',
       terms: '使用條款'
@@ -271,7 +266,6 @@
       }
     },
     general: {
-      newsletterSuccess: '感謝訂閱，我們將持續提供最新訊息。',
       form: {
         required: '請填寫此欄位。',
         email: '請輸入有效的電子郵件。',
@@ -324,20 +318,37 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  const i18nElements = document.querySelectorAll('[data-i18n]');
-  const placeholderElements = document.querySelectorAll('[data-i18n-placeholder]');
+  let i18nElements = [];
+  let placeholderElements = [];
 
-  i18nElements.forEach((el) => {
-    if (!el.dataset.i18nEn) {
-      el.dataset.i18nEn = el.innerHTML.trim();
+  const registerI18nElements = (root = document) => {
+    const elements = Array.from(root.querySelectorAll('[data-i18n]'));
+    if (!elements.length) {
+      return;
     }
-  });
+    elements.forEach((el) => {
+      if (!el.dataset.i18nEn) {
+        el.dataset.i18nEn = el.innerHTML.trim();
+      }
+    });
+    i18nElements = Array.from(new Set([...i18nElements, ...elements]));
+  };
 
-  placeholderElements.forEach((el) => {
-    if (!el.dataset.i18nPlaceholderEn) {
-      el.dataset.i18nPlaceholderEn = el.getAttribute('placeholder') || '';
+  const registerPlaceholderElements = (root = document) => {
+    const elements = Array.from(root.querySelectorAll('[data-i18n-placeholder]'));
+    if (!elements.length) {
+      return;
     }
-  });
+    elements.forEach((el) => {
+      if (!el.dataset.i18nPlaceholderEn) {
+        el.dataset.i18nPlaceholderEn = el.getAttribute('placeholder') || '';
+      }
+    });
+    placeholderElements = Array.from(new Set([...placeholderElements, ...elements]));
+  };
+
+  registerI18nElements(document);
+  registerPlaceholderElements(document);
 
   function getTranslation(lang, key) {
     const parts = key.split('.');
@@ -398,23 +409,38 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  initIndustryFilters();
+
   const faqItems = document.querySelectorAll('.faq-item');
   faqItems.forEach((item) => {
+    item.setAttribute('role', 'button');
+    const answers = Array.from(item.querySelectorAll('p'));
+    const indicator = item.querySelector("h4 span[aria-hidden=\"true\"]");
+
+    const applyState = (isOpen) => {
+      item.classList.toggle('open', isOpen);
+      item.setAttribute('aria-expanded', String(isOpen));
+      if (indicator) {
+        indicator.textContent = isOpen ? '-' : '+';
+      }
+      answers.forEach((answer) => {
+        answer.style.display = isOpen ? 'block' : 'none';
+      });
+    };
+
+    applyState(false);
+
     item.addEventListener('click', () => {
-      item.classList.toggle('open');
+      applyState(!item.classList.contains('open'));
     });
+
     item.addEventListener('keypress', (event) => {
-      if (event.key === 'Enter' || event.key === ' ') {
+      if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') {
         event.preventDefault();
-        item.classList.toggle('open');
+        applyState(!item.classList.contains('open'));
       }
     });
   });
-
-  const testimonialSlides = document.querySelectorAll('.testimonial-slide');
-  const prevBtn = document.querySelector('.testimonial-prev');
-  const nextBtn = document.querySelector('.testimonial-next');
-  let testimonialIndex = 0;
 
   function showTestimonial(index) {
     testimonialSlides.forEach((slide, idx) => {
@@ -536,18 +562,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-  const newsletterForms = document.querySelectorAll('.newsletter-form');
-  newsletterForms.forEach((form) => {
-    form.addEventListener('submit', (event) => {
-      event.preventDefault();
-      form.reset();
-      const lang = body.dataset.lang || 'en';
-      const message =
-        lang === 'zh-Hant'
-          ? getTranslation('zh-Hant', 'general.newsletterSuccess') || '感謝訂閱，我們將持續提供最新訊息。'
-          : 'Thank you for subscribing. Stay tuned for our updates.';
-      window.alert(message);
-    });
   });
   initScrollAnimations();
   initCountUp();
@@ -664,6 +678,78 @@ document.addEventListener('DOMContentLoaded', () => {
       motionQuery.addListener(handleMotionPreference);
     }
   }
+  function initIndustryFilters() {
+    const filterGroup = document.querySelector('[data-industry-filter-group]');
+    const cards = Array.from(document.querySelectorAll('[data-industry-grid] .industry-card'));
+    if (!filterGroup || !cards.length) {
+      return;
+    }
+    const buttons = Array.from(filterGroup.querySelectorAll('[data-industry-filter]'));
+    if (!buttons.length) {
+      return;
+    }
+    const emptyState = document.querySelector('[data-industry-empty]');
+    const grid = document.querySelector('[data-industry-grid]');
+
+    const applyFilter = (filter) => {
+      const normalized = (filter && filter.trim()) || 'all';
+      buttons.forEach((btn) => {
+        const isActive = (btn.dataset.industryFilter || 'all') === normalized;
+        btn.classList.toggle('is-active', isActive);
+        btn.setAttribute('aria-pressed', String(isActive));
+      });
+
+      let visibleCount = 0;
+      cards.forEach((card) => {
+        const categories = (card.dataset.industry || '')
+          .split(/\s+/)
+          .map((item) => item.trim())
+          .filter(Boolean);
+        const shouldShow = normalized === 'all' || categories.includes(normalized);
+        card.hidden = !shouldShow;
+        if (shouldShow) {
+          visibleCount += 1;
+        }
+      });
+
+      if (emptyState) {
+        emptyState.hidden = visibleCount > 0;
+      }
+      if (grid) {
+        grid.dataset.activeFilter = normalized;
+      }
+    };
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        applyFilter(button.dataset.industryFilter || 'all');
+      });
+    });
+
+    filterGroup.addEventListener('keydown', (event) => {
+      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
+        return;
+      }
+      event.preventDefault();
+      const currentIndex = buttons.indexOf(document.activeElement);
+      let nextIndex = currentIndex;
+      if (event.key === 'ArrowRight') {
+        nextIndex = (currentIndex + 1) % buttons.length;
+      } else if (event.key === 'ArrowLeft') {
+        nextIndex = (currentIndex - 1 + buttons.length) % buttons.length;
+      } else if (event.key === 'Home') {
+        nextIndex = 0;
+      } else if (event.key === 'End') {
+        nextIndex = buttons.length - 1;
+      }
+      buttons[Math.max(0, nextIndex)]?.focus();
+    });
+
+    const defaultFilter =
+      filterGroup.querySelector('.filter-chip.is-active')?.dataset.industryFilter || 'all';
+    applyFilter(defaultFilter);
+  }
+
   function initScrollAnimations() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const animationGroups = [
@@ -676,7 +762,7 @@ document.addEventListener('DOMContentLoaded', () => {
       { selector: '.split-grid > *', stagger: 0.12 },
       { selector: '.badge-list .badge', stagger: 0.05 },
       { selector: '.timeline .timeline-item', stagger: 0.1 },
-      { selector: '.logo-wall-track', origin: 'right', startDelay: 0.3 },
+      { selector: '.industry-filter .filter-chip', stagger: 0.06 },
       { selector: '.industry-grid .industry-card', stagger: 0.12 },
       { selector: '.case-carousel .case-card', stagger: 0.12 },
       { selector: '.highlight-box', startDelay: 0.2 },
@@ -687,7 +773,6 @@ document.addEventListener('DOMContentLoaded', () => {
       { selector: '.faq-item', origin: 'scale', stagger: 0.1 },
       { selector: '.legal-card', origin: 'scale', stagger: 0.12 },
       { selector: '.testimonial-slide', stagger: 0.12 },
-      { selector: '.newsletter', startDelay: 0.25 },
       { selector: '.hero-cta .btn', stagger: 0.08 }
     ];
 
@@ -882,25 +967,3 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

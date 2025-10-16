@@ -104,6 +104,26 @@
       });
     }
 
+    function winTeamSortSolutions(solutions){
+      return solutions.slice().sort((A,B)=>{
+        const diffA = Math.abs(A.q1 - A.q2);
+        const diffB = Math.abs(B.q1 - B.q2);
+        if(diffA !== diffB) return diffA - diffB;
+        const minA = Math.min(A.q1, A.q2);
+        const minB = Math.min(B.q1, B.q2);
+        if(minA !== minB) return minB - minA;
+        const ratioA = A.q1 > 0 ? A.q3 / A.q1 : Number.POSITIVE_INFINITY;
+        const ratioB = B.q1 > 0 ? B.q3 / B.q1 : Number.POSITIVE_INFINITY;
+        const ratioGapA = Math.abs(ratioA - 6);
+        const ratioGapB = Math.abs(ratioB - 6);
+        if(ratioGapA !== ratioGapB) return ratioGapA - ratioGapB;
+        const totalA = A.q1 + A.q2;
+        const totalB = B.q1 + B.q2;
+        if(totalA !== totalB) return totalB - totalA;
+        return A.q3 - B.q3;
+      });
+    }
+
     function isJCConfig(config){
       // 只要產品 id 以 "JC-" 開頭就視為 JC 系列（至少一個即可）
       return (config.products||[]).some(p=> typeof p.id === 'string' && p.id.startsWith('JC-'));
@@ -129,6 +149,10 @@
             composite: +compositeScore(f).toFixed(2)
           }
         }; }).sort((a,b)=> b.scores.composite - a.scores.composite);
+      } else if(config === companyConfigs.winteam){
+        const coreSolutions = solutions.filter(s=> s.q1>0 && s.q2>0);
+        const base = coreSolutions.length ? coreSolutions : solutions;
+        return winTeamSortSolutions(base);
       } else {
         return basicRoundEvenSort(solutions);
       }
@@ -229,14 +253,17 @@
       const [p1,p2,p3] = prices; const gcd=600; let solutions=[]; const seen=new Set();
       let adjustedAmount = totalAmount; if(totalAmount % gcd !== 0){ adjustedAmount = totalAmount - (totalAmount % gcd) + gcd; }
       const p_set = p1 + p2; const max_sets = Math.floor(adjustedAmount / p_set);
+      const meetsRatio = (machines, accessories) => machines > 0 && accessories >= machines * 6;
+      const hasCoreProducts = (machines, fryers) => machines > 0 && fryers > 0;
       for(let q_set = max_sets; q_set>0; q_set--){
         const rem = adjustedAmount - (q_set*p_set); if(rem>=0 && rem%p3===0){
-          const q3 = rem / p3; const sol={q1:q_set, q2:q_set, q3}; const key=`${sol.q1}-${sol.q2}-${sol.q3}`; if(!seen.has(key)){ solutions.push(sol); seen.add(key);} }
+          const q3 = rem / p3; if(!meetsRatio(q_set, q3)) continue;
+          const sol={q1:q_set, q2:q_set, q3}; const key=`${sol.q1}-${sol.q2}-${sol.q3}`; if(!seen.has(key)){ solutions.push(sol); seen.add(key);} }
       }
       const maxQ1 = Math.floor(adjustedAmount / p1);
       for(let q1=maxQ1; q1>=0; q1--){
         const r1 = adjustedAmount - (q1*p1); const maxQ2 = Math.floor(r1/p2);
-        for(let q2=maxQ2; q2>=0; q2--){ const r2 = r1 - (q2*p2); if(r2>=0 && r2%p3===0){ const q3=r2/p3; if(q1===0&&q2===0&&q3===0) continue; const sol={q1,q2,q3}; const key=`${sol.q1}-${sol.q2}-${sol.q3}`; if(!seen.has(key)){ solutions.push(sol); seen.add(key);} } }
+        for(let q2=maxQ2; q2>=0; q2--){ const r2 = r1 - (q2*p2); if(r2>=0 && r2%p3===0){ const q3=r2/p3; if(q1===0&&q2===0&&q3===0) continue; if(!hasCoreProducts(q1,q2)) continue; if(!meetsRatio(q1, q3)) continue; const sol={q1,q2,q3}; const key=`${sol.q1}-${sol.q2}-${sol.q3}`; if(!seen.has(key)){ solutions.push(sol); seen.add(key);} } }
       }
       if(solutions.length>0 && totalAmount!==adjustedAmount){
         const statusDiv=document.getElementById('status');

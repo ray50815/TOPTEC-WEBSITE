@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Toptec Translation Toolkit</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  </head>
+  <body class="bg-slate-100 min-h-screen">
+    <main id="translator-app">
+      <div class="max-w-6xl mx-auto px-6 py-14">
+        <header class="mb-10 space-y-2">
+          <div class="flex items-center justify-between flex-wrap gap-3">
+            <h1 class="text-4xl font-bold text-slate-900">Toptec 契約翻譯工具</h1>
+            <a
+              href="toolselect.html"
+              class="text-sm font-medium text-blue-600 hover:text-blue-700 underline decoration-dotted"
+            >
+              返回工具選單
+            </a>
+          </div>
+          <p class="text-slate-600 leading-relaxed">
+            將英文契約段落翻譯成繁體中文，並自動輸出雙語版本的 Word 與 PDF 檔案。請依照步驟貼上或匯入內容，完成設定後再啟動翻譯流程。
+          </p>
+        </header>
+
+        <section class="grid gap-6 lg:grid-cols-3">
+          <article class="lg:col-span-1 rounded-2xl bg-white p-6 shadow border border-slate-100">
+            <h2 class="text-xl font-semibold text-slate-900">Step 1. 設定 API</h2>
+            <p class="mt-2 text-sm text-slate-600">
+              建議填入公司取得的 Google Gemini API Key，系統會將金鑰安全地儲存在瀏覽器的 localStorage。
+            </p>
+            <label for="api-key" class="mt-5 block text-sm font-medium text-slate-700">Gemini API Key</label>
+            <input
+              id="api-key"
+              type="password"
+              class="mt-2 w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              placeholder="例如：AIza..."
+            />
+            <div class="mt-4 flex items-center gap-3">
+              <button
+                id="save-api-key"
+                class="flex-1 rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              >
+                儲存金鑰
+              </button>
+              <button
+                id="clear-api-key"
+                class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300"
+              >
+                清除
+              </button>
+            </div>
+            <p id="api-key-status" class="mt-3 text-xs text-slate-500"></p>
+            <div class="mt-6 border-t border-slate-200 pt-4">
+              <h3 class="text-sm font-semibold text-slate-900">翻譯輸出規格</h3>
+              <ul class="mt-3 space-y-2 text-xs text-slate-600 list-disc list-inside">
+                <li>保留段落結構與編號，翻譯結果一一對應。</li>
+                <li>首次出現的專有名詞自動保留英文括註。</li>
+                <li>可同時匯出 DOCX 與 PDF 檔案。</li>
+                <li>中英文分欄；中文採微軟正黑體，英文採 Times New Roman。</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="lg:col-span-2 rounded-2xl bg-white p-6 shadow border border-slate-100">
+            <h2 class="text-xl font-semibold text-slate-900">Step 2. 準備翻譯內容</h2>
+            <p class="mt-2 text-sm text-slate-600">
+              每個段落請以空白行分隔；段落內的換行會原樣保留。若文件含有表格或特殊格式，建議先整理為純文字後再上傳或貼上。
+            </p>
+            <div class="mt-6 grid gap-5 md:grid-cols-2">
+              <div>
+                <label for="doc-title" class="block text-sm font-medium text-slate-700">文件標題</label>
+                <input
+                  id="doc-title"
+                  type="text"
+                  maxlength="100"
+                  class="mt-2 w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  placeholder="例：Mutual NDA"
+                />
+              </div>
+              <div>
+                <label for="doc-date" class="block text-sm font-medium text-slate-700">文件日期（選填）</label>
+                <input
+                  id="doc-date"
+                  type="text"
+                  class="mt-2 w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  placeholder="例：2024-12-08"
+                />
+              </div>
+            </div>
+            <div class="mt-6">
+              <label for="source-file" class="block text-sm font-medium text-slate-700">匯入原文檔案（選填）</label>
+              <div class="mt-2 flex items-center justify-between rounded-lg border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+                <span>支援 .docx、.txt、.md 等純文字檔案</span>
+                <input
+                  id="source-file"
+                  type="file"
+                  accept=".docx,.txt,.md,.markdown,.csv,.tsv,.json,.html,.htm"
+                  class="max-w-[220px] text-sm file:mr-3 file:rounded-md file:border-0 file:bg-blue-600 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-700 focus:outline-none"
+                />
+              </div>
+              <p id="file-status" class="mt-2 text-xs text-slate-500"></p>
+            </div>
+            <label for="source-text" class="mt-6 block text-sm font-medium text-slate-700">契約內容</label>
+            <textarea
+              id="source-text"
+              class="mt-2 h-64 w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 text-sm font-mono leading-relaxed text-slate-800 shadow-sm focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+              placeholder="貼上或編輯需要翻譯的英文契約段落..."
+            ></textarea>
+            <div class="mt-4 flex flex-wrap items-center gap-3">
+              <button
+                id="analyze-button"
+                class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300"
+              >
+                預覽段落
+              </button>
+              <button
+                id="translate-button"
+                class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              >
+                開始翻譯
+              </button>
+              <span id="segment-count" class="text-xs text-slate-500"></span>
+            </div>
+            <p id="action-feedback" class="mt-3 text-xs text-rose-500"></p>
+          </article>
+        </section>
+
+        <section id="progress-panel" class="mt-10 hidden">
+          <div class="rounded-2xl border border-blue-100 bg-blue-50 p-6 shadow-sm">
+            <div class="flex items-center gap-4">
+              <svg class="h-8 w-8 animate-spin text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+              </svg>
+              <div>
+                <p class="text-sm font-semibold text-blue-900">翻譯進行中...</p>
+                <p class="text-xs text-blue-700 mt-1">正在呼叫 Gemini API 並整理雙語段落，請稍候。</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="result-section" class="mt-12 hidden">
+          <div class="rounded-2xl bg-white p-6 shadow border border-emerald-100">
+            <div class="flex flex-wrap items-center gap-4">
+              <div class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-lg font-semibold text-emerald-700">翻譯完成</p>
+                <p class="text-sm text-emerald-600 mt-1">Word 與 PDF 檔案已產生，請點擊按鈕下載或檢視概覽。</p>
+              </div>
+            </div>
+
+            <div class="mt-6 flex flex-wrap items-center gap-3">
+              <button
+                id="download-docx"
+                class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+                disabled
+              >
+                下載 Word (.docx)
+              </button>
+              <button
+                id="download-pdf"
+                class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+                disabled
+              >
+                下載 PDF (.pdf)
+              </button>
+              <button
+                id="reset-session"
+                class="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300"
+              >
+                重新開始
+              </button>
+            </div>
+
+            <div class="mt-8">
+              <h3 class="text-sm font-semibold text-slate-900 uppercase tracking-wider">翻譯概覽（最多顯示 10 段）</h3>
+              <div class="mt-3 overflow-hidden rounded-xl border border-slate-200">
+                <table class="min-w-full divide-y divide-slate-200 text-sm">
+                  <thead class="bg-slate-50">
+                    <tr>
+                      <th class="px-4 py-3 text-left font-semibold text-slate-700">原文</th>
+                      <th class="px-4 py-3 text-left font-semibold text-slate-700">翻譯</th>
+                    </tr>
+                  </thead>
+                  <tbody id="preview-body" class="divide-y divide-slate-200 bg-white"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div id="preview-html-container" class="hidden"></div>
+      </div>
+    </main>
+
+    <script defer src="https://unpkg.com/mammoth@1.6.0/mammoth.browser.min.js" crossorigin="anonymous"></script>
+    <script defer src="../assets/internal/gemini-key.js"></script>
+    <script defer src="../assets/internal/translator.js"></script>
+  </body>
+</html>
