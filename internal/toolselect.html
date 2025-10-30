@@ -1,5 +1,5 @@
-﻿<!DOCTYPE html>
-<html lang="zh-Hant">
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,75 +7,102 @@
     <meta name="robots" content="noindex, nofollow" />
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body class="bg-slate-100 min-h-screen">
-    <div id="access-gate" class="fixed inset-0 flex items-center justify-center bg-slate-900/80 p-4">
-      <div class="w-full max-w-md rounded-xl bg-white p-8 shadow-xl">
-        <h1 class="text-2xl font-semibold text-slate-900">Tool Access</h1>
-        <p class="mt-3 text-sm text-slate-600">請輸入通行碼以檢視內部工具。</p>
-        <form id="access-form" class="mt-6 space-y-4" autocomplete="off">
-          <label class="block text-sm font-medium text-slate-700" for="access-code">通行碼</label>
-          <input
-            id="access-code"
-            type="password"
-            required
-            class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="Enter access code"
-          />
-          <p id="access-error" class="hidden text-sm font-medium text-red-600"></p>
+  <body class="min-h-screen bg-slate-950 text-slate-100 antialiased">
+    <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <div class="h-full w-full bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950"></div>
+      <div class="absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-blue-500/25 to-transparent blur-3xl"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(56,189,248,0.15),transparent_55%)]"></div>
+    </div>
+
+    <div id="access-gate" class="fixed inset-0 z-20 flex items-center justify-center bg-slate-950/85 px-4">
+      <div class="w-full max-w-lg space-y-6 rounded-3xl border border-slate-700 bg-slate-900/85 p-10 text-slate-100 shadow-2xl shadow-slate-950/60 backdrop-blur">
+        <div class="space-y-2">
+          <p class="text-xs uppercase tracking-[0.35em] text-blue-300">Toptec Internal</p>
+          <h1 class="text-3xl font-semibold text-white">Secure Tool Access</h1>
+          <p class="text-sm text-slate-300">Internal Personnel Only.</p>
+        </div>
+        <form id="access-form" class="space-y-4" autocomplete="off">
+          <div>
+            <label class="block text-sm font-medium text-slate-200" for="access-code">Access Code</label>
+            <input
+              id="access-code"
+              type="password"
+              required
+              class="mt-2 w-full rounded-xl border border-slate-600 bg-slate-900/60 px-4 py-3 text-sm text-white shadow-inner focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/60"
+              placeholder="Enter access code"
+            />
+          </div>
+          <p id="access-error" class="hidden text-sm font-medium text-rose-400"></p>
           <button
             type="submit"
-            class="w-full rounded-md bg-blue-600 py-2 text-sm font-semibold text-white shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            class="w-full rounded-full bg-blue-600 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/35 transition hover:bg-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/60"
           >
-            確認
+            Unlock
           </button>
         </form>
       </div>
     </div>
 
-    <main id="tool-list" hidden>
-      <div class="max-w-5xl mx-auto px-6 py-16">
-        <header class="mb-12 space-y-2">
-          <div class="flex items-center justify-between flex-wrap gap-3">
-            <div>
-              <h1 class="text-4xl font-bold text-slate-900">Toptec Internal Tool Suite</h1>
-              <p class="text-slate-600 mt-2">選擇想使用的工具，快速完成文件與翻譯流程。</p>
+    <main id="tool-list" hidden class="relative z-10">
+      <div class="mx-auto max-w-5xl space-y-12 px-6 py-16">
+        <header class="space-y-6 text-center md:text-left">
+          <div class="inline-flex items-center gap-2 rounded-full border border-blue-400/40 bg-blue-500/10 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-blue-200">
+            Toptec Internal Suite
+          </div>
+          <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div class="space-y-4">
+              <h1 class="text-4xl font-bold tracking-tight text-white md:text-5xl">Internal Tool Selector</h1>
+              <p class="max-w-2xl text-base leading-relaxed text-slate-300">
+                Choose the workspace you need. Each tool preserves corporate styling, automates repetitive formatting, and keeps sensitive data inside our environment.
+              </p>
+              <p class="max-w-2xl text-sm leading-relaxed text-slate-400">
+                &#x9078;&#x64C7;&#x6240;&#x9700;&#x7684;&#x5167;&#x90E8;&#x5DE5;&#x5177;&#x5E73;&#x53F0;&#xFF0C;&#x6BCF;&#x9805;&#x670D;&#x52D9;&#x7686;&#x6CBF;&#x7528;&#x516C;&#x53F8;&#x5236;&#x5F0F;&#x6A23;&#x5F0F;&#xFF0C;&#x81EA;&#x52D5;&#x8655;&#x7406;&#x91CD;&#x8907;&#x6392;&#x7248;&#x6D41;&#x7A0B;&#xFF0C;&#x4E26;&#x78BA;&#x4FDD;&#x654F;&#x611F;&#x8CC7;&#x6599;&#x7559;&#x5728;&#x5167;&#x90E8;&#x74B0;&#x5883;&#x3002;
+              </p>
             </div>
             <a
               href="../index.html"
-              class="inline-flex items-center gap-2 rounded-full border border-blue-500 px-4 py-2 text-sm font-semibold text-blue-600 hover:bg-blue-50 transition"
+              class="inline-flex items-center gap-2 self-center rounded-full border border-slate-600 bg-slate-900/60 px-5 py-2 text-sm font-semibold text-slate-200 shadow-lg shadow-slate-950/50 transition hover:border-blue-300 hover:text-white hover:shadow-blue-500/30"
             >
-              返回網站首頁
+              <span aria-hidden="true">&larr;</span> Back to Toptec Site
             </a>
           </div>
         </header>
 
         <section class="grid gap-6 md:grid-cols-2">
-          <article class="rounded-2xl bg-white p-8 shadow-lg border border-slate-100 hover:shadow-xl transition">
-            <h2 class="text-2xl font-semibold text-slate-900">Invoice / Packing Tool</h2>
-            <p class="mt-3 text-sm text-slate-600 leading-relaxed">
-              自動計算貨值，產出發票與裝箱清單，支援多種幣別與快速排版，可直接列印或下載。
+          <article class="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl shadow-slate-950/40 backdrop-blur transition hover:border-blue-400/40 hover:shadow-blue-500/30">
+            <div class="pointer-events-none absolute -right-20 -top-24 h-48 w-48 rounded-full bg-blue-500/10 blur-3xl transition group-hover:bg-blue-500/20"></div>
+            <h2 class="text-2xl font-semibold text-white">Invoice &amp; Packing Generator</h2>
+            <p class="mt-3 text-sm leading-relaxed text-slate-300">
+              Build commercial invoices and packing lists with one submission. The layout engine applies Toptec formatting, calculates totals, and prepares print-ready files in seconds.
+            </p>
+            <p class="mt-2 text-xs leading-relaxed text-slate-400">
+              &#x4E00;&#x6B21;&#x8F38;&#x5165;&#x5373;&#x53EF;&#x5B8C;&#x6210;&#x5546;&#x7528;&#x767C;&#x7968;&#x8207;&#x5305;&#x88DD;&#x6E05;&#x55AE;&#xFF0C;&#x7CFB;&#x7D71;&#x6703;&#x81EA;&#x52D5;&#x5957;&#x7528; Toptec &#x6A23;&#x5F0F;&#x3001;&#x8A08;&#x7B97;&#x91D1;&#x984D;&#x4E26;&#x7522;&#x51FA;&#x53EF;&#x5217;&#x5370;&#x7684;&#x6A94;&#x6848;&#x3002;
             </p>
             <div class="mt-6 inline-flex">
               <a
                 href="toolkit.html"
-                class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                class="inline-flex items-center gap-2 rounded-full bg-blue-600 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-600/30 transition hover:bg-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/60"
               >
-                開啟工具
+                Open Toolkit
               </a>
             </div>
           </article>
 
-          <article class="rounded-2xl bg-white p-8 shadow-lg border border-slate-100 hover:shadow-xl transition">
-            <h2 class="text-2xl font-semibold text-slate-900">契約雙語翻譯工具</h2>
-            <p class="mt-3 text-sm text-slate-600 leading-relaxed">
-              使用 Gemini 將英文契約翻譯成繁體中文，支援匯入 DOCX / PDF，並輸出雙語對照 Word 與可列印 PDF。
+          <article class="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl shadow-slate-950/40 backdrop-blur transition hover:border-emerald-400/40 hover:shadow-emerald-500/30">
+            <div class="pointer-events-none absolute -left-16 -bottom-20 h-48 w-48 rounded-full bg-emerald-400/10 blur-3xl transition group-hover:bg-emerald-400/20"></div>
+            <h2 class="text-2xl font-semibold text-white">Bilingual Contract Translator</h2>
+            <p class="mt-3 text-sm leading-relaxed text-slate-300">
+              Upload technical or legal drafts, then receive structured Chinese / English pairs with polished Word and PDF deliverables. Built-in validation prevents formatting drift.
+            </p>
+            <p class="mt-2 text-xs leading-relaxed text-slate-400">
+              &#x9069;&#x5408;&#x6280;&#x8853;&#x6216;&#x6CD5;&#x898F;&#x6587;&#x4EF6;&#x7FFB;&#x8B6F;&#xFF0C;&#x4E0A;&#x50B3;&#x6A94;&#x6848;&#x5F8C;&#x5373;&#x53EF;&#x53D6;&#x5F97;&#x6574;&#x7406;&#x597D;&#x7684;&#x4E2D;&#x82F1;&#x6587;&#x5C0D;&#x7167;&#xFF0C;&#x4E26;&#x53EF;&#x76F4;&#x63A5;&#x4E0B;&#x8F09; Word &#x8207; PDF &#x6A94;&#x3002;
             </p>
             <div class="mt-6 inline-flex">
               <a
                 href="toolkit2.html"
-                class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                class="inline-flex items-center gap-2 rounded-full bg-emerald-500 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition hover:bg-emerald-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/60"
               >
-                開啟工具
+                Open Translator
               </a>
             </div>
           </article>
@@ -107,7 +134,10 @@
 
         const unlock = () => {
           if (overlay) overlay.remove();
-          if (toolList) toolList.hidden = false;
+          if (toolList) {
+            toolList.hidden = false;
+            toolList.removeAttribute('hidden');
+          }
         };
 
         const storedHash = localStorage.getItem(ACCESS_STORAGE_KEY);
@@ -125,14 +155,15 @@
               localStorage.setItem(ACCESS_STORAGE_KEY, ACCESS_HASH);
               unlock();
             } else {
-              error.textContent = '通行碼錯誤，請再試一次。';
+              error.textContent = 'Incorrect access code. Please try again.';
               error.classList.remove('hidden');
               input.select();
             }
           } catch (err) {
-            error.textContent = err.message === 'no-crypto'
-              ? '瀏覽器不支援必要的加密功能，請改用其他瀏覽器。'
-              : '系統發生錯誤，請稍候再試。';
+            error.textContent =
+              err.message === 'no-crypto'
+                ? 'A modern browser is required to unlock this page. Please switch and try again.'
+                : 'Something went wrong. Please retry in a moment.';
             error.classList.remove('hidden');
           }
         });

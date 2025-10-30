@@ -1,208 +1,216 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="zh-Hant">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Toptec Internal ToolKit</title>
     <meta name="robots" content="noindex, nofollow" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../assets/internal/invoice.css" id="toolkit-stylesheet" media="print" />
+    <link rel="stylesheet" href="../assets/internal/invoice.css" id="toolkit-stylesheet" />
   </head>
-  <body class="bg-gray-100 min-h-screen">
-    <div id="access-gate" class="fixed inset-0 flex items-center justify-center bg-slate-900/80 p-4">
-      <div class="w-full max-w-md rounded-xl bg-white p-8 shadow-xl">
-        <h1 class="text-2xl font-semibold text-slate-900">ToolKit</h1>
-        <p class="mt-3 text-sm text-slate-600">
-          此工具僅供內部使用，請輸入授權碼後繼續。
-        </p>
-        <form id="access-form" class="mt-6 space-y-4" autocomplete="off">
-          <label class="block text-sm font-medium text-slate-700" for="access-code">存取碼</label>
-          <input
-            id="access-code"
-            type="password"
-            required
-            class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="Enter access code"
-          />
-          <p id="access-error" class="hidden text-sm font-medium text-red-600"></p>
-          <button
-            type="submit"
-            class="w-full rounded-md bg-blue-600 py-2 text-sm font-semibold text-white shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            確認
-          </button>
-        </form>
-      </div>
+  <body class="min-h-screen bg-slate-950 text-slate-100 antialiased">
+    <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <div class="h-full w-full bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950"></div>
+      <div class="absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-blue-500/25 to-transparent blur-3xl"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.14),transparent_55%)]"></div>
     </div>
-    <div id="toolkit-app" hidden>
-<div class="w-full max-w-6xl mx-auto">
-    <div class="bg-white p-8 rounded-xl shadow-lg mb-6 no-print">
-      <h1 class="text-3xl font-bold text-gray-800 mb-2">INVOICE/PACKING 自動生成器</h1>
-      <a href="toolselect.html" class="text-sm font-medium text-blue-600 hover:text-blue-700 underline decoration-dotted">Back to Tool Selector</a>
-      <p class="text-gray-600 mb-8">請選擇交易類型並輸入資訊，系統將自動處理並生成文件。</p>
 
-      <!-- Section 1: Core Info -->
-      <fieldset class="border-t border-gray-200 pt-6">
-        <legend class="text-lg font-semibold text-gray-900 px-2">1. 核心資訊</legend>
-        <div class="grid md:grid-cols-3 gap-6 mt-4">
-          <div>
-            <label for="company" class="block text-sm font-medium text-gray-700 mb-1">選擇交易</label>
-            <select id="company" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-              <optgroup label="賣出 (Sales)">
-                <option value="anxin">An Xin (鞍鑫) (USD)</option>
-                <option value="anxin_eur">An Xin (鞍鑫) (EUR)</option>
-                <option value="winteam">WIN TEAM (旺緹) (USD)</option>
-                <option value="styleup">StyleUp (USD)</option>
-                <option value="converge">Converge (聚合雲) (USD)</option>
-              </optgroup>
-              <optgroup label="買進 (Purchase)">
-                <option value="buy_foreign_usd">向外國公司買進 (USD)</option>
-                <option value="buy_foreign_eur">向外國公司買進 (EUR)</option>
-              </optgroup>
-            </select>
-          </div>
-          <div>
-            <label for="date" class="block text-sm font-medium text-gray-700 mb-1">水單日期 (格式: YYYYMMDD)</label>
-            <input type="text" id="date" placeholder="例如: 20241206" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-          </div>
-          <div>
-            <label for="totalAmount" class="block text-sm font-medium text-gray-700 mb-1">總金額</label>
-            <input type="number" id="totalAmount" placeholder="例如: 153900" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-          </div>
-        </div>
-      </fieldset>
-
-      <!-- Section 2: Document Details -->
-      <fieldset class="border-t border-gray-200 pt-6 mt-6">
-        <legend class="text-lg font-semibold text-gray-900 px-2">2. 文件與出貨資訊</legend>
-        <div class="grid md:grid-cols-3 gap-6 mt-4">
-          <div>
-            <label for="invoiceType" class="block text-sm font-medium text-gray-700 mb-1">文件類型</label>
-            <select id="invoiceType" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-              <option value="COMMERCIAL INVOICE">COMMERCIAL INVOICE</option>
-              <option value="PROFORMA INVOICE">PROFORMA INVOICE</option>
-            </select>
-          </div>
-          <div>
-            <label for="invoiceNo" class="block text-sm font-medium text-gray-700 mb-1">發票號碼 (自動生成)</label>
-            <input type="text" id="invoiceNo" placeholder="點擊日期後自動生成" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-          </div>
-          <div>
-            <label for="onBoardDate" class="block text-sm font-medium text-gray-700 mb-1">ON/ABOUT BOARD</label>
-            <input type="text" id="onBoardDate" placeholder="留空則同水單日期" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-          </div>
-          <div>
-            <label for="shippedFrom" class="block text-sm font-medium text-gray-700 mb-1">Shipped From</label>
-            <input type="text" id="shippedFrom" placeholder="例如: TAIPEI" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-          </div>
-          <div>
-            <label for="shippedTo" class="block text-sm font-medium text-gray-700 mb-1">Shipped To</label>
-            <input type="text" id="shippedTo" placeholder="例如: SINGAPORE" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-          </div>
-          <div class="md:col-span-1 flex flex-col justify-end">
-            <div class="flex items-start space-x-4">
-              <div class="flex items-center">
-                <input id="date-adjust-checkbox" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" checked>
-                <label for="date-adjust-checkbox" class="ml-2 block text-sm text-gray-900">發票日期提前5天</label>
+    <main id="toolkit-app" class="relative z-10">
+      <div class="mx-auto max-w-6xl space-y-12 px-6 py-16">
+        <header class="rounded-3xl border border-slate-700/60 bg-slate-900/70 p-10 shadow-2xl shadow-slate-900/40 backdrop-blur">
+          <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div class="space-y-4">
+              <div class="inline-flex items-center gap-2 rounded-full border border-blue-400/40 bg-blue-500/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-blue-200">
+                LOGISTICS AUTOMATION
               </div>
-              <div class="flex items-center hidden" id="flexible-quantity-container">
-                <input id="flexible-quantity-checkbox" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                <label for="flexible-quantity-checkbox" class="ml-2 block text-sm text-gray-900">啟用彈性數量</label>
+              <div class="space-y-3">
+                <h1 class="text-4xl font-bold tracking-tight text-white md:text-5xl">INVOICE / PACKING &#x81EA;&#x52D5;&#x5316;&#x7522;&#x751F;&#x5668;</h1>
+                <p class="max-w-3xl text-sm leading-relaxed text-slate-300">
+                  &#x586B;&#x5165;&#x51FA;&#x8CA8;&#x548C;&#x91D1;&#x984D;&#x8CC7;&#x6599;&#x5F8C;&#xFF0C;&#x7CFB;&#x7D71;&#x6703;&#x4EE5; Toptec &#x5167;&#x90E8;&#x6A19;&#x6E96;&#x81EA;&#x52D5;&#x7522;&#x751F;&#x5546;&#x7528;&#x767C;&#x7968;&#x8207;&#x5305;&#x88DD;&#x6E05;&#x55AE;&#xFF0C;&#x6E1B;&#x5C11;&#x91CD;&#x8907;&#x6392;&#x7248;&#x53CA;&#x4EBA;&#x5DE5;&#x932F;&#x8AA4;&#xFF0C;&#x4E26;&#x63D0;&#x4F9B;&#x53EF;&#x5217;&#x5370;&#x8207;&#x532F;&#x51FA;&#x7684;&#x6A19;&#x6E96;&#x6A94;&#x6848;&#x3002;
+                </p>
               </div>
             </div>
+            <a
+              href="toolselect.html"
+              class="inline-flex items-center gap-2 self-start rounded-full border border-slate-600 bg-slate-900/60 px-5 py-2 text-sm font-semibold text-slate-200 shadow-lg shadow-slate-950/50 transition hover:border-blue-300 hover:text-white hover:shadow-blue-500/30"
+            >
+              <span aria-hidden="true">&larr;</span> &#x8FD4;&#x56DE;&#x5DE5;&#x5177;&#x9078;&#x55AE;
+            </a>
           </div>
-        </div>
-      </fieldset>
+        </header>
 
-      <div class="mt-8 flex justify-end items-center space-x-4">
-        <button id="findNextBtn" class="bg-blue-100 text-blue-800 font-bold py-2 px-6 rounded-lg hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition hidden">尋找下個組合 🔃</button>
-        <button id="generateBtn" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-transform transform hover:scale-105">生成文件</button>
+        <section class="rounded-3xl border border-slate-700/60 bg-slate-900/70 p-10 shadow-2xl shadow-slate-900/40 backdrop-blur">
+          <div class="space-y-10">
+            <div class="space-y-6">
+              <h2 class="text-2xl font-semibold text-white">&#x6B65;&#x9A5F; 1. &#x586B;&#x5BEB;&#x57FA;&#x672C;&#x8CC7;&#x6599;</h2>
+              <p class="text-sm leading-relaxed text-slate-300">
+                &#x4F9D;&#x5E8F;&#x8F38;&#x5165;&#x516C;&#x53F8;&#x62AC;&#x982D;&#x3001;&#x65E5;&#x671F;&#x8207;&#x91D1;&#x984D;&#xFF0C;&#x7CFB;&#x7D71;&#x6703;&#x5728;&#x7522;&#x751F;&#x767C;&#x7968;&#x6642;&#x81EA;&#x52D5;&#x5957;&#x7528;&#x76F8;&#x95DC;&#x8CC7;&#x6599;&#x3002;
+              </p>
+              <fieldset class="rounded-2xl border border-slate-700 p-6">
+                <legend class="px-2 text-lg font-semibold text-white">1. &#x6838;&#x5FC3;&#x8CC7;&#x8A0A;</legend>
+                <div class="mt-4 grid gap-6 md:grid-cols-3">
+                  <div>
+                    <label for="company" class="mb-1 block text-sm font-medium text-slate-200">&#x516C;&#x53F8;&#x62AC;&#x982D;</label>
+                    <select
+                      id="company"
+                      class="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-2 text-sm text-slate-100 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition"
+                    >
+                      <optgroup label="&#x92B7;&#x552E; (Sales)">
+                        <option value="anxin">An Xin (&#x978D;&#x946B;) (USD)</option>
+                        <option value="anxin_eur">An Xin (&#x978D;&#x946B;) (EUR)</option>
+                        <option value="winteam">WIN TEAM (&#x65FA;&#x7DF9;) (USD)</option>
+                        <option value="styleup">StyleUp (USD)</option>
+                        <option value="converge">Converge (USD)</option>
+                      </optgroup>
+                      <optgroup label="&#x63A1;&#x8CFC; (Purchase)">
+                        <option value="buy_foreign_usd">&#x6D77;&#x5916;&#x4F9B;&#x61C9;&#x5546;&#x63A1;&#x8CFC; (USD)</option>
+                        <option value="buy_foreign_eur">&#x6D77;&#x5916;&#x4F9B;&#x61C9;&#x5546;&#x63A1;&#x8CFC; (EUR)</option>
+                      </optgroup>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="date" class="mb-1 block text-sm font-medium text-slate-200">&#x767C;&#x7968;&#x65E5;&#x671F; (YYYYMMDD)</label>
+                    <input
+                      type="text"
+                      id="date"
+                      placeholder="20241206"
+                      class="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-2 text-sm text-slate-100 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition"
+                    />
+                  </div>
+                  <div>
+                    <label for="totalAmount" class="mb-1 block text-sm font-medium text-slate-200">&#x7E3D;&#x91D1;&#x984D;</label>
+                    <input
+                      type="number"
+                      id="totalAmount"
+                      placeholder="153900"
+                      class="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-2 text-sm text-slate-100 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition"
+                    />
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="space-y-6">
+              <h2 class="text-2xl font-semibold text-white">&#x6B65;&#x9A5F; 2. &#x8A2D;&#x5B9A;&#x55AE;&#x64DA;&#x8207;&#x51FA;&#x8CA8;&#x8CC7;&#x6599;</h2>
+              <p class="text-sm leading-relaxed text-slate-300">
+                &#x8ABF;&#x6574;&#x55AE;&#x64DA;&#x985E;&#x578B;&#x3001;&#x51FA;&#x8CA8;&#x5730;&#x9EDE;&#x8207;&#x8239;&#x671F;&#xFF0C;&#x7CFB;&#x7D71;&#x6703;&#x540C;&#x6B65;&#x8F38;&#x51FA;&#x5230;&#x5305;&#x88DD;&#x6E05;&#x55AE;&#x4E2D;&#x3002;
+              </p>
+              <fieldset class="rounded-2xl border border-slate-700 p-6">
+                <legend class="px-2 text-lg font-semibold text-white">2. &#x55AE;&#x64DA;&#x7D30;&#x7BC0;</legend>
+                <div class="mt-4 grid gap-6 md:grid-cols-3">
+                  <div>
+                    <label for="invoiceType" class="mb-1 block text-sm font-medium text-slate-200">&#x55AE;&#x64DA;&#x985E;&#x578B;</label>
+                    <select
+                      id="invoiceType"
+                      class="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-2 text-sm text-slate-100 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition"
+                    >
+                      <option value="COMMERCIAL INVOICE">COMMERCIAL INVOICE</option>
+                      <option value="PROFORMA INVOICE">PROFORMA INVOICE</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="invoiceNo" class="mb-1 block text-sm font-medium text-slate-200">&#x767C;&#x7968;&#x865F;&#x78BC; (&#x81EA;&#x52D5;&#x7522;&#x751F;)</label>
+                    <input
+                      type="text"
+                      id="invoiceNo"
+                      placeholder="&#x6700;&#x7D42;&#x7522;&#x751F;&#x5F8C;&#x81EA;&#x52D5;&#x5E36;&#x5165;"
+                      class="w-full rounded-lg border border-slate-700 bg-slate-900/50 px-4 py-2 text-sm text-slate-300 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition"
+                    />
+                  </div>
+                  <div>
+                    <label for="onBoardDate" class="mb-1 block text-sm font-medium text-slate-200">ON/ABOUT BOARD</label>
+                    <input
+                      type="text"
+                      id="onBoardDate"
+                      placeholder="7 DAYS AFTER SHIPMENT"
+                      class="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-2 text-sm text-slate-100 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition"
+                    />
+                  </div>
+                  <div>
+                    <label for="shippedFrom" class="mb-1 block text-sm font-medium text-slate-200">Shipped From</label>
+                    <input
+                      type="text"
+                      id="shippedFrom"
+                      placeholder="TAIPEI"
+                      class="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-2 text-sm text-slate-100 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition"
+                    />
+                  </div>
+                  <div>
+                    <label for="shippedTo" class="mb-1 block text-sm font-medium text-slate-200">Shipped To</label>
+                    <input
+                      type="text"
+                      id="shippedTo"
+                      placeholder="SINGAPORE"
+                      class="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-2 text-sm text-slate-100 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition"
+                    />
+                  </div>
+                  <div class="flex flex-col justify-end">
+                    <div class="flex flex-wrap items-center gap-5">
+                      <label class="inline-flex items-center gap-2 text-sm text-slate-200">
+                        <input
+                          id="date-adjust-checkbox"
+                          type="checkbox"
+                          class="h-4 w-4 rounded border-slate-600 bg-slate-950/80 text-blue-500 focus:ring-blue-500"
+                          checked
+                        />
+                        &#x81EA;&#x52D5;&#x5728;&#x767C;&#x7968;&#x865F;&#x78BC;&#x52A0; 5 &#x5929;
+                      </label>
+                      <label class="inline-flex items-center gap-2 text-sm text-slate-200 hidden" id="flexible-quantity-container">
+                        <input
+                          id="flexible-quantity-checkbox"
+                          type="checkbox"
+                          class="h-4 w-4 rounded border-slate-600 bg-slate-950/80 text-blue-500 focus:ring-blue-500"
+                        />
+                        &#x555F;&#x7528;&#x5F48;&#x6027;&#x6578;&#x91CF;
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-end gap-4">
+              <button
+                id="findNextBtn"
+                class="hidden rounded-full border border-blue-300/40 bg-blue-500/15 px-6 py-2 text-sm font-semibold text-blue-200 shadow-sm transition hover:border-blue-300 hover:bg-blue-500/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50"
+              >
+                &#x532F;&#x5165;&#x4E0B;&#x4E00;&#x7D44;&#x8CC7;&#x6599;
+              </button>
+              <button
+                id="generateBtn"
+                class="rounded-full bg-blue-500 px-8 py-3 text-sm font-semibold text-white shadow-xl shadow-blue-500/30 transition hover:bg-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/60"
+              >
+                &#x7522;&#x751F;&#x767C;&#x7968;&#x8207;&#x5305;&#x88DD;&#x55AE;
+              </button>
+            </div>
+            <div id="status" class="text-center text-sm font-medium text-rose-400"></div>
+          </div>
+        </section>
+
+        <section id="invoice-wrapper" class="hidden space-y-6">
+          <div class="rounded-3xl border border-slate-700/60 bg-slate-900/70 p-8 shadow-2xl shadow-slate-900/35 backdrop-blur">
+            <div class="invoice-box" id="invoice-preview"></div>
+          </div>
+          <div class="no-print flex flex-wrap justify-center gap-3">
+            <button
+              id="printBtn"
+              class="rounded-full border border-slate-600 bg-slate-800 px-5 py-2 text-sm font-semibold text-white shadow-md transition hover:border-slate-400 hover:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/50"
+            >
+              &#x5217;&#x5370; / &#x532F;&#x51FA; PDF
+            </button>
+            <button
+              id="packingListBtn"
+              class="rounded-full border border-purple-300/60 bg-purple-500 px-5 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-purple-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-300/60"
+            >
+              &#x7522;&#x751F;&#x5305;&#x88DD;&#x6E05;&#x55AE;
+            </button>
+          </div>
+        </section>
       </div>
-      <div id="status" class="mt-4 text-center"></div>
-    </div>
+    </main>
 
-    <div id="invoice-wrapper" class="hidden">
-      <div class="bg-white p-8 rounded-xl shadow-lg invoice-box" id="invoice-preview"></div>
-      <div class="mt-6 text-center space-x-2 md:space-x-4 no-print flex flex-wrap justify-center gap-2">
-        <button id="printBtn" class="bg-gray-700 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-800">列印</button>
-        <button id="packingListBtn" class="bg-purple-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-purple-700">產生裝箱單</button>
-      </div>
-    </div>
-  </div>
+    <div id="packingListModal" class="modal-backdrop hidden"></div>
 
-  <!-- Modal for Packing List -->
-  <div id="packingListModal" class="modal-backdrop hidden"></div>
-    </div>
-    <script>
-      (function () {
-        const ACCESS_STORAGE_KEY = 'toptec-toolkit-access';
-        const ACCESS_HASH = '225db660eb967a2f8b04e9380faea8d699d0f6ce64aba32559b4999cd3f24aef';
-        const overlay = document.getElementById('access-gate');
-        const accessForm = document.getElementById('access-form');
-        const accessInput = document.getElementById('access-code');
-        const accessError = document.getElementById('access-error');
-        const toolkitApp = document.getElementById('toolkit-app');
-        const stylesheet = document.getElementById('toolkit-stylesheet');
-        let assetsLoaded = false;
-
-        const toHex = (buffer) => Array.from(new Uint8Array(buffer)).map((b) => b.toString(16).padStart(2, '0')).join('');
-
-        const hashString = async (value) => {
-          if (!window.crypto?.subtle) {
-            throw new Error('no-crypto');
-          }
-          const encoded = new TextEncoder().encode(value.trim());
-          const digest = await crypto.subtle.digest('SHA-256', encoded);
-          return toHex(digest);
-        };
-
-        const loadToolkitAssets = () => {
-          if (assetsLoaded) return;
-          assetsLoaded = true;
-          if (stylesheet) {
-            stylesheet.media = 'all';
-          }
-          const script = document.createElement('script');
-          script.src = '../assets/internal/invoice.js';
-          script.defer = true;
-          document.body.appendChild(script);
-        };
-
-        const unlockApp = () => {
-          overlay.remove();
-          toolkitApp.hidden = false;
-          loadToolkitAssets();
-        };
-
-        const storedHash = localStorage.getItem(ACCESS_STORAGE_KEY);
-        if (storedHash && storedHash === ACCESS_HASH) {
-          unlockApp();
-        }
-
-        accessForm?.addEventListener('submit', async (event) => {
-          event.preventDefault();
-          accessError.classList.add('hidden');
-          accessError.textContent = '';
-          try {
-            const hashedInput = await hashString(accessInput.value);
-            if (hashedInput === ACCESS_HASH) {
-              localStorage.setItem(ACCESS_STORAGE_KEY, ACCESS_HASH);
-              unlockApp();
-            } else {
-              accessError.textContent = '存取碼錯誤，請再試一次。';
-              accessError.classList.remove('hidden');
-              accessInput.focus();
-            }
-          } catch (error) {
-            accessError.textContent = error.message === 'no-crypto'
-              ? '此瀏覽器不支援加密功能，請改用較新的瀏覽器。'
-              : '系統錯誤，請重新嘗試。';
-            accessError.classList.remove('hidden');
-          }
-        });
-      })();
-    </script>
+    <script defer src="../assets/internal/invoice.js"></script>
   </body>
 </html>
-
-

@@ -3,8 +3,13 @@
   const ACCESS_HASH = '225db660eb967a2f8b04e9380faea8d699d0f6ce64aba32559b4999cd3f24aef';
 
   const API_KEY_STORAGE_KEY = 'toptec-translation-api-key';
-  const DEFAULT_GEMINI_KEY =
-    typeof window.TOPTEC_GEMINI_KEY === 'string' ? window.TOPTEC_GEMINI_KEY.trim() : '';
+  const DEEPL_API_URL = '/.netlify/functions/translate';
+  const DEEPL_TARGET_LANG = 'ZH-TW';
+  const FALLBACK_TRANSLATE_URL = 'https://api.mymemory.translated.net/get';
+  const FALLBACK_SOURCE_LANG = 'EN';
+  const FALLBACK_DELAY_MS = 160;
+  const FALLBACK_CONTACT_EMAIL = 'support@toptecglobal.com';
+  const SERVER_MANAGED_API_KEY = true;
 
   const FILE_SIZE_LIMIT = 15 * 1024 * 1024;
   const TEXT_EXTENSIONS = new Set(['txt', 'text', 'md', 'markdown', 'csv', 'tsv', 'json', 'html', 'htm']);
@@ -132,6 +137,78 @@
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
+    }
+
+    const decodeHtmlEntities = (() => {
+      let parser;
+      return (value) => {
+        if (typeof value !== 'string' || !value) {
+          return value || '';
+        }
+        if (!parser) {
+          parser = document.createElement('textarea');
+        }
+        parser.innerHTML = value;
+        return parser.value;
+      };
+    })();
+
+    const sleep = (ms) =>
+      new Promise((resolve) => {
+        setTimeout(resolve, ms);
+      });
+
+    const isLikelyNetworkError = (error) => {
+      if (!error) return false;
+      if (error instanceof TypeError) return true;
+      const message = String(error?.message || '').toLowerCase();
+      return (
+        message.includes('network') ||
+        message.includes('fetch') ||
+        message.includes('cors') ||
+        message.includes('failed to fetch') ||
+        message.includes('connection')
+      );
+    };
+
+    async function callFallbackTranslator(segments) {
+      if (!Array.isArray(segments) || !segments.length) {
+        return [];
+      }
+      const results = [];
+      for (let index = 0; index < segments.length; index += 1) {
+        const segment = segments[index];
+        const params = new URLSearchParams();
+        params.append('q', segment);
+        params.append('langpair', `${FALLBACK_SOURCE_LANG}|${DEEPL_TARGET_LANG}`);
+        params.append('de', FALLBACK_CONTACT_EMAIL);
+
+        const response = await fetch(`${FALLBACK_TRANSLATE_URL}?${params.toString()}`, {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Backup translator error (${response.status})`);
+        }
+        const data = await response.json();
+        if (data?.responseStatus !== 200 || typeof data?.responseData?.translatedText !== 'string') {
+          const detail = typeof data?.responseDetails === 'string' && data.responseDetails.trim();
+          throw new Error(detail || 'Backup translation service returned an empty response.');
+        }
+
+        results.push({
+          original: segment,
+          translation: decodeHtmlEntities(data.responseData.translatedText),
+        });
+
+        if (segments.length > 1 && index < segments.length - 1) {
+          await sleep(FALLBACK_DELAY_MS);
+        }
+      }
+      return results;
     }
 
     function loadScriptOnce(url, resolver, label) {
@@ -326,45 +403,6 @@
       throw new Error('Unsupported file type. Please upload a .docx, .pdf, or plain-text file.');
     }
 
-    function buildPrompt(segments) {
-      const numbered = segments.map((block, index) => `Block ${index + 1}:\n${block}`).join('\n\n');
-      return `
-You are a professional International Business & Trade Contract Translator, fluent in English and Traditional Chinese, with expertise in law, finance, international trade agreements, payment instruments (DLC, SBLC, MT103), NCNDA, and corporate contracts.
-
-GOAL
-Translate the user-provided English document into Traditional Chinese with maximal legal/financial accuracy, then respond ONLY with valid JSON following the schema:
-{
-  "pairs": [
-    { "original": "...", "translation": "..." }
-  ]
-}
-
-RULES
-1. Keep one source block to one translated block. Do NOT merge or split.
-2. Preserve numbering, headings, bullet symbols, punctuation, and emphasis markers by mirroring them in text form.
-3. Maintain all numbers, dates, currencies, and units as in the original text.
-4. For the first occurrence of each legal/financial term, present it as "Chinese Term (English Term)"; subsequent occurrences may use the Chinese term alone when unambiguous.
-5. Company, person, and bank names remain in English.
-6. Tone must remain formal and precise.
-7. Return JSON only. Do not include markdown, code fences, or explanations.
-
-ORIGINAL BLOCKS
-${numbered}
-`;
-    }
-
-    function sanitizeModelResponse(raw) {
-      if (!raw) return '';
-      let cleaned = raw.trim();
-      cleaned = cleaned.replace(/```json\s*/gi, '').replace(/```/g, '');
-      const start = cleaned.indexOf('{');
-      const end = cleaned.lastIndexOf('}');
-      if (start === -1 || end === -1 || end <= start) {
-        throw new Error('Unable to parse the JSON response from the translation service. Please try again later.');
-      }
-      return cleaned.slice(start, end + 1);
-    }
-
     function renderPreview(pairs) {
       if (!elements.previewBody) return;
       elements.previewBody.innerHTML = '';
@@ -375,11 +413,11 @@ ${numbered}
         row.className = 'align-top';
 
         const originalCell = document.createElement('td');
-        originalCell.className = 'whitespace-pre-wrap px-4 py-3 text-slate-700';
+        originalCell.className = 'whitespace-pre-wrap px-4 py-3 text-slate-200';
         originalCell.textContent = original || '';
 
         const translationCell = document.createElement('td');
-        translationCell.className = 'whitespace-pre-wrap px-4 py-3 text-slate-900';
+        translationCell.className = 'whitespace-pre-wrap px-4 py-3 text-slate-100';
         translationCell.textContent = translation || '';
 
         row.append(originalCell, translationCell);
@@ -544,23 +582,31 @@ ${numbered}
     }
 
     function loadStoredApiKey() {
-      if (!elements.apiKeyInput || !elements.apiKeyStatus) return;
+      if (!elements.apiKeyStatus) return;
+      if (SERVER_MANAGED_API_KEY) {
+        elements.apiKeyStatus.textContent = 'DeepL access handled by secure server proxy.';
+        if (elements.apiKeyInput) {
+          elements.apiKeyInput.value = '';
+          elements.apiKeyInput.disabled = true;
+        }
+        if (elements.saveApiKeyBtn) elements.saveApiKeyBtn.disabled = true;
+        if (elements.clearApiKeyBtn) elements.clearApiKeyBtn.disabled = true;
+        return;
+      }
+      if (!elements.apiKeyInput) return;
       const storedKey = (localStorage.getItem(API_KEY_STORAGE_KEY) || '').trim();
       if (storedKey) {
         elements.apiKeyInput.value = storedKey;
         elements.apiKeyStatus.textContent = 'API key loaded from browser storage.';
-        return;
+      } else {
+        elements.apiKeyStatus.textContent = 'No API key configured.';
       }
-      if (DEFAULT_GEMINI_KEY) {
-        elements.apiKeyInput.value = DEFAULT_GEMINI_KEY;
-        localStorage.setItem(API_KEY_STORAGE_KEY, DEFAULT_GEMINI_KEY);
-        elements.apiKeyStatus.textContent = 'Loaded default company API key.';
-        return;
-      }
-      elements.apiKeyStatus.textContent = 'No API key configured.';
     }
 
     function ensureApiKey() {
+      if (SERVER_MANAGED_API_KEY) {
+        return 'proxy-managed';
+      }
       const value = (elements.apiKeyInput?.value || '').trim();
       if (value) return value;
       const stored = (localStorage.getItem(API_KEY_STORAGE_KEY) || '').trim();
@@ -572,72 +618,76 @@ ${numbered}
       return '';
     }
 
-    async function callGemini(apiKey, segments) {
-      const prompt = buildPrompt(segments);
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(apiKey)}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [
-              {
-                role: 'user',
-                parts: [{ text: prompt }],
-              },
-            ],
-          }),
+    async function callDeepL(_apiKey, segments) {
+      if (!Array.isArray(segments) || segments.length === 0) {
+        return [];
+      }
+
+      const response = await fetch(DEEPL_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({
+          segments,
+          targetLang: DEEPL_TARGET_LANG,
+          options: {
+            splitSentences: 'nonewlines',
+            preserveFormatting: '1',
+            formality: 'prefer_more',
+          },
+        }),
+      });
 
       if (!response.ok) {
-        let message = `Gemini API error (${response.status})`;
+        let message = `Translation proxy error (${response.status})`;
         try {
           const errJson = await response.json();
-          if (errJson?.error?.message) {
+          if (errJson?.message) {
+            message = errJson.message;
+          } else if (errJson?.error?.message) {
             message = errJson.error.message;
+          } else {
+            message = JSON.stringify(errJson);
           }
         } catch {
-          // ignore parse failure
+          try {
+            message = await response.text();
+          } catch {
+            // ignore parse failure
+          }
         }
         throw new Error(message);
       }
 
       const data = await response.json();
-      const text =
-        data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-        data?.candidates?.[0]?.output ||
-        '';
-      if (!text) {
-        throw new Error('No translation text was returned by the API. Please try again.');
+      if (!Array.isArray(data?.translations) || data.translations.length === 0) {
+        throw new Error('DeepL response did not contain any translations. Please try again.');
       }
 
-      const payload = JSON.parse(sanitizeModelResponse(text));
-      if (!Array.isArray(payload.pairs) || !payload.pairs.length) {
-        throw new Error('Invalid translation payload received. Please verify the source content or try again.');
-      }
-
-      return payload.pairs.map((pair, index) => ({
-        original: pair.original ?? segments[index] ?? '',
-        translation: pair.translation ?? '',
+      return data.translations.map((item, index) => ({
+        original: segments[index] ?? '',
+        translation: item?.text ?? '',
       }));
     }
 
-    elements.saveApiKeyBtn?.addEventListener('click', () => {
-      const value = (elements.apiKeyInput?.value || '').trim();
-      if (!value) {
-        elements.apiKeyStatus.textContent = 'Please enter an API key first.';
-        return;
-      }
-      localStorage.setItem(API_KEY_STORAGE_KEY, value);
-      elements.apiKeyStatus.textContent = 'API key saved to the browser.';
-    });
+    if (!SERVER_MANAGED_API_KEY) {
+      elements.saveApiKeyBtn?.addEventListener('click', () => {
+        const value = (elements.apiKeyInput?.value || '').trim();
+        if (!value) {
+          elements.apiKeyStatus.textContent = 'Please enter an API key first.';
+          return;
+        }
+        localStorage.setItem(API_KEY_STORAGE_KEY, value);
+        elements.apiKeyStatus.textContent = 'API key saved to the browser.';
+      });
 
-    elements.clearApiKeyBtn?.addEventListener('click', () => {
-      localStorage.removeItem(API_KEY_STORAGE_KEY);
-      if (elements.apiKeyInput) elements.apiKeyInput.value = '';
-      elements.apiKeyStatus.textContent = 'Saved API key has been removed.';
-    });
+      elements.clearApiKeyBtn?.addEventListener('click', () => {
+        localStorage.removeItem(API_KEY_STORAGE_KEY);
+        if (elements.apiKeyInput) elements.apiKeyInput.value = '';
+        elements.apiKeyStatus.textContent = 'Saved API key has been removed.';
+      });
+    }
 
     elements.analyzeButton?.addEventListener('click', () => {
       const segments = parseSegments();
@@ -650,8 +700,8 @@ ${numbered}
 
     elements.translateButton?.addEventListener('click', async () => {
       const apiKey = ensureApiKey();
-      if (!apiKey) {
-        showFeedback('Please enter and save a Gemini API key first.', true);
+      if (!SERVER_MANAGED_API_KEY && !apiKey) {
+        showFeedback('Please enter and save a DeepL API key first.', true);
         return;
       }
 
@@ -670,7 +720,40 @@ ${numbered}
       elements.resultSection?.classList.add('hidden');
 
       try {
-        const pairs = await callGemini(apiKey, segments);
+        let pairs = [];
+        let usedFallback = false;
+
+        try {
+          pairs = await callDeepL(apiKey, segments);
+        } catch (primaryError) {
+          console.error(primaryError);
+          if (isLikelyNetworkError(primaryError)) {
+            try {
+              pairs = await callFallbackTranslator(segments);
+              usedFallback = true;
+            } catch (fallbackError) {
+              console.error(fallbackError);
+              showFeedback(
+                fallbackError.message ||
+                  'DeepL service is unreachable and the backup translator also failed. Please try again later.',
+                true
+              );
+              elements.progressPanel?.classList.add('hidden');
+              return;
+            }
+          } else {
+            showFeedback(primaryError.message || 'Translation failed. Please try again later.', true);
+            elements.progressPanel?.classList.add('hidden');
+            return;
+          }
+        }
+
+        if (!Array.isArray(pairs) || !pairs.length) {
+          showFeedback('Translation service returned no content. Please verify your input and try again.', true);
+          elements.progressPanel?.classList.add('hidden');
+          return;
+        }
+
         state.translationPairs = pairs;
 
         const timestamp = new Date();
@@ -685,7 +768,10 @@ ${numbered}
 
         elements.progressPanel?.classList.add('hidden');
         elements.resultSection?.classList.remove('hidden');
-        showFeedback('Translation complete. Files are ready.');
+        const successMessage = usedFallback
+          ? 'DeepL connection unavailable. Backup translator used—please review the output carefully.'
+          : 'Translation complete. Files are ready.';
+        showFeedback(successMessage);
       } catch (error) {
         console.error(error);
         showFeedback(error.message || 'Translation failed. Please try again later.', true);

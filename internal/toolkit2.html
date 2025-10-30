@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
   <head>
     <meta charset="UTF-8" />
@@ -6,191 +6,193 @@
     <title>Toptec Translation Toolkit</title>
     <meta name="robots" content="noindex, nofollow" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+  </head>
+  <body class="min-h-screen bg-slate-950 text-slate-100 antialiased">
+    <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <div class="h-full w-full bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950"></div>
+      <div class="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-blue-500/20 to-transparent blur-3xl"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(14,165,233,0.18),transparent_55%)]"></div>
+    </div>
 
-    <main id="translator-app">
-      <div class="max-w-6xl mx-auto px-6 py-14">
-        <header class="mb-10 space-y-2">
-          <div class="flex items-center justify-between flex-wrap gap-3">
-            <h1 class="text-4xl font-bold text-slate-900">Toptec 契約翻譯工具</h1>
+    <main id="translator-app" hidden class="relative z-10">
+      <div class="mx-auto max-w-6xl space-y-12 px-6 py-16">
+        <header class="space-y-6 rounded-3xl border border-slate-700/60 bg-slate-900/70 p-10 shadow-2xl shadow-slate-900/40 backdrop-blur md:text-left">
+          <div class="inline-flex items-center gap-2 rounded-full border border-blue-400/40 bg-blue-500/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-blue-200">
+            TOPTEC TRANSLATION SUITE
+          </div>
+          <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div class="space-y-4">
+              <h1 class="text-4xl font-bold tracking-tight text-white md:text-5xl">Toptec &#x6CD5;&#x898F;&#x7FFB;&#x8B6F;&#x5DE5;&#x5177;</h1>
+              <p class="max-w-2xl text-sm leading-relaxed text-slate-300">
+                &#x4E0A;&#x50B3;&#x6216;&#x8CBC;&#x4E0A;&#x6280;&#x8853;&#x3001;&#x6CD5;&#x898F;&#x3001;&#x5408;&#x7D04;&#x5167;&#x5BB9;&#xFF0C;&#x7CFB;&#x7D71;&#x6703;&#x81EA;&#x52D5;&#x5206;&#x6BB5;&#x4E26;&#x7522;&#x51FA;&#x7CBE;&#x78BA;&#x7684;&#x4E2D;&#x82F1;&#x6587;&#x5C0D;&#x7167;&#x3002;&#x6240;&#x6709;&#x8F38;&#x51FA;&#x5747;&#x4FDD;&#x6301;&#x516C;&#x53F8;&#x6A23;&#x5F0F;&#xFF0C;&#x4FBF;&#x65BC;&#x4E0B;&#x8F09; Word &#x53CA; PDF &#x6A94;&#x6848;&#x4F7F;&#x7528;&#x3002;
+              </p>
+            </div>
             <a
               href="toolselect.html"
-              class="text-sm font-medium text-blue-600 hover:text-blue-700 underline decoration-dotted"
+              class="inline-flex items-center gap-2 self-center rounded-full border border-slate-600 bg-slate-900/60 px-5 py-2 text-sm font-semibold text-slate-200 shadow-lg shadow-slate-950/50 transition hover:border-blue-300 hover:text-white hover:shadow-blue-500/30"
             >
-              返回工具選單
+              <span aria-hidden="true">&larr;</span> &#x8FD4;&#x56DE;&#x5DE5;&#x5177;&#x9078;&#x55AE;
             </a>
           </div>
-          <p class="text-slate-600 leading-relaxed">
-            將英文契約段落翻譯為繁體中文，並自動產出雙語對照的 Word 與 PDF。請依序完成設定、匯入檔案或貼上原文，即可開始翻譯。
-          </p>
         </header>
 
-        <section class="grid gap-6 lg:grid-cols-3">
-          <article class="lg:col-span-1 rounded-2xl bg-white p-6 shadow border border-slate-100">
-            <h2 class="text-xl font-semibold text-slate-900">Step 1. 設定 API</h2>
-            <p class="mt-2 text-sm text-slate-600">
-              建議填入公司取得的 Google Gemini API Key，系統會將金鑰安全地儲存在瀏覽器的 localStorage。
+        <section class="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
+          <article class="rounded-3xl border border-blue-400/30 bg-slate-900/70 p-6 shadow-2xl shadow-blue-900/30 backdrop-blur">
+            <h2 class="text-lg font-semibold text-white">&#x7FFB;&#x8B6F;&#x8F38;&#x51FA;&#x898F;&#x683C;</h2>
+            <p class="mt-2 text-sm leading-relaxed text-slate-300">
+              &#x70BA;&#x4FDD;&#x8B49;&#x4EA4;&#x4ED8;&#x54C1;&#x8CEA;&#xFF0C;&#x6211;&#x5011;&#x4F9D;&#x7167;&#x4EE5;&#x4E0B;&#x6A19;&#x6E96;&#x7522;&#x51FA;&#x6A94;&#x6848;&#xFF1A;
             </p>
-            <label for="api-key" class="mt-5 block text-sm font-medium text-slate-700">Gemini API Key</label>
-            <input
-              id="api-key"
-              type="password"
-              class="mt-2 w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-              placeholder="例如：AIza..."
-            />
-            <div class="mt-4 flex items-center gap-3">
-              <button
-                id="save-api-key"
-                class="flex-1 rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              >
-                儲存金鑰
-              </button>
-              <button
-                id="clear-api-key"
-                class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300"
-              >
-                清除
-              </button>
-            </div>
-            <p id="api-key-status" class="mt-3 text-xs text-slate-500"></p>
-            <div class="mt-6 border-t border-slate-200 pt-4">
-              <h3 class="text-sm font-semibold text-slate-900">翻譯輸出規格</h3>
-              <ul class="mt-3 space-y-2 text-xs text-slate-600 list-disc list-inside">
-                <li>保留段落結構與編號，翻譯結果逐段對應。</li>
-                <li>首次出現的專有名詞會保留原文括註。</li>
-                <li>支援匯出 DOCX 與可列印的雙語 PDF。</li>
-                <li>中文字型：微軟正黑體；英文字型：Times New Roman。</li>
-              </ul>
-            </div>
+            <ul class="mt-5 space-y-3 text-sm leading-relaxed text-slate-300">
+              <li>&#x25C6; &#x4FDD;&#x7559;&#x6BB5;&#x843D;&#x7D50;&#x69CB;&#xFF0C;&#x4F7F;&#x5167;&#x5BB9;&#x53EF;&#x4EE5;&#x4E00;&#x4E00;&#x5C0D;&#x7167;&#x3002;</li>
+              <li>&#x25C6; &#x512A;&#x5148;&#x4FDD;&#x8B77;&#x5546;&#x696D;&#x6A5F;&#x5BC6;&#x8207;&#x500B;&#x8CC7;&#xFF0C;&#x907F;&#x514D;&#x5916;&#x6D41;&#x81F3;&#x7B2C;&#x4E09;&#x65B9;&#x5E73;&#x53F0;&#x3002;</li>
+              <li>&#x25C6; &#x63D0;&#x4F9B; DOCX &#x8207; PDF &#x96D9;&#x683C;&#x5F0F;&#xFF0C;&#x4FBF;&#x65BC;&#x5217;&#x5370;&#x548C;&#x5167;&#x90E8;&#x7C3D;&#x6838;&#x3002;</li>
+              <li>&#x25C6; &#x4E2D;&#x6587;&#x4F7F;&#x7528;&#x516C;&#x53F8;&#x88FD;&#x5F0F;&#x5B57;&#x9AD4;&#xFF0C;&#x82F1;&#x6587;&#x7D71;&#x4E00;&#x70BA; Times New Roman&#x3002;</li>
+            </ul>
           </article>
 
-          <article class="lg:col-span-2 rounded-2xl bg-white p-6 shadow border border-slate-100">
-            <h2 class="text-xl font-semibold text-slate-900">Step 2. 準備翻譯內容</h2>
-            <p class="mt-2 text-sm text-slate-600">
-              每個段落請以空白行分隔；段落內的換行會原樣保留。支援上傳 Word（.docx）、PDF 以及純文字檔，若文件含有大量表格或圖片，建議先整理為純文字後再貼上。
+          <article class="rounded-3xl border border-slate-700/60 bg-slate-900/70 p-8 shadow-2xl shadow-slate-900/35 backdrop-blur">
+            <h2 class="text-2xl font-semibold text-white">&#x6B65;&#x9A5F; 1. &#x6E96;&#x5099;&#x5F85;&#x7FFB;&#x8B6F;&#x5167;&#x5BB9;</h2>
+            <p class="mt-3 text-sm leading-relaxed text-slate-300">
+              &#x53EF;&#x76F4;&#x63A5;&#x8CBC;&#x4E0A;&#x539F;&#x59CB;&#x6BB5;&#x843D;&#x6216;&#x4E0A;&#x50B3;&#x6A94;&#x6848;&#xFF0C;&#x7CFB;&#x7D71;&#x6703;&#x5206;&#x6BB5;&#x4E26;&#x63D0;&#x4F9B;&#x9810;&#x6AA2;&#xFF0C;&#x5354;&#x52A9;&#x4F60;&#x63A7;&#x5236;&#x7FFB;&#x8B6F;&#x6BB5;&#x843D;&#x6578;&#x91CF;&#x3002;
             </p>
-            <div class="mt-6 grid gap-5 md:grid-cols-2">
+
+            <div class="mt-7 grid gap-6 md:grid-cols-2">
               <div>
-                <label for="doc-title" class="block text-sm font-medium text-slate-700">文件標題</label>
+                <label for="doc-title" class="block text-sm font-medium text-slate-200">&#x6587;&#x4EF6;&#x6A19;&#x984C;</label>
                 <input
                   id="doc-title"
                   type="text"
                   maxlength="100"
-                  class="mt-2 w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  placeholder="例如：Mutual NDA"
+                  class="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-sm text-slate-100 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition"
+                  placeholder="Mutual NDA"
                 />
               </div>
               <div>
-                <label for="doc-date" class="block text-sm font-medium text-slate-700">文件日期（選填）</label>
+                <label for="doc-date" class="block text-sm font-medium text-slate-200">&#x6587;&#x4EF6;&#x65E5;&#x671F; (&#x9078;&#x586B;)</label>
                 <input
                   id="doc-date"
                   type="text"
-                  class="mt-2 w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  placeholder="例如：2024-12-08"
+                  class="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-sm text-slate-100 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition"
+                  placeholder="2024/05/18"
                 />
               </div>
             </div>
+
             <div class="mt-6">
-              <label for="source-file" class="block text-sm font-medium text-slate-700">匯入原文檔案（選填）</label>
-              <div class="mt-2 flex items-center justify-between rounded-lg border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-600">
-                <span>支援 .docx、.pdf、.txt、.md 等檔案</span>
-                <input
-                  id="source-file"
-                  type="file"
-                  accept=".docx,.pdf,.txt,.md,.markdown,.csv,.tsv,.json,.html,.htm"
-                  class="max-w-[220px] text-sm file:mr-3 file:rounded-md file:border-0 file:bg-blue-600 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-700 focus:outline-none"
-                />
+              <label for="source-text" class="block text-sm font-medium text-slate-200">&#x5F85;&#x7FFB;&#x8B6F;&#x6BB5;&#x843D;</label>
+              <textarea
+                id="source-text"
+                rows="10"
+                class="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-3 text-sm text-slate-100 leading-relaxed shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition"
+                placeholder="&#x8ACB;&#x4EE5;&#x7A7A;&#x884C;&#x5206;&#x9694;&#x6BCF;&#x500B;&#x6BB5;&#x843D;&#xFF0C;&#x8CBC;&#x4E0A;&#x539F;&#x59CB;&#x82F1;&#x6587;&#x6216;&#x96DC;&#x8A9E;&#x5167;&#x5BB9;&#x3002;"
+              ></textarea>
+              <div class="mt-2 flex flex-wrap items-center gap-3 text-sm text-slate-400">
+                <label
+                  for="source-file"
+                  class="inline-flex cursor-pointer items-center gap-2 rounded-full border border-dashed border-slate-600 px-4 py-2 text-xs font-medium text-slate-300 transition hover:border-blue-400 hover:text-blue-300"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4" />
+                  </svg>
+                  &#x4E0A;&#x50B3;&#x6A94;&#x6848; (TXT / DOCX / PDF)
+                </label>
+                <input id="source-file" type="file" accept=".txt,.text,.md,.markdown,.csv,.tsv,.json,.html,.htm,.docx,.pdf" class="hidden" />
+                <span id="file-status" class="text-xs text-slate-400"></span>
               </div>
-              <p id="file-status" class="mt-2 text-xs text-slate-500"></p>
             </div>
-            <label for="source-text" class="mt-6 block text-sm font-medium text-slate-700">契約內容</label>
-            <textarea
-              id="source-text"
-              class="mt-2 h-64 w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 text-sm font-mono leading-relaxed text-slate-800 shadow-sm focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
-              placeholder="貼上或編輯需要翻譯的契約段落..."
-            ></textarea>
-            <div class="mt-4 flex flex-wrap items-center gap-3">
+
+            <div class="mt-8 flex flex-wrap items-center gap-3">
               <button
                 id="analyze-button"
-                class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300"
+                class="inline-flex items-center gap-2 rounded-full border border-slate-600 bg-slate-900/60 px-5 py-2 text-sm font-semibold text-slate-200 shadow-sm transition hover:border-blue-400 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/60"
               >
-                預覽段落
+                &#x6BB5;&#x843D;&#x9810;&#x6AA2;
               </button>
               <button
                 id="translate-button"
-                class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                class="inline-flex items-center gap-2 rounded-full bg-blue-500 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition hover:bg-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/60"
               >
-                開始翻譯
+                &#x958B;&#x59CB;&#x7FFB;&#x8B6F;
               </button>
-              <span id="segment-count" class="text-xs text-slate-500"></span>
+              <span id="segment-count" class="text-sm font-medium text-blue-300"></span>
             </div>
-            <p id="action-feedback" class="mt-3 text-xs text-rose-500"></p>
+
+            <p id="action-feedback" class="mt-4 text-sm font-medium text-emerald-400"></p>
           </article>
         </section>
 
-        <section id="progress-panel" class="mt-10 hidden">
-          <div class="rounded-2xl border border-blue-100 bg-blue-50 p-6 shadow-sm">
+        <section id="progress-panel" class="hidden">
+          <div class="rounded-3xl border border-blue-400/40 bg-blue-500/15 p-6 shadow-xl shadow-blue-900/20 backdrop-blur">
             <div class="flex items-center gap-4">
-              <svg class="h-8 w-8 animate-spin text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <svg class="h-9 w-9 animate-spin text-blue-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
               </svg>
               <div>
-                <p class="text-sm font-semibold text-blue-900">翻譯處理中…</p>
-                <p class="text-xs text-blue-700 mt-1">正在呼叫 Gemini API 並整理雙語內容，請稍候。</p>
+                <p class="text-sm font-semibold text-blue-100">&#x7FFB;&#x8B6F;&#x8655;&#x7406;&#x4E2D;</p>
+                <p class="mt-1 text-xs text-blue-200">&#x6B63;&#x901A;&#x904E; DeepL &#x532F;&#x51FA;&#x4E2D;&#x82F1;&#x96D9;&#x8A9E;&#x5167;&#x5BB9;&#xFF0C;&#x8ACB;&#x8010;&#x5FC3;&#x7B49;&#x5019;&#x3002;</p>
               </div>
             </div>
           </div>
         </section>
 
-        <section id="result-section" class="mt-12 hidden">
-          <div class="rounded-2xl bg-white p-6 shadow border border-emerald-100">
-            <div class="flex flex-wrap items-center gap-4">
-              <div class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+        <section id="result-section" class="hidden">
+          <div class="rounded-3xl border border-emerald-400/40 bg-emerald-500/15 p-6 text-slate-100 shadow-2xl shadow-emerald-900/30 backdrop-blur">
+            <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div class="flex items-center gap-3">
+                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-400/25 text-emerald-100">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-lg font-semibold text-white">&#x7FFB;&#x8B6F;&#x5B8C;&#x6210;</p>
+                  <p class="mt-1 text-sm text-emerald-100">&#x6B64;&#x6642;&#x53EF;&#x4E0B;&#x8F09; Word / PDF &#x6A94;&#x6848;&#xFF0C;&#x4E26;&#x6AA2;&#x8996;&#x9810;&#x89BD;&#x8868;&#x683C;&#x3002;</p>
+                </div>
               </div>
-              <div>
-                <p class="text-lg font-semibold text-emerald-700">翻譯完成</p>
-                <p class="text-sm text-emerald-600 mt-1">您可以下載 Word 檔或使用瀏覽器列印為 PDF。</p>
+              <div class="flex flex-wrap items-center gap-3">
+                <button
+                  id="download-docx"
+                  class="inline-flex items-center gap-2 rounded-full bg-blue-500 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition hover:bg-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300/60 disabled:cursor-not-allowed disabled:opacity-50"
+                  disabled
+                >
+                  &#x4E0B;&#x8F09; Word (.docx)
+                </button>
+                <button
+                  id="download-pdf"
+                  class="inline-flex items-center gap-2 rounded-full border border-emerald-300 px-5 py-2 text-sm font-semibold text-emerald-100 transition hover:border-emerald-200 hover:text-emerald-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200/60 disabled:cursor-not-allowed disabled:opacity-50"
+                  disabled
+                >
+                  &#x958B;&#x555F;&#x5217;&#x5370; / PDF
+                </button>
+                <button
+                  id="reset-session"
+                  class="inline-flex items-center gap-2 rounded-full border border-slate-600 px-5 py-2 text-sm font-medium text-slate-200 transition hover:border-slate-400 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400/60"
+                >
+                  &#x91CD;&#x65B0;&#x958B;&#x59CB;
+                </button>
               </div>
             </div>
 
-            <div class="mt-6 flex flex-wrap items-center gap-3">
-              <button
-                id="download-docx"
-                class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
-                disabled
-              >
-                下載 Word (.docx)
-              </button>
-              <button
-                id="download-pdf"
-                class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
-                disabled
-              >
-                列印 / 匯出 PDF
-              </button>
-              <button
-                id="reset-session"
-                class="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300"
-              >
-                重新開始
-              </button>
-            </div>
-
-            <div class="mt-8">
-              <h3 class="text-sm font-semibold text-slate-900 uppercase tracking-wider">翻譯概覽（最多 10 段）</h3>
-              <div class="mt-3 overflow-hidden rounded-xl border border-slate-200">
-                <table class="min-w-full divide-y divide-slate-200 text-sm">
-                  <thead class="bg-slate-50">
+            <div class="mt-8 rounded-2xl border border-slate-600/70 bg-slate-950/60">
+              <div class="flex items-center justify-between gap-3 border-b border-slate-700 px-5 py-3">
+                <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-200">&#x7FFB;&#x8B6F;&#x9810;&#x89BD; (10 &#x884C;&#x4EE5;&#x5167;)</h3>
+                <p class="text-xs text-slate-400">&#x5FEB;&#x901F;&#x6AA2;&#x67E5;&#x6BB5;&#x843D;&#x9806;&#x5E8F;&#x8207;&#x8A9E;&#x5883;&#x3002;</p>
+              </div>
+              <div class="max-h-[420px] overflow-auto">
+                <table class="min-w-full divide-y divide-slate-700 text-sm leading-relaxed text-slate-200">
+                  <thead class="bg-slate-900/60">
                     <tr>
-                      <th class="px-4 py-3 text-left font-semibold text-slate-700">原文</th>
-                      <th class="px-4 py-3 text-left font-semibold text-slate-700">翻譯</th>
+                      <th class="px-4 py-3 text-left font-semibold text-slate-200">&#x539F;&#x6587;</th>
+                      <th class="px-4 py-3 text-left font-semibold text-slate-200">&#x8B6F;&#x6587;</th>
                     </tr>
                   </thead>
-                  <tbody id="preview-body" class="divide-y divide-slate-200 bg-white"></tbody>
+                  <tbody id="preview-body" class="divide-y divide-slate-800 bg-slate-950/30"></tbody>
                 </table>
               </div>
             </div>
@@ -198,11 +200,18 @@
         </section>
 
         <div id="preview-html-container" class="hidden"></div>
+
+        <div class="hidden" aria-hidden="true">
+          <label for="api-key">DeepL API Key</label>
+          <input id="api-key" type="password" />
+          <button id="save-api-key" type="button">Save</button>
+          <button id="clear-api-key" type="button">Clear</button>
+          <p id="api-key-status" aria-live="polite"></p>
+        </div>
       </div>
     </main>
 
     <script defer src="https://unpkg.com/mammoth@1.6.0/mammoth.browser.min.js" crossorigin="anonymous"></script>
-    <script defer src="../assets/internal/gemini-key.js"></script>
     <script defer src="../assets/internal/translator.js"></script>
   </body>
 </html>
