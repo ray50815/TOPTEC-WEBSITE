@@ -6,6 +6,10 @@ const allowedOrigins = new Set([
   'https://toptecglobal.com',
 ]);
 
+const targetLanguageOverrides = {
+  'ZH-TW': 'ZH',
+};
+
 const ok = (body, status = 200, originHeader = '*') => ({
   statusCode: status,
   headers: {
@@ -62,8 +66,15 @@ exports.handler = async (event) => {
     return errorResponse('Missing translation segments.', 400, originHeader);
   }
 
+  const normalizedTarget = String(targetLang || '').trim().toUpperCase();
+  const deeplTarget =
+    targetLanguageOverrides[normalizedTarget] || normalizedTarget || targetLanguageOverrides['ZH-TW'];
+  if (!deeplTarget) {
+    return errorResponse('Unable to resolve target language.', 400, originHeader);
+  }
+
   const params = new URLSearchParams();
-  params.append('target_lang', targetLang);
+  params.append('target_lang', deeplTarget);
   params.append('split_sentences', options.splitSentences ?? 'nonewlines');
   params.append('preserve_formatting', options.preserveFormatting ?? '1');
   params.append('formality', options.formality ?? 'prefer_more');
