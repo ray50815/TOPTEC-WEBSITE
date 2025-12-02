@@ -57,7 +57,7 @@
         <a href="index.html" class="site-logo" aria-label="Toptec Global logo">
           <img src="assets/img/toptec-logo.svg" alt="Toptec Global wordmark" />
         </a>
-        <button class="mobile-toggle" aria-expanded="false" aria-controls="primary-navigation">
+        <button class="mobile-toggle site-header__toggle" aria-expanded="false" aria-controls="primary-navigation">
           <span></span>
           <span></span>
           <span></span>
@@ -70,7 +70,12 @@
           <a href="case-studies.html" data-page="cases" data-i18n="nav.cases">Trade Case Studies</a>
           <a href="contact.html" data-page="contact" data-i18n="nav.contactMenu">Contact</a>
         </nav>
-        <a class="nav-cta" href="contact.html#contact-form" data-i18n="nav.contactCta">Request briefing</a>
+        <div class="nav-actions">
+          <a class="nav-cta" href="contact.html#contact-form" data-i18n="nav.contactCta">Request a DFM review</a>
+          <div class="language-switcher" aria-label="Language toggle">
+            <button type="button" data-lang-toggle aria-pressed="false">繁中</button>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -237,6 +242,11 @@
     <script src="assets/js/main.js" defer></script>
   </body>
 </html>
+
+
+
+
+
 
 
 
