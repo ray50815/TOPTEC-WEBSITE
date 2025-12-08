@@ -335,6 +335,142 @@
       return results;
     }
 
+    async function callDeepL(_apiKey, segments) {
+      if (!Array.isArray(segments) || segments.length === 0) {
+        return [];
+      }
+
+      const response = await fetch(DEEPL_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          segments,
+          targetLang: DEEPL_TARGET_LANG,
+          options: {
+            splitSentences: 'nonewlines',
+            preserveFormatting: '1',
+            formality: 'prefer_more',
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        let message = `Translation proxy error (${response.status})`;
+        try {
+          const errJson = await response.json();
+          if (errJson?.message) {
+            message = errJson.message;
+          } else if (errJson?.error?.message) {
+            message = errJson.error.message;
+          } else {
+            message = JSON.stringify(errJson);
+          }
+        } catch {
+          try {
+            message = await response.text();
+          } catch {
+            // ignore parse failure
+          }
+        }
+        throw new Error(message);
+      }
+
+      const data = await response.json();
+      if (!Array.isArray(data?.translations) || data.translations.length === 0) {
+        throw new Error('DeepL response did not contain any translations. Please try again.');
+      }
+
+      return data.translations.map((item) => item?.text ?? '');
+    }
+
+    async function translateBatchWithRetry(apiKey, batchSegments) {
+      let attempt = 0;
+      let lastError;
+      while (attempt <= BATCH_RETRY_LIMIT) {
+        try {
+          const translations = await callDeepL(apiKey, batchSegments);
+          if (!translations.length) {
+            throw new Error('DeepL returned an empty batch.');
+          }
+          return { translations, fallbackUsed: false };
+        } catch (error) {
+          lastError = error;
+          attempt += 1;
+          if (attempt > BATCH_RETRY_LIMIT) {
+            break;
+          }
+          await sleep(BATCH_RETRY_DELAY_MS * attempt);
+        }
+      }
+
+      if (isLikelyNetworkError(lastError)) {
+        const translations = await callFallbackTranslator(batchSegments);
+        return { translations, fallbackUsed: true };
+      }
+
+      throw lastError || new Error('Translation batch failed.');
+    }
+
+    async function translateInBatches(apiKey, lockedSegments, originalSegments, glossaryMappings, onProgress) {
+      if (!Array.isArray(lockedSegments) || !lockedSegments.length) {
+        return { pairs: [], usedFallback: false, errors: [] };
+      }
+
+      const totalBatches = Math.ceil(lockedSegments.length / BATCH_SIZE);
+      const allPairs = [];
+      let usedFallback = false;
+      const errors = [];
+
+      for (let batchIndex = 0; batchIndex < totalBatches; batchIndex += 1) {
+        const start = batchIndex * BATCH_SIZE;
+        const batchLocked = lockedSegments.slice(start, start + BATCH_SIZE);
+        const batchOriginal = originalSegments.slice(start, start + BATCH_SIZE);
+        const progressLabel = `批次 ${batchIndex + 1} / ${totalBatches}`;
+
+        onProgress?.(batchIndex, totalBatches, progressLabel);
+        let translations;
+        let fallbackUsed = false;
+        try {
+          const result = await translateBatchWithRetry(apiKey, batchLocked);
+          translations = result.translations;
+          fallbackUsed = result.fallbackUsed;
+          usedFallback = usedFallback || fallbackUsed;
+        } catch (batchError) {
+          console.error('[translator] Batch failed', batchError);
+          errors.push({ batch: batchIndex + 1, message: batchError?.message || 'Batch translation failed.' });
+          const preservedNote = batchError?.message
+            ? `Translation failed: ${batchError.message}`
+            : 'Translation failed for this batch.';
+          batchOriginal.forEach((original) => {
+            allPairs.push({
+              original,
+              translation: `${preservedNote}\n\n${original || ''}`,
+            });
+          });
+          onProgress?.(batchIndex + 1, totalBatches, `${progressLabel}（失敗，已保留原文）`);
+          continue;
+        }
+
+        translations.forEach((text, idx) => {
+          const restored = restoreGlossaryTokens(text, glossaryMappings);
+          allPairs.push({
+            original: batchOriginal[idx] ?? '',
+            translation: restored,
+          });
+        });
+
+        onProgress?.(
+          batchIndex + 1,
+          totalBatches,
+          fallbackUsed ? `${progressLabel}（已切換備援）` : progressLabel
+        );
+      }
+
+      return { pairs: allPairs, usedFallback, errors };
+    }
+
     function loadScriptOnce(url, resolver, label) {
       return new Promise((resolve, reject) => {
         try {
