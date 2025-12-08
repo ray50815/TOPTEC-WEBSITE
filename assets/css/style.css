@@ -212,6 +212,7 @@ header.site-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  column-gap: 1.25rem;
   padding: 1rem 0;
 }
 
@@ -237,12 +238,14 @@ header.site-header {
 nav.primary-nav {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1.35rem;
+  flex: 1 1 auto;
 }
 
 nav.primary-nav a {
   color: rgba(255, 255, 255, 0.85);
   font-weight: 500;
+  font-size: 0.98rem;
   position: relative;
   transition: var(--transition-base);
 }
@@ -272,17 +275,18 @@ nav.primary-nav a.active::after {
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-left: auto;
+  gap: 1rem;
+  margin-left: 1.5rem;
 }
 
 .nav-cta {
-  padding: 0.65rem 1.5rem;
+  padding: 0.55rem 1.35rem;
   border-radius: 999px;
   background: var(--accent-orange);
   color: var(--pure-white);
   font-weight: 600;
-  box-shadow: 0 12px 24px rgba(255, 122, 24, 0.25);
+  font-size: 0.96rem;
+  box-shadow: 0 10px 20px rgba(255, 122, 24, 0.25);
 }
 
 .nav-cta:hover,
@@ -296,7 +300,7 @@ nav.primary-nav a.active::after {
   gap: 0.4rem;
   color: var(--pure-white);
   margin-left: 0;
-  padding: 0.3rem 0.45rem;
+  padding: 0.28rem 0.4rem;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: rgba(255, 255, 255, 0.06);
@@ -307,9 +311,9 @@ nav.primary-nav a.active::after {
   border: 1px solid rgba(255, 255, 255, 0.6);
   background: transparent;
   color: var(--pure-white);
-  padding: 0.4rem 0.85rem;
+  padding: 0.35rem 0.75rem;
   border-radius: 999px;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   cursor: pointer;
   transition: var(--transition-base);
 }

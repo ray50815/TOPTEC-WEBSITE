@@ -1,0 +1,389 @@
+﻿{
+  "nav": {
+    "brand": "TOPTEC GLOBAL",
+    "home": "首頁",
+    "about": "關於我們",
+    "services": "電子事業部",
+    "solutions": "貿易事業部",
+    "cases": "案例研究",
+    "contactMenu": "聯絡我們",
+    "contactCta": "聯繫專業顧問"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "雙核心產業集團",
+      "title": "精密電子開關製造 · 全球能源供應鏈治理",
+      "subtitle": "Toptec Global 專注輕觸、滑動與微動開關，提供汽車級可靠度；同時治理石油與高純度石英砂供應鏈，支援能源與基建。",
+      "primaryCta": "瀏覽電子零組件",
+      "secondaryCta": "探索貿易方案",
+      "stat1Value": "45+",
+      "stat1Label": "通過認證的開關與機電零組件，覆蓋汽車、IoT 與工控面板",
+      "stat2Value": "1B+",
+      "stat2Label": "按壓壽命驗證含按壓克重、接觸電阻與 IP67 防水測試",
+      "stat3Value": "24/7",
+      "stat3Label": "石油與高純度石英砂的 24/7 物流與 HSSE 控管中心",
+      "stat4Value": "ISO/HSSE",
+      "stat4Label": "開關符合 ISO 9001 / IATF 16949；貿易具 HSSE、制裁與供應治理"
+    },
+    "advantages": {
+      "title": "全球客戶選擇 Toptec Global 的理由",
+      "subtitle": "精密開關與受管控的大宗商品供應，由同一支團隊負責交付與治理。",
+      "card1Title": "高循環輕觸與滑動開關",
+      "card1Text": "針對輕觸、滑動與微動開關調校按壓克重、行程與接觸電阻，適用汽車與 IoT 裝置。",
+      "card2Title": "汽車級驗證",
+      "card2Text": "按壓壽命百萬次、IP67 防水、PPAP 與批次追溯，支援座艙與智慧家居控制面板。",
+      "card3Title": "石化貿易治理",
+      "card3Text": "石油產品具 HSSE 監督、制裁篩檢與結構化合約，符合監管與公用事業標準。",
+      "card4Title": "礦產品供應韌性",
+      "card4Text": "高純度石英砂，附資源管理、檢驗報告與多式聯運，確保爐線與基建不中斷。"
+    },
+    "electronics": {
+      "title": "電子事業部：開關與零組件",
+      "subtitle": "高循環輕觸、滑動與微動開關，具汽車級可靠度與 IP67 防水選項。",
+      "card1Title": "產品總覽",
+      "card1Text": "輕觸、滑動與微動開關家族，鎖定按壓克重、行程與接觸電阻，覆蓋 IoT、汽車與工控需求。",
+      "card2Title": "研發實驗室",
+      "card2Text": "力程曲線、EMC 篩檢與 IP67 防護驗證，確保開關符合汽車與消費電子要求。",
+      "card3Title": "品質管控",
+      "card3Text": "接觸電阻穩定度、按壓克重一致性與壽命抽驗，並提供 PPAP 證據與追溯。",
+      "card4Title": "製造產能",
+      "card4Text": "SMT 與穿孔生產就緒、汽車級產線與 VMI 配置，避免裝置爬坡斷料。"
+    },
+    "trust": {
+      "title": "開關與貿易的合規保證",
+      "subtitle": "從零組件可靠度到貿易治理的證據與認證一次到位。",
+      "badge1": "ISO 9001、IATF 16949 開關品質體系",
+      "badge2": "PPAP、按壓克重與接觸電阻報告",
+      "badge3": "IP67 防水與壽命驗證，涵蓋機電零組件",
+      "badge4": "HSSE、制裁篩檢與供應鏈治理（貿易）"
+    },
+    "trading": {
+      "title": "貿易事業部：石化與礦產品",
+      "subtitle": "石化交易與高純度石英砂供應，24/7 物流管控與 HSSE 治理。",
+      "card1Title": "全球物流",
+      "card1Text": "24/7 控制塔、HSSE 監督與多式聯運，讓石油與礦產品準時送達公用與工業客戶。",
+      "card2Title": "工業礦產（石英）",
+      "card2Text": "高純度石英砂，附資源管理、檢驗證書與追溯，供玻璃、太陽能與基建使用。",
+      "card3Title": "航運網絡",
+      "card3Text": "石化與礦產品航次具制裁篩檢、保險監管與透明里程碑回報。"
+    },
+    "services": {
+      "title": "雙事業部整合服務",
+      "subtitle": "機電開關工程與大宗商品貿易桌，在同一治理框架下協同運作。",
+      "card1Title": "開關設計導入",
+      "card1Text": "輕觸、滑動與微動開關的應用工程，明確按壓克重、行程、壽命與接觸電阻規格。",
+      "card1Cta": "查看電子事業部",
+      "card2Title": "可靠度與合規實驗室",
+      "card2Text": "IP67 防水、壽命治具、力程曲線與 PPAP/追溯文件，支援受管制專案。",
+      "card2Cta": "預約驗證",
+      "card3Title": "貿易桌與供應治理",
+      "card3Text": "石油交易與高純石英砂供應，具 HSSE、制裁合規與 24/7 物流執行。",
+      "card3Cta": "洽詢貿易桌"
+    },
+    "testimonial": {
+      "quote1": "Toptec 為我們的輕觸開關調校按壓克重與 IP67 密封，PPAP 也順利通過汽車審查。",
+      "cite1": "硬體營運副總裁，汽車 OEM",
+      "quote2": "他們的貿易桌治理石油與石英砂交付並提供 HSSE 證據，監管審查提前完成。",
+      "cite2": "供應鏈總監，能源公用事業"
+    },
+    "cta": {
+      "title": "需要部署開關或確保供應嗎？",
+      "subtitle": "與電子事業部洽談輕觸、滑動、微動開關，或與貿易桌合作石油與石英砂供應。",
+      "button": "聯絡 Toptec Global"
+    }
+  },
+  "about": {
+    "hero": {
+      "eyebrow": "合規領導力",
+      "title": "以負責任治理守護關鍵大宗商品。",
+      "subtitle": "Toptec Global 立足新加坡，統籌石油與礦產供應計畫，滿足監管機關、稽核單位與下游客戶的要求。",
+      "cta": "與管理團隊洽談"
+    },
+    "story": {
+      "title": "為公共領域透明供應而生",
+      "subtitle": "跨領域團隊結合採購法規、品質保證與營運韌性，專注關鍵物資供應。",
+      "point1": "<strong>石油治理桌。</strong> 持牌交易團隊管理原油、柴油與航煤調配，提供排放分析與法規報告，服務國營公用事業。",
+      "point2": "<strong>工業礦產桌。</strong> 供應石英砂與特殊骨材，具地質溯源、CSR 承諾與環境復育監管。",
+      "point3": "<strong>合規與財務辦公室。</strong> 將 AML/KYC、制裁審查、HSSE 監管與結構化融資融入流程，保護公帑。"
+    },
+    "timeline": {
+      "2006": "於新加坡成立，為國家公用事業提供合規的石油供應，並具備海關與 HSSE 全程監理。",
+      "2012": "建立區域合規樞紐與數位制裁篩檢，並拓展至中東與西非的上游合作。",
+      "2018": "成立工業礦產桌，提供地質溯源與環境監管計畫，支持公共基建。",
+      "2023": "推出監管報告入口與 ESG 儀表板，讓利害關係人即時掌握航次與排放。",
+      "title": "合規與成長里程碑"
+    },
+    "values": {
+      "title": "每次合作遵循的原則",
+      "subtitle": "合規、透明與責任治理是我們與公私部門合作的基石。",
+      "card1Title": "法規問責",
+      "card1Text": "從制裁、KYC/AML、反貪到電子採購義務，提供端到端治理與完整稽核軌跡。",
+      "card2Title": "營運保證",
+      "card2Text": "專業團隊監督抽樣、HSSE、航次執行與文件，並以即時儀表板服務監管機關與業者。",
+      "card3Title": "共享成長",
+      "card3Text": "與投入環境復育、在地就業與透明 ESG 報告的供應商合作。"
+    },
+    "team": {
+      "title": "對監管與業者負責的領導團隊",
+      "subtitle": "資深主管結合治理、風險與物流專長，守護公共任務。",
+      "point1": "<strong>Adrian Lim，創辦人兼 CEO。</strong> 主導跨境燃料安全計畫逾十年，國家公用事業零稽核缺失。",
+      "point2": "<strong>Janice Wong，COO。</strong> 設計符合港務與環保監管要求的 HSSE 治理與多式聯運物流。",
+      "point3": "<strong>Kenji Sato，風險長。</strong> 建立與公共財務管控及國庫要求一致的避險、保險與融資架構。"
+    },
+    "certifications": {
+      "title": "認證與會員資格",
+      "subtitle": "第三方認證驗證我們的合規、HSSE 與治理體系。",
+      "badge1": "Enterprise Singapore 核發的合格商品交易商",
+      "badge2": "ISO 9001、14001、45001 整合管理系統",
+      "badge3": "TRACE 反賄賂認證夥伴",
+      "badge4": "會員：國際石油工業環境保護協會",
+      "badge5": "新加坡海事及港務局認可的 HSSE 與加油合規計畫"
+    }
+  },
+  "services": {
+    "hero": {
+      "eyebrow": "以合規為核心的服務",
+      "title": "為監管需求打造的整合商品供應方案。",
+      "subtitle": "交易團隊協調採購、品質保證與報告，協助公部門與下游營運者維持合規、不中斷的供應。",
+      "ctaPrimary": "查看合規流程",
+      "ctaSecondary": "預約合規諮詢"
+    },
+    "commodities": {
+      "petroleumTitle": "石油治理桌",
+      "petroleumText": "規劃原油、柴油、航煤與燃油的結構化方案，於提名、檢驗與 HSSE 控制全程留存稽核軌跡。",
+      "petroleumPoint1": "API、硫含量與排放檢測依法規完成並於裝船前核准",
+      "petroleumPoint2": "APAC、MENA 與西非碼頭的裝船經制裁審查並核准",
+      "petroleumPoint3": "租船、保險與滯期管理皆在共享平台留存紀錄",
+      "mineralTitle": "工業礦產監管",
+      "mineralText": "提供高純度石英砂與特殊骨材，附地源追蹤、社區溝通與環境報告。",
+      "mineralPoint1": "每批附實驗室認證的粒徑、Fe2O3 與含水結果",
+      "mineralPoint2": "堆場與備貨計畫符合復育與生物多樣性承諾",
+      "mineralPoint3": "整合駁船、鐵路與末端物流，並具 HSSE 監督"
+    },
+    "petroleum": {
+      "title": "石油供應能力",
+      "subtitle": "涵蓋原油、凝析油與成品油的合規能力，支援國家供應安全計畫。",
+      "card1Title": "原油與凝析油",
+      "card1Text": "提供酸甜原油，附排放分析、調和控管及政府核准的出口許可。",
+      "card2Title": "成品油",
+      "card2Text": "汽油、柴油、航煤與低硫燃油，附 ASTM/EN 檢測證明與碳排報告。",
+      "card3Title": "檢驗與認證",
+      "card3Text": "第三方檢驗管理採樣與保管鏈，出具數位品質與數量證書。",
+      "card4Title": "風險管理",
+      "card4Text": "避險、運費衍生品、保險與庫存融資，符合公共財政規範。"
+    },
+    "minerals": {
+      "title": "工業礦產專長",
+      "subtitle": "與政府許可的礦山合作，提供可追溯的產出，用於關鍵基建與產業。",
+      "point1": "<strong>玻璃與太陽能製程。</strong> 提供超高透明度石英砂，附產地證明、監管簡報與可直接投產的品質控管。",
+      "point2": "<strong>能源與鑄造。</strong> 高性能壓裂砂，採礦符合 HSSE，並具即時庫存監測。",
+      "point3": "<strong>環境與永續。</strong> 復育計畫、生物多樣性抵換與 ESG 報告，符合公共揭露框架。",
+      "assuranceTitle": "實驗室保證",
+      "assurancePoint1": "ISO/IEC 17025 認證實驗室，管理封簽的保管鏈採樣",
+      "assurancePoint2": "出貨核准前完成含水、泥量與重金屬分析",
+      "assurancePoint3": "數位放行證同時提供監管單位與客戶"
+    },
+    "compliance": {
+      "title": "合規與治理",
+      "subtitle": "提供海關、稅務、環保與稽核單位全面透明的治理框架。",
+      "card1Title": "法規申報",
+      "card1Text": "自動化海關、稅務與環境申報，並提供監管單位共享的儀表板。",
+      "card2Title": "制裁與 KYC",
+      "card2Text": "持續的交易對手篩檢、船舶追蹤與稽核記錄，符合 OFAC、EU 與 UN 規範。",
+      "card3Title": "HSSE 監督",
+      "card3Text": "HSSE 演練、事件通報與第三方稽核，並邀請監管參與、全程留存紀錄。"
+    },
+    "process": {
+      "title": "交易執行流程",
+      "step1": "對齊任務：確認政策指令、品質規格與利害關係人報告節奏。",
+      "step2": "採購與盡調：包含供應商稽核、ESG 評等、制裁合規與交易風險。",
+      "step3": "合約與檢驗規劃：安排實驗室時程、文件流程與監管存取控管。",
+      "step4": "航次執行：24/7 控制塔、HSSE 監督並對利害關係人推送里程碑。",
+      "step5": "交付後核對：提供合規證據、績效指標與持續改善路線圖。"
+    },
+    "cta": {
+      "title": "需要合規導向的原料合作夥伴嗎？",
+      "subtitle": "告訴我們政策要求，我們會在一個工作天內整合可稽核的供應方案。",
+      "button": "聯繫合規團隊"
+    }
+  },
+  "solutions": {
+    "hero": {
+      "eyebrow": "符合政府要求的供應方案",
+      "title": "為石油與礦產量身打造、具透明治理的供應方案。",
+      "subtitle": "我們為國家煉油廠、公共基建與產業園區設計方案，並備妥可供監管審閱的文件。",
+      "ctaPrimary": "瀏覽監管情境手冊",
+      "ctaSecondary": "聯繫合規團隊"
+    },
+    "programs": {
+      "title": "為各種任務打造的結構化方案",
+      "subtitle": "從緊急保證到十年期託管，每個方案都以合規、透明與財務責任為設計核心。",
+      "card1Title": "策略型提貨協議",
+      "card1Text": "多年期合約，提供油品等級彈性、可稽核的定價模型與監管核准的文件包。",
+      "card2Title": "即期最佳化",
+      "card2Text": "停機或需求暴增時迅速採購，動用預先審核的交易對手、緊急檢驗團隊與即時控制塔更新。",
+      "card3Title": "公共部門合作",
+      "card3Text": "以合規為導向的採購框架，對齊國家政策、預算週期、氣候目標與稽核流程。"
+    },
+    "industries": {
+      "title": "產業情境手冊",
+      "subtitle": "選擇最接近您任務的情境，了解我們如何結合執行、合規證據與利害關係人報告。",
+      "empty": "沒有符合此篩選的方案，歡迎聯絡我們客製計畫。",
+      "card1Title": "原油原料合規方案",
+      "card1Pain": "痛點：原油檢測波動影響排放上限與產品規格。",
+      "card1Solution": "解方：雙油種配置、監管在場的 ISO/IEC 17025 實驗室，以及排放報告儀表板。",
+      "card1Result": "成果：維持 98% 產能利用、無硫含量違規通知，順利續約供應執照。",
+      "card2Title": "玻璃與太陽能用石英保障方案",
+      "card2Pain": "痛點：石英純度不穩定，導致議會審查延宕。",
+      "card2Solution": "解方：提供 Fe2O3 低於 110 ppm 的高純度石英，含水率受控儲存，並有共享 QA 平台。",
+      "card2Result": "成果：以創紀錄速度獲得擴產核准，產能提升無額外停機。",
+      "card3Title": "公用事業燃料安全與合規",
+      "card3Pain": "痛點：季節性需求與儲量限制，引來能源監管更嚴審查。",
+      "card3Solution": "解方：透過避險的燃油與柴油供應、浮動儲存、緊急調度手冊與監管簡報工具。",
+      "card3Result": "成果：維持 45 天前置庫存，透明報告獲國家能源監管接受。",
+      "card4Title": "公共基建骨材治理",
+      "card4Pain": "痛點：採購稽核延宕骨材核准，影響戰略基建。",
+      "card4Solution": "解方：符合法規的招標採購、ESG 報告，以及附照片佐證的里程碑交付。",
+      "card4Result": "成果：在稽核時限內獲批，交付 180 萬噸且無差異罰則。"
+    },
+    "filters": {
+      "all": "全部方案",
+      "refinery": "煉油廠",
+      "glass": "玻璃與太陽能",
+      "infra": "公共基礎建設",
+      "energy": "能源與公用事業"
+    },
+    "assurance": {
+      "title": "治理與透明度",
+      "point1": "季度合規簡報、共享資料室與監管可用的文件",
+      "point2": "整合政府監察名單的制裁、KYC 與船舶追蹤程序",
+      "point3": "涵蓋排放、水資源、土地復育與社區影響的永續指標"
+    },
+    "support": {
+      "title": "支援服務",
+      "point1": "報關、保稅倉儲與國內配送，附合規報告",
+      "point2": "貿易融資、庫存融資與結構化付款，符合公共採購規範",
+      "point3": "市場情報、政策監測與利害關係人溝通手冊"
+    },
+    "cta": {
+      "title": "與合規導向的商品團隊合作",
+      "subtitle": "告訴我們燃料安全或礦產供應目標，我們會設計透明方案並提供利害關係人所需的合規證據。",
+      "button": "啟動合規方案"
+    }
+  },
+  "cases": {
+    "hero": {
+      "eyebrow": "工程與供應成功案例",
+      "title": "工程與供應鏈成功案例。",
+      "subtitle": "雙核心實證：精密開關方案與受治理的燃料與礦產供應。"
+    },
+    "card1Title": "國家公用事業燃料安全",
+    "card1Text": "某國家公用事業在監管下需要確保柴油供應。我們啟動預審供應商、部署浮動儲槽，並在 72 小時內完成報關與 HSSE 控管。",
+    "card1Point1": "12 次航次具監管見證的品管與數位報告",
+    "card1Point2": "零稽核缺失、零滯期並完成成本回收",
+    "card1Point3": "HSSE 合規覆蓋租賃資產與保稅倉儲",
+    "card2Title": "汽車用輕觸開關客製化",
+    "card2Text": "為高階電動車座艙設計高克重大幅的輕觸開關，調校按壓力、行程與接觸電阻，同時滿足 IP67 與 PPAP 要求。",
+    "card2Point1": "力程曲線對齊車廠觸感規格",
+    "card2Point2": "PPAP、百萬次壽命與 IP67 驗證完成",
+    "card2Point3": "SMT 組裝指引與批次追溯",
+    "card3Title": "太陽能玻璃石英供應鏈",
+    "card3Text": "主權支持的太陽能玻璃廠需超低鐵石英並保持完全透明。我們驗證來源、控制現場含水，並讓駁船交付與爐線計畫同步。",
+    "card3Point1": "ISO/IEC 17025 實驗室確認 99.7% SiO2、Fe2O3 < 110 ppm",
+    "card3Point2": "專責合規官每日回報政府專案辦公室",
+    "card3Point3": "爐線零停機，QA 文件可供監管審閱",
+    "card4Title": "智慧家庭 IoT 控制器可靠度",
+    "card4Text": "為智慧恆溫器旋鈕達成 100 萬次壽命，優化接觸電阻、彈跳與密封設計，確保高濕環境下的 IP67 防護。",
+    "card4Point1": "可靠度治具驗證 100 萬次以上且接觸電阻穩定",
+    "card4Point2": "防水與環境循環測試覆蓋高濕應用",
+    "card4Point3": "裝配與 PCB 腳位指引以降低場域故障",
+    "cta": {
+      "title": "需要協調工程與供應利害關係人嗎？",
+      "subtitle": "無論是客製開關或受治理的燃料與礦產供應，我們提供有證據的方案讓團隊與監管放心。",
+      "button": "索取專案簡報"
+    }
+  },
+  "contact": {
+    "hero": {
+      "eyebrow": "聯繫雙核心團隊",
+      "title": "與 Toptec Global 電子與貿易團隊對話",
+      "subtitle": "分享您的開關設計需求或燃料與礦產供應任務，我們的專家將在一個工作天內回覆。"
+    },
+    "form": {
+      "title": "告訴我們您的需求",
+      "subtitle": "請填寫設計目標或供應任務與時程。如果偏好 Email 或電話，也可使用右側資訊聯繫團隊。",
+      "assurance": "提交合規文件或 BOM，我們會在 24 小時內回覆可供稽核的行動計畫（週一至週五，GMT+8）。",
+      "nameLabel": "姓名",
+      "namePlaceholder": "請輸入姓名",
+      "companyLabel": "公司",
+      "companyPlaceholder": "公司名稱",
+      "titleLabel": "職稱",
+      "titlePlaceholder": "例如：採購經理",
+      "emailLabel": "公司 Email",
+      "emailPlaceholder": "name@company.com",
+      "phoneLabel": "電話（選填）",
+      "phonePlaceholder": "國碼 + 號碼",
+      "messageLabel": "我們可以如何支援？",
+      "messagePlaceholder": "請說明需求",
+      "privacyLabel": "我同意 <a href=\"privacy.html\">隱私權政策</a>。",
+      "successMessage": "感謝您的聯絡，我們會在一個工作天內回覆。",
+      "submit": "送出合規詢問"
+    },
+    "details": {
+      "title": "直接聯絡方式",
+      "text": "合規協調人員服務時間為週一至週五 09:00-18:00（GMT+8）。",
+      "phoneLabel": "電話：",
+      "phoneValue": "+65 6970 3201",
+      "emailLabel": "Email：",
+      "emailValue": "hello@toptecglobal.com",
+      "addressLabel": "地址：",
+      "addressValue": "8 Marina View, #35-02 Asia Square Tower 1, Singapore 018960",
+      "response": "我們會在一個工作天內回覆下一步與所需文件。"
+    },
+    "map": {
+      "title": "歡迎造訪總部"
+    },
+    "resources": {
+      "title": "需要立即的支援？",
+      "text": "查看手冊或開啟即時聊天，取得緊急文件、設計指引與物流更新。",
+      "cta": "查看案例與驗證"
+    },
+    "cta": {
+      "title": "我們隨時支援您的設計與供應",
+      "subtitle": "無論是客製開關或受治理的燃料與礦產方案，傳訊即可聯繫團隊。",
+      "button": "撥打 Toptec Global",
+      "commit": "提交政策要求或 BOM，我們會在 24 小時內回覆（週一至週五，GMT+8）。"
+    }
+  },
+  "footer": {
+    "brand": "TOPTEC GLOBAL",
+    "tagline": "雙核心產業集團：精密開關與大宗商品治理。",
+    "linksTitle": "公司",
+    "about": "關於我們",
+    "services": "電子事業部",
+    "solutions": "貿易事業部",
+    "cases": "案例研究",
+    "contact": "聯絡我們",
+    "resourcesTitle": "資源",
+    "resource1": "開關選型與按壓指南",
+    "resource2": "貿易治理手冊",
+    "resource3": "品質、HSSE 與認證",
+    "resource4": "案例研究與驗證",
+    "copy": "&copy; 2024 TOPTEC GLOBAL PTE. LTD. 版權所有。",
+    "uen": "UEN: 201932202N | 新加坡 ACRA 註冊",
+    "privacy": "隱私權政策",
+    "terms": "使用條款"
+  },
+  "general": {
+    "form": {
+      "required": "此欄位為必填。",
+      "email": "請輸入有效的 Email。",
+      "businessEmail": "請使用公司 Email。",
+      "privacy": "請同意隱私權政策後再送出。",
+      "error": "提交時發生問題，請稍後再試或直接來信。",
+      "submitting": "送出中...",
+      "success": "訊息已送出，我們將盡快回覆。"
+    }
+  }
+}
+
