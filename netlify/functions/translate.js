@@ -7,7 +7,7 @@ const allowedOrigins = new Set([
 ]);
 
 const targetLanguageOverrides = {
-  'ZH-TW': 'ZH',
+  'ZH-TW': 'ZH-HANT',
 };
 
 const ok = (body, status = 200, originHeader = '*') => ({
