@@ -11,6 +11,18 @@
   const FALLBACK_CONTACT_EMAIL = 'support@toptecglobal.com';
   const SERVER_MANAGED_API_KEY = true;
 
+  const GLOSSARY_TERMS = {
+    EVT: 'EVT',
+    DFM: 'DFM',
+    Unibody: 'Unibody',
+    Tolerance: '公差',
+    Anodizing: '陽極處理',
+  };
+
+  const BATCH_SIZE = 20;
+  const BATCH_RETRY_LIMIT = 2;
+  const BATCH_RETRY_DELAY_MS = 1200;
+
   const FILE_SIZE_LIMIT = 15 * 1024 * 1024;
   const TEXT_EXTENSIONS = new Set(['txt', 'text', 'md', 'markdown', 'csv', 'tsv', 'json', 'html', 'htm']);
 
@@ -78,10 +90,16 @@
       docFileName: '',
       pdfFileName: '',
       sourceFileName: '',
+      glossaryTokens: [],
+      usedFallback: false,
     };
 
     let docxLoaderPromise = null;
     let pdfJsLoaderPromise = null;
+    let glossaryListEl = null;
+    let progressUi = { fill: null, label: null, detail: null };
+    const previewPanels = { original: null, translation: null, host: null, countLabel: null };
+    const syncScrollState = { busy: false };
 
     function showFeedback(message, isError = false) {
       if (!elements.feedback) return;
@@ -153,6 +171,68 @@
       };
     })();
 
+    const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    function lockGlossaryTerms(segments) {
+      const tokensUsed = new Set();
+      const mappings = Object.entries(GLOSSARY_TERMS).map(([term, target], index) => ({
+        term,
+        target,
+        token: `__GLOSSARY_${index}__`,
+        regex: new RegExp(`\\b${escapeRegExp(term)}\\b`, 'gi'),
+      }));
+
+      const lockedSegments = segments.map((segment) => {
+        let working = segment;
+        mappings.forEach((entry) => {
+          const replaced = working.replace(entry.regex, entry.token);
+          if (replaced !== working) {
+            tokensUsed.add(entry.token);
+            working = replaced;
+          }
+        });
+        return working;
+      });
+
+      const activeMappings = mappings.filter((entry) => tokensUsed.has(entry.token));
+      state.glossaryTokens = activeMappings;
+      return { lockedSegments, activeMappings };
+    }
+
+    function restoreGlossaryTokens(text, mappings) {
+      if (!text || !Array.isArray(mappings) || !mappings.length) return text;
+      return mappings.reduce((acc, entry) => acc.replace(new RegExp(entry.token, 'g'), entry.target), text);
+    }
+
+    function updateGlossaryPanel(mappings) {
+      if (!glossaryListEl) return;
+      glossaryListEl.innerHTML = '';
+      const activeTokens = new Set((mappings || []).map((entry) => entry.term));
+      const fragment = document.createDocumentFragment();
+      Object.entries(GLOSSARY_TERMS).forEach(([term, target]) => {
+        const isActive = activeTokens.has(term);
+        const row = document.createElement('div');
+        row.className =
+          'flex items-center justify-between rounded-lg border px-3 py-2 text-xs transition ' +
+          (isActive
+            ? 'border-emerald-500/60 bg-emerald-500/10 text-emerald-50'
+            : 'border-slate-700/70 bg-slate-900/60 text-slate-200');
+        row.innerHTML = `
+          <div class="flex items-center gap-2">
+            <span class="h-2 w-2 rounded-full ${isActive ? 'bg-emerald-400' : 'bg-slate-600'}"></span>
+            <span class="font-semibold ${isActive ? 'text-emerald-100' : 'text-slate-200'}">${escapeHtml(term)}</span>
+          </div>
+          <span class="font-mono ${isActive ? 'text-emerald-50' : 'text-slate-300'}">${escapeHtml(target)}</span>
+        `;
+        fragment.appendChild(row);
+      });
+      if (!fragment.children.length) {
+        glossaryListEl.innerHTML = '<p class="text-xs text-slate-400">No glossary matches detected in this batch.</p>';
+      } else {
+        glossaryListEl.appendChild(fragment);
+      }
+    }
+
     const sleep = (ms) =>
       new Promise((resolve) => {
         setTimeout(resolve, ms);
@@ -170,6 +250,53 @@
         message.includes('connection')
       );
     };
+
+    function ensureProgressBar() {
+      if (!elements.progressPanel) return;
+      if (progressUi.fill && progressUi.label && progressUi.detail) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'mt-4 space-y-2';
+      const labelRow = document.createElement('div');
+      labelRow.className = 'flex items-center justify-between text-xs text-blue-100';
+
+      const progressLabel = document.createElement('span');
+      progressLabel.textContent = '進度 0%';
+      const progressDetail = document.createElement('span');
+      progressDetail.className = 'text-blue-200';
+      progressDetail.textContent = '';
+
+      labelRow.append(progressLabel, progressDetail);
+
+      const track = document.createElement('div');
+      track.className = 'h-2 w-full rounded-full bg-slate-800/70';
+
+      const fill = document.createElement('div');
+      fill.className = 'h-2 rounded-full bg-gradient-to-r from-blue-400 to-emerald-300 shadow-[0_0_8px_rgba(56,189,248,0.6)] transition-all duration-300 ease-out';
+      fill.style.width = '0%';
+      track.appendChild(fill);
+
+      wrapper.append(labelRow, track);
+      elements.progressPanel.appendChild(wrapper);
+
+      progressUi = { fill, label: progressLabel, detail: progressDetail };
+    }
+
+    function updateProgressBar(completedBatches, totalBatches, detailText = '') {
+      if (!elements.progressPanel) return;
+      ensureProgressBar();
+      const percent = totalBatches ? Math.round((completedBatches / totalBatches) * 100) : 0;
+      progressUi.fill.style.width = `${percent}%`;
+      progressUi.label.textContent = `進度 ${percent}%`;
+      progressUi.detail.textContent = detailText;
+    }
+
+    function resetProgressBar() {
+      if (!elements.progressPanel || !progressUi.fill) return;
+      progressUi.fill.style.width = '0%';
+      progressUi.label.textContent = '進度 0%';
+      progressUi.detail.textContent = '';
+    }
 
     async function callFallbackTranslator(segments) {
       if (!Array.isArray(segments) || !segments.length) {
@@ -199,10 +326,7 @@
           throw new Error(detail || 'Backup translation service returned an empty response.');
         }
 
-        results.push({
-          original: segment,
-          translation: decodeHtmlEntities(data.responseData.translatedText),
-        });
+        results.push(decodeHtmlEntities(data.responseData.translatedText));
 
         if (segments.length > 1 && index < segments.length - 1) {
           await sleep(FALLBACK_DELAY_MS);
@@ -403,82 +527,297 @@
       throw new Error('Unsupported file type. Please upload a .docx, .pdf, or plain-text file.');
     }
 
+    function setupPreviewLayout() {
+      if (previewPanels.original && previewPanels.translation) return;
+
+      const previewCard = elements.previewBody?.closest('.mt-8');
+      if (previewCard) {
+        previewCard.classList.add('hidden');
+      }
+
+      const host = elements.previewHtmlContainer || document.createElement('div');
+      host.className = 'mt-8 space-y-4';
+      host.innerHTML = `
+        <div class="rounded-2xl border border-slate-700/70 bg-slate-950/70 shadow-2xl shadow-slate-900/40 backdrop-blur">
+          <div class="flex flex-col gap-2 border-b border-slate-800 px-5 py-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.2em] text-blue-200">Bilingual Preview</p>
+              <p class="text-[11px] text-slate-400">同步捲動 | 10 行摘要 | 等寬字體方便檢查數據與代碼</p>
+            </div>
+            <div class="flex items-center gap-3 text-xs text-slate-300">
+              <span class="rounded-full border border-slate-700 bg-slate-900/80 px-3 py-1">預覽上限：10 行</span>
+              <span data-preview-count class="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-emerald-100">0 項</span>
+            </div>
+          </div>
+          <div class="grid gap-4 px-5 pb-5 pt-4 lg:grid-cols-2">
+            <div class="flex flex-col rounded-xl border border-slate-800 bg-slate-900/80 p-4">
+              <div class="flex items-center justify-between text-xs text-slate-400">
+                <span class="font-semibold text-slate-200">原文</span>
+                <span class="text-[11px] text-slate-500">Sync Scroll</span>
+              </div>
+              <div data-preview-original class="mt-3 max-h-[420px] overflow-auto rounded-lg bg-slate-950/60 p-3 font-mono text-[13px] leading-relaxed text-slate-200 shadow-inner shadow-slate-900/50"></div>
+            </div>
+            <div class="flex flex-col rounded-xl border border-slate-800 bg-slate-900/80 p-4">
+              <div class="flex items-center justify-between text-xs text-emerald-300">
+                <span class="font-semibold text-emerald-100">譯文</span>
+                <span class="text-[11px] text-emerald-200/80">Sync Scroll</span>
+              </div>
+              <div data-preview-translation class="mt-3 max-h-[420px] overflow-auto rounded-lg bg-slate-950/60 p-3 font-mono text-[13px] leading-relaxed text-emerald-100 shadow-inner shadow-slate-900/50"></div>
+            </div>
+          </div>
+          <div class="space-y-2 border-t border-slate-800 px-5 pb-5 pt-4">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-semibold text-emerald-200">Glossary Locks</span>
+              <span class="text-slate-400">避免 DeepL 意譯專業術語</span>
+            </div>
+            <div data-glossary-list class="grid gap-2 sm:grid-cols-2"></div>
+          </div>
+        </div>
+      `;
+
+      const parent = previewCard?.parentElement || elements.resultSection || document.body;
+      parent.appendChild(host);
+      host.classList.remove('hidden');
+
+      previewPanels.original = host.querySelector('[data-preview-original]');
+      previewPanels.translation = host.querySelector('[data-preview-translation]');
+      previewPanels.host = host;
+      previewPanels.countLabel = host.querySelector('[data-preview-count]');
+      glossaryListEl = host.querySelector('[data-glossary-list]');
+
+      const syncScroll = (source, target) => {
+        if (!source || !target) return;
+        source.addEventListener('scroll', () => {
+          if (syncScrollState.busy) return;
+          syncScrollState.busy = true;
+          const ratio =
+            source.scrollTop / Math.max(1, source.scrollHeight - source.clientHeight);
+          target.scrollTop = ratio * Math.max(0, target.scrollHeight - target.clientHeight);
+          syncScrollState.busy = false;
+        });
+      };
+
+      syncScroll(previewPanels.original, previewPanels.translation);
+      syncScroll(previewPanels.translation, previewPanels.original);
+    }
+
     function renderPreview(pairs) {
-      if (!elements.previewBody) return;
-      elements.previewBody.innerHTML = '';
+      setupPreviewLayout();
+      if (!previewPanels.original || !previewPanels.translation) return;
+
+      previewPanels.original.innerHTML = '';
+      previewPanels.translation.innerHTML = '';
+
       const limit = Math.min(pairs.length, 10);
+      if (previewPanels.countLabel) {
+        previewPanels.countLabel.textContent = `${limit} / ${pairs.length} 行`;
+      }
+
+      const sourceFrag = document.createDocumentFragment();
+      const targetFrag = document.createDocumentFragment();
+
       for (let i = 0; i < limit; i += 1) {
         const { original, translation } = pairs[i];
-        const row = document.createElement('tr');
-        row.className = 'align-top';
+        const blockNumber = i + 1;
 
-        const originalCell = document.createElement('td');
-        originalCell.className = 'whitespace-pre-wrap px-4 py-3 text-slate-200';
-        originalCell.textContent = original || '';
+        const sourceBlock = document.createElement('div');
+        sourceBlock.className =
+          'rounded-lg border border-slate-800/80 bg-slate-900/80 px-3 py-2 text-slate-100 shadow-sm shadow-slate-900/60';
+        sourceBlock.innerHTML = `
+          <div class="flex items-center justify-between text-[11px] text-slate-400">
+            <span>Segment ${blockNumber}</span>
+          </div>
+          <div class="mt-1 whitespace-pre-wrap leading-relaxed">${escapeHtml(original || '')}</div>
+        `;
+        sourceFrag.appendChild(sourceBlock);
 
-        const translationCell = document.createElement('td');
-        translationCell.className = 'whitespace-pre-wrap px-4 py-3 text-slate-100';
-        translationCell.textContent = translation || '';
-
-        row.append(originalCell, translationCell);
-        elements.previewBody.appendChild(row);
+        const targetBlock = document.createElement('div');
+        targetBlock.className =
+          'rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-emerald-50 shadow-sm shadow-emerald-900/60';
+        targetBlock.innerHTML = `
+          <div class="flex items-center justify-between text-[11px] text-emerald-200/90">
+            <span>Segment ${blockNumber}</span>
+          </div>
+          <div class="mt-1 whitespace-pre-wrap leading-relaxed">${escapeHtml(translation || '')}</div>
+        `;
+        targetFrag.appendChild(targetBlock);
       }
+
+      previewPanels.original.appendChild(sourceFrag);
+      previewPanels.translation.appendChild(targetFrag);
     }
 
     async function generateDocx(pairs) {
       const docx = await ensureDocxLibrary();
-      const { Document, Packer, Paragraph, Table, TableRow, TableCell, WidthType, TextRun, HeadingLevel } = docx;
+      const {
+        AlignmentType,
+        BorderStyle,
+        Document,
+        Header,
+        Paragraph,
+        Packer,
+        Table,
+        TableRow,
+        TableCell,
+        TextRun,
+        WidthType,
+      } = docx;
 
       const title = (elements.docTitleInput.value || 'Bilingual Contract').trim();
       const date = elements.docDateInput.value.trim();
+      const invisibleBorders = {
+        top: { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' },
+        bottom: { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' },
+        left: { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' },
+        right: { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' },
+      };
 
-      const header = [
-        new Paragraph({ text: title, heading: HeadingLevel.HEADING_1 }),
-      ];
-      if (date) {
-        header.push(new Paragraph({ text: `Date: ${date}` }));
+      let watermark = null;
+      try {
+        if (docx.Watermark && typeof docx.Watermark === 'function') {
+          watermark = new docx.Watermark('Machine Translated Draft');
+        } else if (docx.Watermark && typeof docx.Watermark.fromText === 'function') {
+          watermark = docx.Watermark.fromText('Machine Translated Draft');
+        }
+      } catch (error) {
+        console.warn('[translator] Unable to create watermark, continuing without it.', error);
       }
 
-      const rows = pairs.map((pair, index) =>
-        new TableRow({
+      const header = new Header({
+        children: [
+          new Paragraph({
+            children: [
+              new TextRun({ text: 'TOPTEC GLOBAL', bold: true, color: '0ea5e9', size: 26 }),
+              new TextRun({ text: '  ·  Machine Translated Draft', color: '475569', size: 20 }),
+            ],
+            alignment: AlignmentType.LEFT,
+            spacing: { after: 120 },
+          }),
+        ],
+      });
+
+      const headingParagraphs = [
+        new Paragraph({
+          children: [new TextRun({ text: title, bold: true, size: 32, color: '0f172a' })],
+          spacing: { after: 80 },
+        }),
+      ];
+
+      if (date) {
+        headingParagraphs.push(
+          new Paragraph({
+            children: [new TextRun({ text: `Date: ${date}`, color: '475569', size: 22 })],
+            spacing: { after: 240 },
+          })
+        );
+      }
+
+      headingParagraphs.push(
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: 'Machine Translated Draft — for internal review only',
+              italics: true,
+              color: '94a3b8',
+              size: 22,
+            }),
+          ],
+          alignment: AlignmentType.CENTER,
+          spacing: { after: 200 },
+        })
+      );
+
+      const rows = pairs.map((pair, index) => {
+        const originalParagraphs = [
+          new Paragraph({
+            children: [
+              new TextRun({ text: `Segment ${index + 1} · Original`, bold: true, color: '334155', size: 20 }),
+            ],
+            spacing: { after: 80 },
+          }),
+          ...String(pair.original || '')
+            .split('\n')
+            .map(
+              (line) =>
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: line || ' ',
+                      font: 'Consolas',
+                      size: 20,
+                      color: '0f172a',
+                    }),
+                  ],
+                  spacing: { after: 60 },
+                })
+            ),
+        ];
+
+        const translationParagraphs = [
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: `Segment ${index + 1} · Translation`,
+                bold: true,
+                color: '0f766e',
+                size: 20,
+              }),
+            ],
+            spacing: { after: 80 },
+          }),
+          ...String(pair.translation || '')
+            .split('\n')
+            .map(
+              (line) =>
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: line || ' ',
+                      font: 'Microsoft JhengHei',
+                      size: 20,
+                      color: '0f172a',
+                    }),
+                  ],
+                  spacing: { after: 60 },
+                })
+            ),
+        ];
+
+        return new TableRow({
           children: [
             new TableCell({
               width: { size: 50, type: WidthType.PERCENTAGE },
-              children: [
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: `Block ${index + 1} - Original:\n${pair.original || ''}`,
-                      font: 'Times New Roman',
-                    }),
-                  ],
-                }),
-              ],
+              borders: invisibleBorders,
+              children: originalParagraphs,
             }),
             new TableCell({
               width: { size: 50, type: WidthType.PERCENTAGE },
-              children: [
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: `Block ${index + 1} - Translation:\n${pair.translation || ''}`,
-                      font: 'Microsoft JhengHei',
-                    }),
-                  ],
-                }),
-              ],
+              borders: invisibleBorders,
+              children: translationParagraphs,
             }),
           ],
-        }),
-      );
+        });
+      });
+
+      const sectionProps = {
+        page: {
+          margin: { top: 720, right: 960, bottom: 720, left: 960 },
+        },
+        headers: { default: header },
+      };
+      if (watermark) {
+        sectionProps.watermark = watermark;
+      }
 
       const document = new Document({
         sections: [
           {
+            properties: sectionProps,
             children: [
-              ...header,
+              ...headingParagraphs,
               new Table({
                 width: { size: 100, type: WidthType.PERCENTAGE },
+                borders: invisibleBorders,
                 rows,
               }),
             ],
@@ -563,7 +902,7 @@
       printWindow.document.close();
     }
 
-    function resetSession() {
+            function resetSession() {
       state.segments = [];
       state.translationPairs = [];
       state.docBlob = null;
@@ -572,11 +911,14 @@
       state.sourceFileName = '';
 
       if (elements.previewBody) elements.previewBody.innerHTML = '';
-      if (elements.previewHtmlContainer) elements.previewHtmlContainer.innerHTML = '';
+      if (previewPanels.original) previewPanels.original.innerHTML = '';
+      if (previewPanels.translation) previewPanels.translation.innerHTML = '';
+      if (previewPanels.countLabel) previewPanels.countLabel.textContent = '';
       if (elements.downloadDocxBtn) elements.downloadDocxBtn.disabled = true;
       if (elements.downloadPdfBtn) elements.downloadPdfBtn.disabled = true;
       elements.progressPanel?.classList.add('hidden');
       elements.resultSection?.classList.add('hidden');
+      resetProgressBar();
       setSegmentCount(0);
       showFeedback('');
     }
@@ -616,59 +958,6 @@
         return stored;
       }
       return '';
-    }
-
-    async function callDeepL(_apiKey, segments) {
-      if (!Array.isArray(segments) || segments.length === 0) {
-        return [];
-      }
-
-      const response = await fetch(DEEPL_API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          segments,
-          targetLang: DEEPL_TARGET_LANG,
-          options: {
-            splitSentences: 'nonewlines',
-            preserveFormatting: '1',
-            formality: 'prefer_more',
-          },
-        }),
-      });
-
-      if (!response.ok) {
-        let message = `Translation proxy error (${response.status})`;
-        try {
-          const errJson = await response.json();
-          if (errJson?.message) {
-            message = errJson.message;
-          } else if (errJson?.error?.message) {
-            message = errJson.error.message;
-          } else {
-            message = JSON.stringify(errJson);
-          }
-        } catch {
-          try {
-            message = await response.text();
-          } catch {
-            // ignore parse failure
-          }
-        }
-        throw new Error(message);
-      }
-
-      const data = await response.json();
-      if (!Array.isArray(data?.translations) || data.translations.length === 0) {
-        throw new Error('DeepL response did not contain any translations. Please try again.');
-      }
-
-      return data.translations.map((item, index) => ({
-        original: segments[index] ?? '',
-        translation: item?.text ?? '',
-      }));
     }
 
     if (!SERVER_MANAGED_API_KEY) {
@@ -718,35 +1007,22 @@
       if (elements.downloadDocxBtn) elements.downloadDocxBtn.disabled = true;
       if (elements.downloadPdfBtn) elements.downloadPdfBtn.disabled = true;
       elements.resultSection?.classList.add('hidden');
+      resetProgressBar();
+      setupPreviewLayout();
 
       try {
-        let pairs = [];
-        let usedFallback = false;
+        const { lockedSegments, activeMappings } = lockGlossaryTerms(segments);
+        updateGlossaryPanel(activeMappings);
 
-        try {
-          pairs = await callDeepL(apiKey, segments);
-        } catch (primaryError) {
-          console.error(primaryError);
-          if (isLikelyNetworkError(primaryError)) {
-            try {
-              pairs = await callFallbackTranslator(segments);
-              usedFallback = true;
-            } catch (fallbackError) {
-              console.error(fallbackError);
-              showFeedback(
-                fallbackError.message ||
-                  'DeepL service is unreachable and the backup translator also failed. Please try again later.',
-                true
-              );
-              elements.progressPanel?.classList.add('hidden');
-              return;
-            }
-          } else {
-            showFeedback(primaryError.message || 'Translation failed. Please try again later.', true);
-            elements.progressPanel?.classList.add('hidden');
-            return;
+        const { pairs, usedFallback, errors } = await translateInBatches(
+          apiKey,
+          lockedSegments,
+          segments,
+          activeMappings,
+          (completed, total, detailText) => {
+            updateProgressBar(completed, total, detailText);
           }
-        }
+        );
 
         if (!Array.isArray(pairs) || !pairs.length) {
           showFeedback('Translation service returned no content. Please verify your input and try again.', true);
@@ -755,6 +1031,7 @@
         }
 
         state.translationPairs = pairs;
+        state.usedFallback = usedFallback;
 
         const timestamp = new Date();
         const stamp = `${timestamp.getFullYear()}${String(timestamp.getMonth() + 1).padStart(2, '0')}${String(timestamp.getDate()).padStart(2, '0')}_${String(timestamp.getHours()).padStart(2, '0')}${String(timestamp.getMinutes()).padStart(2, '0')}`;
@@ -768,9 +1045,12 @@
 
         elements.progressPanel?.classList.add('hidden');
         elements.resultSection?.classList.remove('hidden');
-        const successMessage = usedFallback
-          ? 'DeepL connection unavailable. Backup translator used—please review the output carefully.'
-          : 'Translation complete. Files are ready.';
+        const successMessage =
+          errors.length > 0
+            ? `完成但有 ${errors.length} 個批次需人工覆核（已保留原文）。`
+            : usedFallback
+              ? 'DeepL 連線不穩，已切換備援翻譯，請加強人工檢視。'
+              : 'Translation complete. Files are ready.';
         showFeedback(successMessage);
       } catch (error) {
         console.error(error);
@@ -841,13 +1121,13 @@
           }
         }
 
-        const segments = parseSegments();
-        if (!segments.length) {
+        const parsedSegments = parseSegments();
+        if (!parsedSegments.length) {
           setFileStatus('No translatable segments detected. Please ensure the file contains plain text content.', true);
           return;
         }
 
-        let message = `Imported ${file.name} (${segments.length} segments)`;
+        let message = `Imported ${file.name} (${parsedSegments.length} segments)`;
         if (result.warnings?.length) {
           message += `, ${result.warnings.length} format warnings were ignored.`;
         }
