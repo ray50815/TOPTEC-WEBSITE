@@ -1,6 +1,7 @@
 ﻿const translations = {};
+const translationVersion = '20241208';
 const translationSources = {
-  'zh-Hant': '/locales/zh-Hant.json'
+  'zh-Hant': `/locales/zh-Hant.json?v=${translationVersion}`
 };
 const translationRequests = {};
 
@@ -21,7 +22,7 @@ async function loadTranslations(lang) {
     return null;
   }
 
-  translationRequests[targetLang] = fetch(source, { cache: 'force-cache' })
+  translationRequests[targetLang] = fetch(source, { cache: 'no-cache' })
     .then((response) => {
       if (!response.ok) {
         throw new Error(`Failed to load translations for ${targetLang}`);
