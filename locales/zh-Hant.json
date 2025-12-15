@@ -399,12 +399,14 @@
       "title": "直接聯絡方式",
       "text": "合規協調人員服務時間為週一至週五 09:00-18:00（GMT+8）。",
       "phoneLabel": "電話：",
-      "phoneValue": "+65 6970 3201",
+      "phoneValue": "+65 8965 6938",
       "emailLabel": "Email：",
-      "emailValue": "hello@toptecglobal.com",
+      "emailValue": "Toptecgc@gmail.com",
       "addressLabel": "地址：",
-      "addressValue": "8 Marina View, #35-02 Asia Square Tower 1, Singapore 018960",
-      "response": "我們會在一個工作天內回覆下一步與所需文件。"
+      "addressValue": "60 Paya Lebar Road, #07-42 Paya Lebar Square, Singapore 409051",
+      "response": "我們會在一個工作天內回覆下一步與所需文件。",
+      "twTitle": "台灣辦事處",
+      "twAddressValue": "台灣 110 台北市信義區信義路五段5號4C-30"
     },
     "map": {
       "title": "歡迎造訪總部"
@@ -435,7 +437,7 @@
     "resource2": "貿易治理手冊",
     "resource3": "品質、HSSE 與認證",
     "resource4": "案例研究與驗證",
-    "copy": "&copy; 2024 TOPTEC GLOBAL PTE. LTD. 版權所有。",
+    "copy": "&copy; 2025 TOPTEC GLOBAL PTE. LTD. 版權所有。",
     "uen": "UEN: 201932202N | 新加坡 ACRA 註冊",
     "privacy": "隱私權政策",
     "terms": "使用條款"
@@ -452,4 +454,3 @@
     }
   }
 }
-

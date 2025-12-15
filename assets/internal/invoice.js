@@ -217,7 +217,7 @@
         if(solutions && solutions.length>0){
           const statusDiv = document.getElementById('status');
           statusDiv.innerHTML = `<span class="font-bold">注意：</span>您輸入的金額 ${totalAmount.toLocaleString()} 無法找到組合。<br>已自動<span class="font-bold">向上調整</span>為最接近的有效金額 <span class="font-bold">${adjustedAmount.toLocaleString()}</span> 並生成發票。`;
-          statusDiv.className = 'mt-4 text-center text-orange-600 font-semibold';
+          statusDiv.className = 'mt-4 text-center text-orange-200 font-semibold';
           const sorted = scoreAndSortSolutionsForConfig(config, solutions, adjustedAmount);
           sorted.forEach(s=> s.adjustedAmount = adjustedAmount);
           return sorted;
@@ -268,7 +268,7 @@
       if(solutions.length>0 && totalAmount!==adjustedAmount){
         const statusDiv=document.getElementById('status');
         statusDiv.innerHTML = `<span class="font-bold">注意：</span>您輸入的金額 ${totalAmount.toLocaleString()} 無法整除。<br>已自動<span class="font-bold">向上調整</span>為最接近的有效金額 <span class="font-bold">${adjustedAmount.toLocaleString()}</span> 並生成發票。`;
-        statusDiv.className='mt-4 text-center text-orange-600 font-semibold';
+        statusDiv.className='mt-4 text-center text-orange-200 font-semibold';
         solutions.forEach(s=> s.adjustedAmount = adjustedAmount);
       }
       // 非 JC，採用 basic 排序
@@ -452,17 +452,17 @@
       let errors=[]; if(!/^\d{8}$/.test(dateInput)) errors.push('日期格式不正確 (需為 YYYYMMDD)。');
       if(!totalAmountInput || isNaN(parseFloat(totalAmountInput)) || parseFloat(totalAmountInput)<=0) errors.push('總金額必須是有效的正數。');
       if(!invoiceNo) errors.push('發票號碼為必填項。');
-      if(errors.length>0){ statusDiv.innerHTML = '錯誤：<br>'+errors.join('<br>'); statusDiv.className='mt-4 text-center text-red-600 font-semibold'; return; }
+      if(errors.length>0){ statusDiv.innerHTML = '錯誤：<br>'+errors.join('<br>'); statusDiv.className='mt-4 text-center text-red-300 font-semibold'; return; }
       const isDateAdjusted = document.getElementById('date-adjust-checkbox').checked; let finalDateInput = dateInput; if(isDateAdjusted){ finalDateInput = adjustDate(dateInput, -5); }
       const totalAmount = parseFloat(totalAmountInput);
-      statusDiv.textContent='請稍候，正在計算並生成文件...'; statusDiv.className='mt-4 text-center text-blue-600 font-semibold animate-pulse';
+      statusDiv.textContent='請稍候，正在計算並生成文件...'; statusDiv.className='mt-4 text-center text-blue-200 font-semibold animate-pulse';
       setTimeout(()=>{
         const inputs = { dateInput: finalDateInput, invoiceType, invoiceNo, onBoardDate, shippedFrom, shippedTo };
         generationArgs = { config, inputs, originalAmount: totalAmount };
         foundSolutions = config.findQuantities(totalAmount);
-        if(!foundSolutions || foundSolutions.length===0){ statusDiv.textContent='錯誤：找不到符合條件的數量組合，請檢查總金額。'; statusDiv.className='mt-4 text-center text-red-600 font-semibold'; return; }
+        if(!foundSolutions || foundSolutions.length===0){ statusDiv.textContent='錯誤：找不到符合條件的數量組合，請檢查總金額。'; statusDiv.className='mt-4 text-center text-red-300 font-semibold'; return; }
         currentSolutionIndex = 0; renderInvoice(foundSolutions[currentSolutionIndex]);
-        if(!statusDiv.innerHTML.includes('注意')){ statusDiv.textContent='文件已成功生成！'; statusDiv.className='mt-4 text-center text-green-600 font-semibold'; }
+        if(!statusDiv.innerHTML.includes('注意')){ statusDiv.textContent='文件已成功生成！'; statusDiv.className='mt-4 text-center text-green-300 font-semibold'; }
         if(foundSolutions.length>1){ findNextBtn.classList.remove('hidden'); }
         invoiceWrapper.classList.remove('hidden'); invoiceWrapper.scrollIntoView({ behavior:'smooth' });
       }, 100);
