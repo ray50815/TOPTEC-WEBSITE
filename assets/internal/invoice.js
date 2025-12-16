@@ -6,11 +6,12 @@
     let currentSolutionIndex = 0;
 
     // --- COMPANY & PRICE CONFIGS ---
-    const TOPTEC_GLOBAL = {
-      name: "TOPTEC GLOBAL PTE. LTD.(S.G.)",
-      address: "711 Geylang Road #03-01 Oriental Venture\nBuilding Singapore 389626",
-      tel: "65-6547-8633"
-    };
+const TOPTEC_GLOBAL = {
+  name: "TOPTEC GLOBAL PTE. LTD.",
+  address: "60 Paya Lebar Road, #07-42 Paya Lebar Square\nSingapore 409051",
+  tel: "+65 8965 6938",
+  email: "Toptecgc@gmail.com"
+};
 
     const companyConfigs = {
       // --- SELL CONFIGS ---
@@ -53,17 +54,37 @@
     };
 
     // --- UTILITIES ---
-    function adjustDate(yyyymmdd, days) {
-      const year = parseInt(yyyymmdd.substring(0, 4), 10);
-      const month = parseInt(yyyymmdd.substring(4, 6), 10) - 1;
-      const day = parseInt(yyyymmdd.substring(6, 8), 10);
-      const date = new Date(Date.UTC(year, month, day));
-      date.setUTCDate(date.getUTCDate() + days);
-      const newYear = date.getUTCFullYear();
-      const newMonth = String(date.getUTCMonth() + 1).padStart(2, '0');
-      const newDay = String(date.getUTCDate()).padStart(2, '0');
-      return `${newYear}${newMonth}${newDay}`;
-    }
+function adjustDate(yyyymmdd, days) {
+  const year = parseInt(yyyymmdd.substring(0, 4), 10);
+  const month = parseInt(yyyymmdd.substring(4, 6), 10) - 1;
+  const day = parseInt(yyyymmdd.substring(6, 8), 10);
+  const date = new Date(Date.UTC(year, month, day));
+  date.setUTCDate(date.getUTCDate() + days);
+  const newYear = date.getUTCFullYear();
+  const newMonth = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const newDay = String(date.getUTCDate()).padStart(2, '0');
+  return `${newYear}${newMonth}${newDay}`;
+}
+
+function buildInvoiceNoFromDate(yyyymmdd){
+  if(!/^\d{8}$/.test(yyyymmdd)) return '';
+  return `TOP${yyyymmdd}001`;
+}
+
+function getDateForInvoiceNo(rawDate){
+  if(!/^\d{8}$/.test(rawDate)) return '';
+  const shouldOffset = document.getElementById('date-adjust-checkbox').checked;
+  return shouldOffset ? adjustDate(rawDate, 5) : rawDate;
+}
+
+function syncInvoiceNoFromDate(){
+  const rawDate = document.getElementById('date').value;
+  const adjustedDate = getDateForInvoiceNo(rawDate);
+  const invoiceField = document.getElementById('invoiceNo');
+  if(adjustedDate){
+    invoiceField.value = buildInvoiceNoFromDate(adjustedDate);
+  }
+}
 
     // ---- JC 美觀排序（僅套用 JC 系列） ----
     const BEAUTY_WEIGHTS = { roundness: 1, evenness: 6, gapSymmetry: 3, ratio: 2, spread: 2 };
@@ -159,11 +180,14 @@
     }
 
     // ---- 求解器們 ----
-    function findQuantitiesAnXinUSD(totalAmount) {
+function findQuantitiesAnXinUSD(totalAmount) {
       const companyKey = document.getElementById('company').value;
       const config = companyConfigs[companyKey];
       const prices = config.products.map(p=>p.price);
       const useFlexibleUnits = document.getElementById('flexible-quantity-checkbox').checked;
+      const MAX_SOLUTIONS_PER_UNIT = 220;
+      const SINGLE_UNIT_THRESHOLD = 20000;
+      const CLAMP_Q1_FOR_UNIT1 = 15000;
 
       const solveByUnit = (amount, unit) => {
         let solutions = [];
@@ -171,16 +195,19 @@
         const p_unit = { p1: prices[0]*unit, p2: prices[1]*unit, p3: prices[2]*unit };
         const minQtyUnit = unit >= 1000 ? 1 : (unit >= 100 ? 10 : (unit >= 10 ? 10 : 1));
         let maxQ1 = Math.floor(amount / (prices[0]*unit));
+        if(unit === 1 && maxQ1 > CLAMP_Q1_FOR_UNIT1){ maxQ1 = CLAMP_Q1_FOR_UNIT1; }
+        let iterations = 0; const ITERATION_CAP = unit === 1 ? 450000 : 900000;
         for(let q1=maxQ1; q1>=minQtyUnit; q1--){
           const maxQ2 = Math.min(q1, Math.floor((amount - q1*p_unit.p1)/p_unit.p2));
           for(let q2=maxQ2; q2>=minQtyUnit; q2--){
+            iterations++; if(iterations>ITERATION_CAP) return solutions;
             const remainder = amount - (q1*p_unit.p1) - (q2*p_unit.p2);
             const q3c = remainder / p_unit.p3;
             if(q3c>0 && Math.abs(q3c - Math.round(q3c)) < 0.001){
               const q3 = Math.round(q3c);
               if(q1>=q2 && q2>q3 && q3>=minQtyUnit && (q1 - q3) <= diffLimit){
                 solutions.push({ q1:q1*unit, q2:q2*unit, q3:q3*unit });
-                if(solutions.length>=600) return solutions;
+                if(solutions.length>=MAX_SOLUTIONS_PER_UNIT) return solutions;
               }
             }
           }
@@ -193,7 +220,11 @@
       const solveForAmount = (amount)=>{
         let all=[];
         if(useFlexibleUnits){
-          for(const unit of [1000,100,10,1]) all = all.concat(solveByUnit(amount, unit));
+          const unitsToTry = (amount > SINGLE_UNIT_THRESHOLD) ? [1000,100,10] : [1000,100,10,1];
+          for(const unit of unitsToTry){
+            all = all.concat(solveByUnit(amount, unit));
+            if(all.length >= MAX_SOLUTIONS_PER_UNIT) break;
+          }
           all = dedup(all);
         } else {
           all = solveByUnit(amount, 1000);
@@ -201,7 +232,7 @@
           if(all.length<5) all = all.concat(solveByUnit(amount, 10));
           all = dedup(all);
         }
-        return all;
+        return all.slice(0, MAX_SOLUTIONS_PER_UNIT);
       };
 
       let solutions = solveForAmount(totalAmount);
@@ -231,7 +262,8 @@
       const config = companyConfigs[companyKey];
       const prices = config.products; const p1=prices[0].price, p2=prices[1].price, p3=prices[2].price;
       const p1_c=p1*100, p2_c=p2*100, p3_c=p3*100; const sum_p_c=p1_c+p2_c+p3_c; const p2p3_c=p2_c+p3_c;
-      const searchLimit=2000; let solutions=[]; const seen=new Set();
+      const searchLimit=Math.min(1400, Math.max(600, Math.ceil(totalAmount/50))); const solutionsLimit = 220;
+      let solutions=[]; const seen=new Set();
       for(let d1=0; d1<=searchLimit; d1++){
         for(let d2=1; d2<=searchLimit; d2++){
           const numerator = (totalAmount*100) + (p2p3_c*d1) + (p3_c*d2);
@@ -240,9 +272,9 @@
             if(q1>0 && q2>0 && q3>0 && Number.isInteger(q1) && Number.isInteger(q2) && Number.isInteger(q3)){
               const key=`${q1}-${q2}-${q3}`; if(!seen.has(key)){ solutions.push({q1,q2,q3}); seen.add(key);} }
           }
-          if(solutions.length>400) break;
+          if(solutions.length>=solutionsLimit) break;
         }
-        if(solutions.length>400) break;
+        if(solutions.length>=solutionsLimit) break;
       }
       return scoreAndSortSolutionsForConfig(config, solutions, totalAmount);
     }
@@ -290,15 +322,15 @@
     function formatCurrency(num, symbol='US$'){ return `${symbol}${num.toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2})}`; }
     function numberToCurrency(num){ return num.toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2}); }
 
-    function generateInvoiceHTML(config, inputs, totalAmount, quantities){
-      const { dateInput, invoiceType, invoiceNo, onBoardDate, shippedFrom, shippedTo } = inputs;
-      const formattedDate = formatDate(dateInput); const formattedOnBoardDate = formatDate(onBoardDate || dateInput);
-      const isBuyInvoice = config.type === 'buy';
-      const seller = isBuyInvoice ? { name: config.name, address: config.address, tel: config.tel } : TOPTEC_GLOBAL;
-      const buyer  = isBuyInvoice ? TOPTEC_GLOBAL : { name: config.name, address: config.address, tel: config.tel };
-      const sellerLogoHTML = isBuyInvoice
-        ? `<div class="text-left font-bold text-lg">${seller.name}</div>`
-        : `<svg width="120" height="80" viewBox="0 0 250 100" class="mr-2"><rect width="100%" height="100%" fill="none"/><text x="125" y="60" text-anchor="middle" font-size="40" font-weight="bold" font-family="sans-serif">TOPTEC</text></svg>`;
+function generateInvoiceHTML(config, inputs, totalAmount, quantities){
+  const { dateInput, invoiceType, invoiceNo } = inputs;
+  const formattedDate = formatDate(dateInput);
+  const isBuyInvoice = config.type === 'buy';
+  const seller = isBuyInvoice ? { name: config.name, address: config.address, tel: config.tel } : TOPTEC_GLOBAL;
+  const buyer  = isBuyInvoice ? TOPTEC_GLOBAL : { name: config.name, address: config.address, tel: config.tel };
+  const sellerLogoHTML = isBuyInvoice
+    ? `<div class="text-left font-bold text-lg">${seller.name}</div>`
+    : `<img src="../assets/img/toptec-logo.svg" alt="TOPTEC logo" class="invoice-logo">`;
 
       let tableRows='';
       if(quantities && Object.keys(quantities).length>0){
@@ -311,16 +343,17 @@
             ${p.desc ? `<tr><td class="text-left pl-4">${p.desc}</td><td></td><td></td><td></td></tr>` : ''}
           `;
         }).join('');
-      }
+  }
 
-      const headerDetailsHTML = `
-        <div class="flex justify-between">
-          ${config.country.trim()? `<p class="w-1/3"><strong>Country of Origin:</strong> ${config.country}</p>` : '<p class="w-1/3"></p>'}
-          ${config.priceTerm.trim()? `<p class="w-1/3"><strong>PRICE TERM:</strong> ${config.priceTerm}</p>` : '<p class="w-1/3"></p>'}
-          ${config.paymentTerms.trim()? `<p class="w-1/3"><strong>Payment Terms:</strong> ${config.paymentTerms}</p>` : '<p class="w-1/3"></p>'}
-        </div>
-        ${config.priceTerm.trim()? `<div class="flex justify-between"><p class="w-1/3"><strong>SHIPPED FROM:</strong> ${shippedFrom}</p><p class="w-1/3"><strong>SHIPPED TO:</strong> ${shippedTo}</p><p class="w-1/3"><strong>ON/ABOUT BOARD:</strong> ${formattedOnBoardDate}</p></div>` : ''}
-      `;
+  const headerDetailsHTML = config.country.trim() || config.priceTerm.trim() || config.paymentTerms.trim() ? `
+    <div class="invoice-terms">
+      <div class="flex justify-between">
+        ${config.country.trim()? `<p class="w-1/3"><strong>Country of Origin:</strong> ${config.country}</p>` : '<p class="w-1/3"></p>'}
+        ${config.priceTerm.trim()? `<p class="w-1/3"><strong>PRICE TERM:</strong> ${config.priceTerm}</p>` : '<p class="w-1/3"></p>'}
+        ${config.paymentTerms.trim()? `<p class="w-1/3"><strong>Payment Terms:</strong> ${config.paymentTerms}</p>` : '<p class="w-1/3"></p>'}
+      </div>
+    </div>
+  ` : '';
 
       const scoresHTML = quantities.scores ? `
         <div class="text-xs text-gray-500 mt-1 no-print">
@@ -331,43 +364,44 @@
         </div>` : '';
 
       const invoiceHTML = `
-        <div class="flex justify-between items-start mb-4">
-          <div class="flex items-center">${sellerLogoHTML}</div>
-          <div class="text-left text-xs">
-            <p class="font-bold text-base">${seller.name}</p>
-            <p>${seller.address.replace(/\n/g,'<br>')}</p>
-            <p>TEL: ${seller.tel}</p>
-          </div>
-        </div>
-        <h1 class="text-center font-bold text-xl mb-4 underline">${invoiceType}</h1>
-        <div class="flex justify-between mb-2">
-          <div class="w-2/3">
-            <p><strong>BUYER:</strong> ${buyer.name}</p>
-            <p><strong>BUYER ADD:</strong> ${buyer.address.replace(/\n/g,'<br>')}</p>
-            <p><strong>TEL:</strong> ${buyer.tel}</p>
-          </div>
-          <div class="w-1/3 text-left">
-            <p><strong>INV.No.:</strong> <span id="inv-no">${invoiceNo}</span></p>
-            <p><strong>Date:</strong> ${formattedDate}</p>
-            ${scoresHTML}
-          </div>
-        </div>
-        <div class="border-y-2 border-black py-1 mb-2">${headerDetailsHTML}</div>
-        <table class="w-full invoice-table mb-2">
-          <thead>
-            <tr class="font-bold"><td class="w-1/4">ITEM NO.</td><td class="w-1/4">Q'TY</td><td class="w-1/4">UNIT PRC</td><td class="w-1/4">TTL AMT</td></tr>
-            <tr class="font-bold"><td></td><td>PCS</td><td>${config.currencyCode}/PCS</td><td>${config.currencyCode}</td></tr>
-          </thead>
-          <tbody>${tableRows}</tbody>
-        </table>
-        <div class="flex justify-end mt-4">
-          <div class="w-2/5">
-            <div class="flex justify-between"><strong>SAY TOTAL:</strong><strong id="say-total-amount" class="text-right flex-1 ml-2"></strong></div>
-            <div class="flex justify-between border-t border-black pt-1 mt-1"><strong>TOTAL:</strong><strong>${formatCurrency(totalAmount, config.currencySymbol)}</strong></div>
-          </div>
-        </div>
-        <div class="flex justify-end" style="margin-top:60px;"><div class="w-1/3 text-center"><div class="border-t border-black pt-1">AUTHORIZED SIGNATURE</div></div></div>
-      `;
+    <div class="flex justify-between items-start mb-6 invoice-header">
+      <div class="flex items-center">${sellerLogoHTML}</div>
+      <div class="text-left text-xs seller-block">
+        <p class="font-bold text-base leading-tight">${seller.name}</p>
+        <p>${seller.address.replace(/\n/g,'<br>')}</p>
+        ${seller.tel ? `<p>TEL: ${seller.tel}</p>` : ''}
+        ${seller.email ? `<p>Email: ${seller.email}</p>` : ''}
+      </div>
+    </div>
+    <h1 class="invoice-title text-center font-bold text-xl mb-5">${invoiceType}</h1>
+    <div class="flex justify-between mb-4 info-row">
+      <div class="w-2/3 buyer-card">
+        <p><strong>BUYER:</strong> ${buyer.name}</p>
+        <p><strong>BUYER ADD:</strong> ${buyer.address.replace(/\n/g,'<br>')}</p>
+        <p><strong>TEL:</strong> ${buyer.tel}</p>
+      </div>
+      <div class="w-1/3 text-left invoice-card">
+        <p><strong>INV.No.:</strong> <span id="inv-no">${invoiceNo}</span></p>
+        <p><strong>Date:</strong> ${formattedDate}</p>
+        ${scoresHTML}
+      </div>
+    </div>
+    ${headerDetailsHTML}
+    <table class="w-full invoice-table invoice-body-table mb-3">
+      <thead>
+        <tr class="font-bold"><td class="w-1/4">ITEM NO.</td><td class="w-1/4">Q'TY</td><td class="w-1/4">UNIT PRC</td><td class="w-1/4">TTL AMT</td></tr>
+        <tr class="font-bold"><td></td><td>PCS</td><td>${config.currencyCode}/PCS</td><td>${config.currencyCode}</td></tr>
+      </thead>
+      <tbody>${tableRows}</tbody>
+    </table>
+    <div class="flex justify-end mt-6 invoice-summary">
+      <div class="w-2/5 summary-card">
+        <div class="flex justify-between"><strong>SAY TOTAL:</strong><strong id="say-total-amount" class="text-right flex-1 ml-2"></strong></div>
+        <div class="flex justify-between border-t border-black pt-1 mt-2"><strong>TOTAL:</strong><strong>${formatCurrency(totalAmount, config.currencySymbol)}</strong></div>
+      </div>
+    </div>
+    <div class="flex justify-end" style="margin-top:60px;"><div class="w-1/3 text-center"><div class="border-t border-black pt-1">AUTHORIZED SIGNATURE</div></div></div>
+  `;
       document.getElementById('invoice-preview').innerHTML = invoiceHTML;
     }
 
@@ -435,29 +469,31 @@
       else { flexBox.classList.add('hidden'); flexCb.checked = false; }
     });
 
-    document.getElementById('date').addEventListener('input', (e)=>{
-      const v=e.target.value; if(/^\d{8}$/.test(v)){ document.getElementById('invoiceNo').value = `TOP${v}001`; }
-    });
+    document.getElementById('date').addEventListener('input', syncInvoiceNoFromDate);
+    document.getElementById('date-adjust-checkbox').addEventListener('change', syncInvoiceNoFromDate);
 
     // 初始觸發一次
-    document.getElementById('company').dispatchEvent(new Event('change'));
+  document.getElementById('company').dispatchEvent(new Event('change'));
+  syncInvoiceNoFromDate();
 
-    document.getElementById('generateBtn').addEventListener('click', ()=>{
-      const companyKey = document.getElementById('company').value; const config = companyConfigs[companyKey];
-      const dateInput = document.getElementById('date').value; const totalAmountInput = document.getElementById('totalAmount').value;
-      const invoiceType = document.getElementById('invoiceType').value; const invoiceNo = document.getElementById('invoiceNo').value;
-      const onBoardDate = document.getElementById('onBoardDate').value; const shippedFrom = document.getElementById('shippedFrom').value; const shippedTo = document.getElementById('shippedTo').value;
-      const statusDiv = document.getElementById('status'); const invoiceWrapper = document.getElementById('invoice-wrapper'); const findNextBtn = document.getElementById('findNextBtn');
+  document.getElementById('generateBtn').addEventListener('click', ()=>{
+    const companyKey = document.getElementById('company').value; const config = companyConfigs[companyKey];
+    const dateInput = document.getElementById('date').value; const totalAmountInput = document.getElementById('totalAmount').value;
+    const invoiceType = document.getElementById('invoiceType').value; const invoiceField = document.getElementById('invoiceNo'); const rawInvoiceNo = invoiceField.value.trim();
+    const statusDiv = document.getElementById('status'); const invoiceWrapper = document.getElementById('invoice-wrapper'); const findNextBtn = document.getElementById('findNextBtn');
       statusDiv.innerHTML=''; invoiceWrapper.classList.add('hidden'); findNextBtn.classList.add('hidden');
       let errors=[]; if(!/^\d{8}$/.test(dateInput)) errors.push('日期格式不正確 (需為 YYYYMMDD)。');
       if(!totalAmountInput || isNaN(parseFloat(totalAmountInput)) || parseFloat(totalAmountInput)<=0) errors.push('總金額必須是有效的正數。');
+      const finalDateInput = getDateForInvoiceNo(dateInput) || dateInput;
+      const autoInvoiceNo = buildInvoiceNoFromDate(finalDateInput);
+      let invoiceNo = rawInvoiceNo || autoInvoiceNo;
       if(!invoiceNo) errors.push('發票號碼為必填項。');
       if(errors.length>0){ statusDiv.innerHTML = '錯誤：<br>'+errors.join('<br>'); statusDiv.className='mt-4 text-center text-red-300 font-semibold'; return; }
-      const isDateAdjusted = document.getElementById('date-adjust-checkbox').checked; let finalDateInput = dateInput; if(isDateAdjusted){ finalDateInput = adjustDate(dateInput, -5); }
+      invoiceField.value = invoiceNo;
       const totalAmount = parseFloat(totalAmountInput);
       statusDiv.textContent='請稍候，正在計算並生成文件...'; statusDiv.className='mt-4 text-center text-blue-200 font-semibold animate-pulse';
       setTimeout(()=>{
-        const inputs = { dateInput: finalDateInput, invoiceType, invoiceNo, onBoardDate, shippedFrom, shippedTo };
+        const inputs = { dateInput: finalDateInput, invoiceType, invoiceNo };
         generationArgs = { config, inputs, originalAmount: totalAmount };
         foundSolutions = config.findQuantities(totalAmount);
         if(!foundSolutions || foundSolutions.length===0){ statusDiv.textContent='錯誤：找不到符合條件的數量組合，請檢查總金額。'; statusDiv.className='mt-4 text-center text-red-300 font-semibold'; return; }
