@@ -2,4 +2,4 @@ User-agent: *
 Disallow: /internal/
 Allow: /
 
-Sitemap: https://www.toptecglobal.com/sitemap.xml
+Sitemap: https://toptec.com.sg/sitemap.xml

@@ -2,8 +2,8 @@ const allowedOrigins = new Set([
   'http://localhost:8888',
   'http://localhost:5173',
   'http://localhost:3000',
-  'https://www.toptecglobal.com',
-  'https://toptecglobal.com',
+  'https://www.toptec.com.sg',
+  'https://toptec.com.sg',
 ]);
 
 const targetLanguageOverrides = {

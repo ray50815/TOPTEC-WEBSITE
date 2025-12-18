@@ -1,44 +1,43 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.toptecglobal.com/</loc>
+    <loc>https://toptec.com.sg/</loc>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.toptecglobal.com/about.html</loc>
+    <loc>https://toptec.com.sg/about.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.toptecglobal.com/electronics.html</loc>
+    <loc>https://toptec.com.sg/electronics.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.toptecglobal.com/trading.html</loc>
+    <loc>https://toptec.com.sg/trading.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.toptecglobal.com/case-studies.html</loc>
+    <loc>https://toptec.com.sg/case-studies.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.toptecglobal.com/contact.html</loc>
+    <loc>https://toptec.com.sg/contact.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.toptecglobal.com/privacy.html</loc>
+    <loc>https://toptec.com.sg/privacy.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.toptecglobal.com/terms.html</loc>
+    <loc>https://toptec.com.sg/terms.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 </urlset>
-

@@ -1355,7 +1355,11 @@ body::after {
   --hero-highlight-opacity: 0;
   --hero-highlight-x: 50%;
   --hero-highlight-y: 50%;
-  --hero-overlay-image: url('../img/components-overview.jpg') center/cover;
+  --hero-overlay-image: image-set(
+      url('../img/components-overview-1280.webp') type('image/webp'),
+      url('../img/components-overview-1280.jpg') type('image/jpeg')
+    )
+    center/cover;
 }
 
 .hero::before {
@@ -2092,4 +2096,3 @@ body.animations-enabled .hero .container {
     scroll-snap-type: none !important;
   }
 }
-
