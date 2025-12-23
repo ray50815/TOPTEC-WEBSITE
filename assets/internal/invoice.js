@@ -355,13 +355,7 @@ function generateInvoiceHTML(config, inputs, totalAmount, quantities){
     </div>
   ` : '';
 
-      const scoresHTML = quantities.scores ? `
-        <div class="text-xs text-gray-500 mt-1 no-print">
-          Score: ${quantities.scores.composite} |
-          StdDev: ${quantities.scores.stddev} |
-          Ratio: ${quantities.scores.ratio} |
-          Spread: ${quantities.scores.spread}
-        </div>` : '';
+      const scoresHTML = '';
 
       const invoiceHTML = `
     <div class="flex justify-between items-start mb-6 invoice-header">

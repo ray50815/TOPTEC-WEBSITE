@@ -215,3 +215,155 @@ body {
     display: none;
   }
 }
+
+/* === TOOLKIT / INVOICE 列印專用修復 === */
+@media print {
+  /* 1. 強制移除所有陰影 (這是黑邊的主因) */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* 2. 設定背景為純白，避免深色背景被印出來 */
+  body, html, .page, .invoice-container, .toolkit-container {
+    background: #fff !important;
+    background-color: #fff !important;
+    color: #000 !important;
+  }
+
+  /* 3. 確保頁面邊距正確，移除瀏覽器預設的 header/footer */
+  @page {
+    margin: 10mm; /* 設定列印邊距 */
+    size: auto;   /* 自動調整紙張 */
+  }
+
+  /* 4. 隱藏不該被印出來的按鈕與選單 */
+  .no-print, 
+  button, 
+  .btn, 
+  .toolkit-sidebar, 
+  nav, 
+  header, 
+  footer {
+    display: none !important;
+  }
+
+  /* 5. 確保邊框是細線而不是模糊的陰影 */
+  .invoice-box, table, .card {
+    border: 1px solid #ddd !important;
+    border-collapse: collapse !important;
+  }
+}
+
+/* === INVOICE WHITE THEME === */
+#invoice-wrapper,
+#invoice-preview,
+#invoice-wrapper .invoice-box,
+#invoice-wrapper .buyer-card,
+#invoice-wrapper .invoice-card,
+#invoice-wrapper .invoice-terms,
+#invoice-wrapper .summary-card {
+  background: #ffffff !important;
+  color: #000000 !important;
+  box-shadow: none !important;
+}
+
+#invoice-wrapper > .rounded-3xl {
+  background: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+
+#invoice-wrapper .invoice-summary .summary-card {
+  box-shadow: none !important;
+}
+
+.invoice-box {
+  border-radius: 0;
+}
+
+#inv-no {
+  color: #000000 !important;
+}
+
+.invoice-table thead tr:first-child td,
+.invoice-table thead tr:nth-child(2) td,
+.invoice-table tbody tr:nth-child(even),
+.packing-table th,
+.packing-table tbody tr:nth-child(even) {
+  background-color: #ffffff !important;
+}
+
+.invoice-table td,
+.invoice-table th,
+.packing-table th,
+.packing-table td {
+  color: #000000 !important;
+  border-color: #000000 !important;
+}
+
+/* === PRINT PRESENTATION REFINEMENT === */
+@media print {
+  body {
+    font-family: 'Noto Sans TC', 'Times New Roman', serif;
+    font-size: 11px;
+    line-height: 1.55;
+    color: #111111;
+  }
+
+  #invoice-wrapper,
+  #invoice-preview {
+    margin: 0 auto;
+    padding: 0 !important;
+  }
+
+  #invoice-preview {
+    max-width: 180mm;
+  }
+
+  #invoice-wrapper > .rounded-3xl {
+    padding: 0 !important;
+  }
+
+  .invoice-box {
+    padding: 10mm 8mm 12mm !important;
+    border: none !important;
+    border-radius: 0 !important;
+  }
+
+  .invoice-header {
+    margin-bottom: 6mm;
+  }
+
+  .invoice-title {
+    font-size: 16px;
+    letter-spacing: 0.18em;
+    margin-bottom: 6mm;
+  }
+
+  .buyer-card,
+  .invoice-card,
+  .invoice-terms,
+  .summary-card {
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    background: #ffffff !important;
+  }
+
+  .invoice-table th,
+  .invoice-table td,
+  .packing-table th,
+  .packing-table td {
+    border-color: #111111 !important;
+  }
+
+  .invoice-table thead tr:first-child td,
+  .invoice-table thead tr:nth-child(2) td,
+  .invoice-table tbody tr:nth-child(even),
+  .packing-table th,
+  .packing-table tbody tr:nth-child(even) {
+    background: #ffffff !important;
+  }
+}

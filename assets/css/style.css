@@ -1902,7 +1902,7 @@ body.animations-enabled .hero .container {
     height: 100vh;
     width: 100%;
     background: rgba(11, 29, 60, 0.98);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(15px);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1931,6 +1931,45 @@ body.animations-enabled .hero .container {
     color: var(--pure-white);
     padding: 0.75rem 1.5rem;
     text-align: center;
+  }
+
+  .mobile-toggle,
+  .site-header__toggle {
+    position: relative;
+    z-index: 10001;
+    padding: 0.6rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .mobile-toggle span,
+  .site-header__toggle span {
+    background: var(--accent-orange);
+    height: 3px;
+    width: 24px;
+    transition: all 0.3s ease-in-out;
+    transform-origin: center;
+  }
+
+  .mobile-toggle[aria-expanded='true'] span:nth-child(1),
+  .site-header__toggle[aria-expanded='true'] span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .mobile-toggle[aria-expanded='true'] span:nth-child(2),
+  .site-header__toggle[aria-expanded='true'] span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+
+  .mobile-toggle[aria-expanded='true'] span:nth-child(3),
+  .site-header__toggle[aria-expanded='true'] span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
   }
 }
 
@@ -2095,5 +2134,52 @@ body.animations-enabled .hero .container {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-snap-type: none !important;
+  }
+}
+
+/* === PRINT OPTIMIZATION (列印優化) === */
+@media print {
+  /* 1. 全域設定：強制白底黑字，省墨水且清晰 */
+  *, *::before, *::after {
+    background: transparent !important;
+    color: #000 !important; /* 強制黑色文字 */
+    box-shadow: none !important; /* 關鍵：移除所有陰影，解決黑邊問題 */
+    text-shadow: none !important;
+  }
+
+  /* 2. 設定頁面背景為純白 */
+  body, html {
+    background-color: #ffffff !important;
+    margin: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact; /* 確保某些需要的顏色能準確列印 */
+    print-color-adjust: exact;
+  }
+
+  /* 3. 隱藏列印時不需要的元素 (導覽列、按鈕、Footer) */
+  nav.primary-nav, 
+  .site-header, 
+  .footer, 
+  .btn, 
+  button,
+  .mobile-toggle,
+  .nav-actions,
+  iframe, /* 地圖通常印不出來，建議隱藏 */
+  .contact-cta {
+    display: none !important;
+  }
+
+  /* 4. 針對 Toolkit 或卡片做優化 */
+  .card, .toolkit-container, .section {
+    border: 1px solid #ccc !important; /* 如果原本是陰影區隔，改用細灰線 */
+    page-break-inside: avoid; /* 避免卡片內容被切成兩頁 */
+    margin-bottom: 20px !important;
+  }
+
+  /* 5. 連結網址顯示 (可選) */
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8rem;
+    color: #555 !important;
   }
 }
