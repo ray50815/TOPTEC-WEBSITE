@@ -447,6 +447,14 @@ document.addEventListener('DOMContentLoaded', () => {
   initHeroSlider();
 
   function initHeroInteractions() {
+    const isTouchDevice =
+      window.innerWidth < 768 ||
+      window.matchMedia('(hover: none)').matches ||
+      window.matchMedia('(pointer: coarse)').matches;
+    if (isTouchDevice) {
+      return;
+    }
+
     const hero = document.querySelector('.hero');
     if (!hero) {
       return;
