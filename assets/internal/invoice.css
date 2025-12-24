@@ -107,6 +107,15 @@ body {
   background-color: #f9fafb;
 }
 
+.packing-table td.packing-desc {
+  text-align: left;
+}
+
+.packing-total-row td {
+  font-weight: 700;
+  background-color: #eef2f7;
+}
+
 .invoice-table .no-border {
   border: none;
 }
@@ -130,9 +139,11 @@ body {
   inset: 0;
   background-color: rgba(0,0,0,.5);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   z-index: 1000;
+  padding: 24px;
+  overflow: auto;
 }
 
 .modal-content {
@@ -147,113 +158,194 @@ body {
   line-height: 1.5;
 }
 
-@media print {
-  body {
-    font-family: 'Times New Roman', serif;
-    margin: 0;
-    background: #ffffff !important;
+.modal-content.packing-modal {
+  width: 960px;
+  max-width: 100%;
+}
+
+.packing-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.packing-sheet {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px 24px;
+  color: #111827;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.packing-header {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+}
+
+.packing-brand {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.packing-logo {
+  height: 42px;
+  width: auto;
+  margin-top: 2px;
+}
+
+.packing-company-name {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.packing-company-details {
+  font-size: 11px;
+  color: #374151;
+}
+
+.packing-doc {
+  min-width: 240px;
+}
+
+.packing-title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-align: right;
+  margin-bottom: 6px;
+}
+
+.packing-meta {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 11px;
+}
+
+.packing-meta td {
+  border: 1px solid #1f2937;
+  padding: 4px 6px;
+}
+
+.packing-meta td:first-child {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.packing-parties {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.packing-party {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: #f8fafc;
+}
+
+.packing-party-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  color: #1f2937;
+}
+
+.packing-party-body {
+  font-size: 11px;
+  color: #0f172a;
+}
+
+.packing-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 6px 16px;
+  font-size: 11px;
+  margin-bottom: 12px;
+}
+
+.packing-label {
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #1f2937;
+}
+
+.packing-summary {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.packing-summary-table {
+  border-collapse: collapse;
+  font-size: 11px;
+  min-width: 260px;
+}
+
+.packing-summary-table td {
+  border: 1px solid #1f2937;
+  padding: 4px 6px;
+}
+
+.packing-summary-table td:first-child {
+  font-weight: 700;
+}
+
+.packing-declaration {
+  margin-top: 12px;
+  font-size: 11px;
+  color: #1f2937;
+}
+
+.packing-signature {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.signature-line {
+  border-top: 1px solid #1f2937;
+  padding-top: 4px;
+  width: 220px;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 720px) {
+  .packing-header {
+    flex-direction: column;
   }
-  html {
-    background: #ffffff !important;
-  }
-  @page {
-    size: A4;
-    margin: 12mm;
-  }
-  /* Hide everything by default, then force invoice visible */
-  body * {
-    visibility: hidden !important;
-  }
-  #invoice-wrapper,
-  #invoice-wrapper * {
-    visibility: visible !important;
-  }
-  #invoice-wrapper,
-  #invoice-wrapper.hidden {
-    display: block !important;
-  }
-  #invoice-wrapper {
-    margin: 0 auto;
-    padding: 0;
+
+  .packing-doc {
     width: 100%;
-    background: #ffffff !important;
   }
-  #invoice-wrapper .no-print {
-    display: none !important;
-    visibility: hidden !important;
+
+  .packing-parties {
+    grid-template-columns: 1fr;
   }
-  #invoice-preview {
-    position: static;
-    width: 100%;
-    border: none;
-    box-shadow: none;
-    padding: 0;
-    margin: 0 auto;
-    background: #ffffff !important;
-  }
-  .invoice-box {
-    background: #fff;
-    border: none;
-    box-shadow: none;
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 12px 16px;
-  }
-  .invoice-table thead {
-    display: table-header-group;
-  }
-  .invoice-table tr {
-    page-break-inside: avoid;
-  }
-  .invoice-header,
-  .info-row,
-  .invoice-summary {
-    page-break-inside: avoid;
-  }
-  .no-print {
-    display: none;
+
+  .packing-summary {
+    justify-content: flex-start;
   }
 }
 
 /* === TOOLKIT / INVOICE 列印專用修復 === */
-@media print {
-  /* 1. 強制移除所有陰影 (這是黑邊的主因) */
-  * {
-    box-shadow: none !important;
-    text-shadow: none !important;
-  }
-
-  /* 2. 設定背景為純白，避免深色背景被印出來 */
-  body, html, .page, .invoice-container, .toolkit-container {
-    background: #fff !important;
-    background-color: #fff !important;
-    color: #000 !important;
-  }
-
-  /* 3. 確保頁面邊距正確，移除瀏覽器預設的 header/footer */
-  @page {
-    margin: 10mm; /* 設定列印邊距 */
-    size: auto;   /* 自動調整紙張 */
-  }
-
-  /* 4. 隱藏不該被印出來的按鈕與選單 */
-  .no-print, 
-  button, 
-  .btn, 
-  .toolkit-sidebar, 
-  nav, 
-  header, 
-  footer {
-    display: none !important;
-  }
-
-  /* 5. 確保邊框是細線而不是模糊的陰影 */
-  .invoice-box, table, .card {
-    border: 1px solid #ddd !important;
-    border-collapse: collapse !important;
-  }
-}
 
 /* === INVOICE WHITE THEME === */
 #invoice-wrapper,
@@ -305,31 +397,107 @@ body {
 }
 
 /* === PRINT PRESENTATION REFINEMENT === */
+
+/* === PRINT RULES (CONSOLIDATED) === */
 @media print {
+  @page {
+    size: A4 portrait;
+    margin: 5mm;
+  }
+
   body {
     font-family: 'Noto Sans TC', 'Times New Roman', serif;
     font-size: 11px;
     line-height: 1.55;
+    margin: 0;
+    background: #ffffff !important;
     color: #111111;
   }
 
-  #invoice-wrapper,
-  #invoice-preview {
-    margin: 0 auto;
-    padding: 0 !important;
+  html {
+    background: #ffffff !important;
   }
 
-  #invoice-preview {
-    max-width: 180mm;
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  body, html, .page, .invoice-container, .toolkit-container {
+    background: #fff !important;
+    background-color: #fff !important;
+    color: #000 !important;
+  }
+
+  body * {
+    visibility: hidden !important;
+  }
+
+  #invoice-wrapper,
+  #invoice-wrapper * {
+    visibility: visible !important;
+  }
+
+  body.print-packing #invoice-wrapper,
+  body.print-packing #invoice-wrapper * {
+    visibility: hidden !important;
+  }
+
+  body.print-packing #packingListModal,
+  body.print-packing #packingListModal * {
+    visibility: visible !important;
+  }
+
+  #invoice-wrapper,
+  #invoice-wrapper.hidden {
+    display: block !important;
+  }
+
+  #invoice-wrapper {
+    margin: 0 auto;
+    padding: 0;
+    width: 100%;
+    background: #ffffff !important;
+  }
+
+  #invoice-wrapper .no-print {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  .no-print,
+  button,
+  .btn,
+  .toolkit-sidebar,
+  nav,
+  header,
+  footer {
+    display: none !important;
   }
 
   #invoice-wrapper > .rounded-3xl {
     padding: 0 !important;
   }
 
+  #invoice-preview {
+    position: static;
+    width: 100%;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0 auto;
+    background: #ffffff !important;
+    max-width: 180mm;
+  }
+
   .invoice-box {
-    padding: 10mm 8mm 12mm !important;
+    background: #fff;
     border: none !important;
+    box-shadow: none;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 10mm 8mm 12mm !important;
     border-radius: 0 !important;
   }
 
@@ -352,6 +520,20 @@ body {
     background: #ffffff !important;
   }
 
+  .invoice-table thead {
+    display: table-header-group;
+  }
+
+  .invoice-table tr {
+    page-break-inside: avoid;
+  }
+
+  .invoice-header,
+  .info-row,
+  .invoice-summary {
+    page-break-inside: avoid;
+  }
+
   .invoice-table th,
   .invoice-table td,
   .packing-table th,
@@ -365,5 +547,92 @@ body {
   .packing-table th,
   .packing-table tbody tr:nth-child(even) {
     background: #ffffff !important;
+  }
+
+  .packing-total-row td {
+    background: #ffffff !important;
+  }
+
+  body.print-packing {
+    height: 100vh;
+    overflow: hidden;
+    background-color: #fff !important;
+  }
+
+  body.print-packing #invoice-wrapper {
+    display: none !important;
+  }
+
+  body.print-packing #packingListModal {
+    position: static !important;
+    display: block !important;
+    background: #ffffff !important;
+    padding: 0 !important;
+  }
+
+  body.print-packing .modal-content {
+    max-width: none !important;
+    width: 100% !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  body.print-packing .packing-actions {
+    display: none !important;
+  }
+
+  body.print-packing .packing-sheet {
+    position: relative;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    transform: scale(0.95);
+    transform-origin: top center;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  body.print-packing tr,
+  body.print-packing td,
+  body.print-packing th,
+  body.print-packing .packing-header,
+  body.print-packing .packing-summary,
+  body.print-packing .packing-signature {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-after: auto;
+  }
+
+  body.print-packing .overflow-x-auto {
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  body.print-packing .packing-table th,
+  body.print-packing .packing-table td {
+    font-size: 10px !important;
+    padding: 3px 4px !important;
+    line-height: 1.2 !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+  }
+
+  body.print-packing .packing-table td.packing-desc {
+    width: 35%;
+    white-space: normal !important;
+  }
+
+  body.print-packing .packing-table th:not(:nth-child(2)),
+  body.print-packing .packing-table td:not(.packing-desc) {
+    white-space: nowrap !important;
+    width: auto;
+  }
+
+  body.print-packing .packing-signature {
+    margin-top: 5mm !important;
+    page-break-inside: avoid;
   }
 }

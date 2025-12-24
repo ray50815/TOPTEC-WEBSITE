@@ -10,7 +10,9 @@ const TOPTEC_GLOBAL = {
   name: "TOPTEC GLOBAL PTE. LTD.",
   address: "60 Paya Lebar Road, #07-42 Paya Lebar Square\nSingapore 409051",
   tel: "+65 8965 6938",
-  email: "Toptecgc@gmail.com"
+  email: "sales@toptec.com.sg",
+  uen: "201932202N",
+  country: "SINGAPORE"
 };
 
     const companyConfigs = {
@@ -418,29 +420,168 @@ function generateInvoiceHTML(config, inputs, totalAmount, quantities){
     }
     function generateSayTotal(amount, currencyCode){ const el=document.getElementById('say-total-amount'); if(!el) return; const txt=numberToWords(amount, currencyCode); el.textContent = txt || 'Could not generate.'; }
 
-    // Packing List（以保守估算）
+    // Packing List (estimated values)
     function showModal(id, content){ const m=document.getElementById(id); m.innerHTML=content; m.classList.remove('hidden'); }
-    function closeModal(id){ document.getElementById(id).classList.add('hidden'); }
+    function closeModal(id){ document.getElementById(id).classList.add('hidden'); document.body.classList.remove('print-packing'); }
+    function formatAddressHTML(address){
+      if(!address) return '';
+      return address.split('\n').map(line=>line.trim()).filter(Boolean).join('<br>');
+    }
+    function formatPackingValue(value, fallback='--'){
+      const text = value === undefined || value === null ? '' : String(value).trim();
+      return text ? text : fallback;
+    }
+    function buildPartyHTML(party){
+      if(!party) return '';
+      const lines = [];
+      if(party.name) lines.push(`<strong>${party.name}</strong>`);
+      const address = formatAddressHTML(party.address);
+      if(address) lines.push(address);
+      if(party.tel) lines.push(`Tel: ${party.tel}`);
+      if(party.email) lines.push(`Email: ${party.email}`);
+      return lines.join('<br>');
+    }
+    function printPackingList(){
+      document.body.classList.add('print-packing');
+      window.print();
+    }
+    window.addEventListener('afterprint', ()=> document.body.classList.remove('print-packing'));
     function generatePackingList(){
       const modalId='packingListModal';
-      showModal(modalId, `<div class="modal-content"><h2 class="text-xl font-bold mb-4">✨ 正在生成裝箱單...</h2><div class="flex justify-center items-center h-24"><div class="loader"></div></div></div>`);
-      const EST = { 'default': { pcs_per_carton: 1000, net_weight_per_pc_kg: 0.085, packaging_weight_per_carton_kg: 2, volume_per_carton_cbm: 0.06 } };
+      showModal(modalId, `<div class="modal-content"><h2 class="text-xl font-bold mb-4">Generating packing list...</h2><div class="flex justify-center items-center h-24"><div class="loader"></div></div></div>`);
+      const { config, inputs } = generationArgs;
+      if(!config || !inputs){
+        showModal(modalId, `<div class="modal-content"><div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold">Packing List</h2><button onclick="closeModal('${modalId}')" class="text-gray-500 hover:text-gray-800 font-bold text-2xl">X</button></div><p class="text-sm">Please generate the invoice before creating the packing list.</p></div>`);
+        return;
+      }
+      const isBuyInvoice = config.type === 'buy';
+      const seller = isBuyInvoice ? { name: config.name, address: config.address, tel: config.tel } : TOPTEC_GLOBAL;
+      const buyer = isBuyInvoice ? TOPTEC_GLOBAL : { name: config.name, address: config.address, tel: config.tel };
+      const invoiceNo = (inputs.invoiceNo || currentInvoiceData.invoiceNo || '').trim();
+      const invoiceDate = inputs.dateInput ? formatDate(inputs.dateInput) : (currentInvoiceData.date || '');
+      const packingListNo = invoiceNo ? `${invoiceNo}-PL` : '';
+      const originCountry = formatPackingValue(isBuyInvoice ? config.country : TOPTEC_GLOBAL.country);
+      const destinationCountry = formatPackingValue(isBuyInvoice ? TOPTEC_GLOBAL.country : config.country);
+      const priceTerm = formatPackingValue(config.priceTerm);
+      const paymentTerms = formatPackingValue(config.paymentTerms);
+      const currencyCode = formatPackingValue(config.currencyCode);
       const items = (currentInvoiceData.items||[]).filter(x=>x && x.qty>0);
-      let rows=[], sum={ total_cartons:0, total_net_weight:0, total_gross_weight:0, total_volume:0 };
+      const ESTIMATES = {
+        'default': { pcs_per_carton: 1000, net_weight_per_pc_kg: 0.085, packaging_weight_per_carton_kg: 2.0, volume_per_carton_cbm: 0.06 },
+        'K 2 - 0 6': { pcs_per_carton: 1, net_weight_per_pc_kg: 12.50, packaging_weight_per_carton_kg: 2.0, volume_per_carton_cbm: 0.16 },
+        'J D J - A 1': { pcs_per_carton: 1, net_weight_per_pc_kg: 8.50, packaging_weight_per_carton_kg: 1.5, volume_per_carton_cbm: 0.12 },
+        'Accessories': { pcs_per_carton: 50, net_weight_per_pc_kg: 0.50, packaging_weight_per_carton_kg: 1.0, volume_per_carton_cbm: 0.05 },
+        'JC-108A-08': { pcs_per_carton: 2000, net_weight_per_pc_kg: 0.005, packaging_weight_per_carton_kg: 0.8, volume_per_carton_cbm: 0.035 },
+        'JC-108B-08': { pcs_per_carton: 2000, net_weight_per_pc_kg: 0.005, packaging_weight_per_carton_kg: 0.8, volume_per_carton_cbm: 0.035 },
+        'JC-109A-08': { pcs_per_carton: 1500, net_weight_per_pc_kg: 0.008, packaging_weight_per_carton_kg: 0.8, volume_per_carton_cbm: 0.04 },
+        'AI Cloud storage and advertising service charges': { pcs_per_carton: 999999, net_weight_per_pc_kg: 0, packaging_weight_per_carton_kg: 0, volume_per_carton_cbm: 0 }
+      };
+      const lookupProduct = (id)=> (config.products || []).find(p=>p.id === id) || {};
+      let rows=[], sum={ total_cartons:0, total_quantity:0, total_net_weight:0, total_gross_weight:0, total_volume:0 };
       items.forEach(it=>{
-        const est = EST[it.id] || EST['default']; const q = it.qty; const cartons=Math.ceil(q/est.pcs_per_carton);
-        const nw = q*est.net_weight_per_pc_kg; const gw = nw + cartons*est.packaging_weight_per_carton_kg; const vol=cartons*est.volume_per_carton_cbm;
-        rows.push({ item_no:it.id, description:'Bottom Housing-JC-8GB', cartons, total_quantity:q, net_weight_kgs:nw, gross_weight_kgs:gw, volume_cbm:vol });
-        sum.total_cartons+=cartons; sum.total_net_weight+=nw; sum.total_gross_weight+=gw; sum.total_volume+=vol;
+        const est = ESTIMATES[it.id] || ESTIMATES['default'];
+        const q = it.qty;
+        const isService = est.net_weight_per_pc_kg === 0;
+        const cartons = isService ? 0 : Math.ceil(q/est.pcs_per_carton);
+        const nw = q*est.net_weight_per_pc_kg;
+        const gw = nw + cartons*est.packaging_weight_per_carton_kg;
+        const vol = cartons*est.volume_per_carton_cbm;
+        const product = lookupProduct(it.id);
+        const description = (product.desc || it.desc || it.id || '').trim();
+        rows.push({ item_no: it.id, description, cartons, total_quantity: q, net_weight_kgs: nw, gross_weight_kgs: gw, volume_cbm: vol });
+        sum.total_cartons += cartons;
+        sum.total_quantity += q;
+        sum.total_net_weight += nw;
+        sum.total_gross_weight += gw;
+        sum.total_volume += vol;
       });
+      const sellerLines = buildPartyHTML(seller);
+      const buyerLines = buildPartyHTML(buyer);
+      const headerDetails = [
+        formatAddressHTML(seller.address),
+        seller.tel ? `Tel: ${seller.tel}` : '',
+        seller.email ? `Email: ${seller.email}` : '',
+        !isBuyInvoice && TOPTEC_GLOBAL.uen ? `UEN: ${TOPTEC_GLOBAL.uen}` : ''
+      ].filter(Boolean).join('<br>');
       setTimeout(()=>{
-        const body = rows.map(r=>`<tr><td>${r.item_no}</td><td>${r.description}</td><td>${r.cartons}</td><td>${r.total_quantity.toLocaleString()}</td><td>${r.net_weight_kgs.toFixed(2)}</td><td>${r.gross_weight_kgs.toFixed(2)}</td><td>${r.volume_cbm.toFixed(3)}</td></tr>`).join('');
-        const total = `<tr class="font-bold bg-gray-100"><td colspan="2">TOTAL</td><td>${sum.total_cartons}</td><td></td><td>${sum.total_net_weight.toFixed(2)}</td><td>${sum.total_gross_weight.toFixed(2)}</td><td>${sum.total_volume.toFixed(3)}</td></tr>`;
-        showModal(modalId, `<div class="modal-content"><div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold">裝箱單</h2><button onclick="closeModal('${modalId}')" class="text-gray-500 hover:text-gray-800 font-bold text-2xl">×</button></div><div class="overflow-x-auto"><table class="w-full packing-table"><thead><tr><th>品項號碼</th><th>描述</th><th>箱數 (CTN)</th><th>總數量 (PCS)</th><th>淨重 (KGS)</th><th>毛重 (KGS)</th><th>體積 (CBM)</th></tr></thead><tbody>${body}${total}</tbody></table></div></div>`);
+        const body = rows.map(r=>`<tr><td>${r.item_no}</td><td class="packing-desc">${r.description}</td><td>${r.cartons}</td><td>${r.total_quantity.toLocaleString()}</td><td>${r.net_weight_kgs.toFixed(2)}</td><td>${r.gross_weight_kgs.toFixed(2)}</td><td>${r.volume_cbm.toFixed(3)}</td></tr>`).join('');
+        const totalRow = `<tr class="packing-total-row"><td colspan="2">TOTAL</td><td>${sum.total_cartons}</td><td>${sum.total_quantity.toLocaleString()}</td><td>${sum.total_net_weight.toFixed(2)}</td><td>${sum.total_gross_weight.toFixed(2)}</td><td>${sum.total_volume.toFixed(3)}</td></tr>`;
+        const packingHTML = `
+          <div class="modal-content packing-modal">
+            <div class="packing-actions no-print">
+              <button onclick="printPackingList()" class="rounded-md border border-slate-300 bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800">Print / Export PDF</button>
+              <button onclick="closeModal('${modalId}')" class="rounded-md border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">Close</button>
+            </div>
+            <div class="packing-sheet">
+              <div class="packing-header">
+                <div class="packing-brand">
+                  ${isBuyInvoice ? '' : '<img src="../assets/img/toptec-logo.svg" alt="TOPTEC logo" class="packing-logo">'}
+                  <div>
+                    <div class="packing-company-name">${seller.name || ''}</div>
+                    <div class="packing-company-details">${headerDetails || ''}</div>
+                  </div>
+                </div>
+                <div class="packing-doc">
+                  <div class="packing-title">PACKING LIST</div>
+                  <table class="packing-meta">
+                    <tr><td>PACKING LIST NO.</td><td>${formatPackingValue(packingListNo)}</td></tr>
+                    <tr><td>INVOICE NO.</td><td>${formatPackingValue(invoiceNo)}</td></tr>
+                    <tr><td>INVOICE DATE</td><td>${formatPackingValue(invoiceDate)}</td></tr>
+                    <tr><td>CURRENCY</td><td>${currencyCode}</td></tr>
+                    <tr><td>PAYMENT TERMS</td><td>${paymentTerms}</td></tr>
+                    <tr><td>PRICE TERM</td><td>${priceTerm}</td></tr>
+                  </table>
+                </div>
+              </div>
+
+              <div class="packing-parties">
+                <div class="packing-party">
+                  <div class="packing-party-title">SHIPPER / EXPORTER</div>
+                  <div class="packing-party-body">${sellerLines}</div>
+                </div>
+                <div class="packing-party">
+                  <div class="packing-party-title">CONSIGNEE</div>
+                  <div class="packing-party-body">${buyerLines}</div>
+                </div>
+              </div>
+
+              <div class="overflow-x-auto">
+                <table class="w-full packing-table">
+                  <thead>
+                    <tr>
+                      <th>ITEM NO.</th>
+                      <th>DESCRIPTION</th>
+                      <th>CTN</th>
+                      <th>QTY (PCS)</th>
+                      <th>NET WT (KGS)</th>
+                      <th>GROSS WT (KGS)</th>
+                      <th>MEAS (CBM)</th>
+                    </tr>
+                  </thead>
+                  <tbody>${body}${totalRow}</tbody>
+                </table>
+              </div>
+
+              <div class="packing-summary">
+                <table class="packing-summary-table">
+                  <tr><td>TOTAL CARTONS</td><td>${sum.total_cartons}</td></tr>
+                  <tr><td>TOTAL QTY (PCS)</td><td>${sum.total_quantity.toLocaleString()}</td></tr>
+                  <tr><td>TOTAL NET WT (KGS)</td><td>${sum.total_net_weight.toFixed(2)}</td></tr>
+                  <tr><td>TOTAL GROSS WT (KGS)</td><td>${sum.total_gross_weight.toFixed(2)}</td></tr>
+                  <tr><td>TOTAL MEAS (CBM)</td><td>${sum.total_volume.toFixed(3)}</td></tr>
+                </table>
+              </div>
+
+              <div class="packing-signature">
+                <div class="signature-line">AUTHORIZED SIGNATURE</div>
+              </div>
+            </div>
+          </div>`;
+        showModal(modalId, packingHTML);
       }, 120);
     }
 
-    // --- MAIN RENDER ---
+// --- MAIN RENDER ---
     function renderInvoice(quantities){
       const { config, inputs, originalAmount } = generationArgs;
       const finalTotalAmount = quantities.adjustedAmount || originalAmount;
@@ -449,7 +590,7 @@ function generateInvoiceHTML(config, inputs, totalAmount, quantities){
       const buyerForData = config.type === 'buy' ? TOPTEC_GLOBAL.name : config.name;
       currentInvoiceData = {
         date: formatDate(inputs.dateInput), invoiceNo: inputs.invoiceNo, totalAmount: formatCurrency(finalTotalAmount, config.currencySymbol), buyer: buyerForData,
-        items: config.products.map((p,i)=> ({ id:p.id, qty: quantities[`q${i+1}`] }))
+        items: config.products.map((p,i)=> ({ id:p.id, desc: p.desc || '', qty: quantities[`q${i+1}`] }))
       };
     }
 
