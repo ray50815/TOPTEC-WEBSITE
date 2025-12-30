@@ -76,7 +76,7 @@ function buildInvoiceNoFromDate(yyyymmdd){
 function getDateForInvoiceNo(rawDate){
   if(!/^\d{8}$/.test(rawDate)) return '';
   const shouldOffset = document.getElementById('date-adjust-checkbox').checked;
-  return shouldOffset ? adjustDate(rawDate, 5) : rawDate;
+  return shouldOffset ? adjustDate(rawDate, -3) : rawDate;
 }
 
 function syncInvoiceNoFromDate(){
