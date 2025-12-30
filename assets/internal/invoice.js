@@ -347,12 +347,11 @@ function generateInvoiceHTML(config, inputs, totalAmount, quantities){
         }).join('');
   }
 
-  const headerDetailsHTML = config.country.trim() || config.priceTerm.trim() || config.paymentTerms.trim() ? `
+  const headerDetailsHTML = config.country.trim() || config.paymentTerms.trim() ? `
     <div class="invoice-terms">
       <div class="flex justify-between">
-        ${config.country.trim()? `<p class="w-1/3"><strong>Country of Origin:</strong> ${config.country}</p>` : '<p class="w-1/3"></p>'}
-        ${config.priceTerm.trim()? `<p class="w-1/3"><strong>PRICE TERM:</strong> ${config.priceTerm}</p>` : '<p class="w-1/3"></p>'}
-        ${config.paymentTerms.trim()? `<p class="w-1/3"><strong>Payment Terms:</strong> ${config.paymentTerms}</p>` : '<p class="w-1/3"></p>'}
+        ${config.country.trim()? `<p class="w-1/2"><strong>Country of Origin:</strong> ${config.country}</p>` : '<p class="w-1/2"></p>'}
+        ${config.paymentTerms.trim()? `<p class="w-1/2"><strong>Payment Terms:</strong> ${config.paymentTerms}</p>` : '<p class="w-1/2"></p>'}
       </div>
     </div>
   ` : '';
