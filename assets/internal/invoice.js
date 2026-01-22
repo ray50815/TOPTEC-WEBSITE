@@ -19,38 +19,62 @@ const TOPTEC_GLOBAL = {
       // --- SELL CONFIGS ---
       'anxin': {
         type: 'sell', name: "An Xin Enterprise Co.,Ltd", address: "9F., No. 222, Sec. 1, Fuxing S. Rd., Da’an Dist., Taipei City ,106458,Taiwan (R.O.C.)", tel: "886-968-353738", country: "TAIWAN", priceTerm: "FOB TAIPEI", paymentTerms: "T/T", currencySymbol: 'US$', currencyCode: 'USD',
-        products: [ { id: 'JC-108A-08', desc: 'Bottom Housing-JC-8GB', price: 1.65 }, { id: 'JC-108B-08', desc: 'Bottom Housing-JC-8GB', price: 1.55 }, { id: 'JC-109A-08', desc: 'Bottom Housing-JC-8GB', price: 2.10 } ],
+        products: [ 
+          { id: 'JC-108A-08', desc: 'Bottom Housing-JC-8GB', price: 1.65, est: { pcs_per_carton: 2000, net_weight_per_pc_kg: 0.005, packaging_weight_per_carton_kg: 0.8, volume_per_carton_cbm: 0.035 } }, 
+          { id: 'JC-108B-08', desc: 'Bottom Housing-JC-8GB', price: 1.55, est: { pcs_per_carton: 2000, net_weight_per_pc_kg: 0.005, packaging_weight_per_carton_kg: 0.8, volume_per_carton_cbm: 0.035 } }, 
+          { id: 'JC-109A-08', desc: 'Bottom Housing-JC-8GB', price: 2.10, est: { pcs_per_carton: 1500, net_weight_per_pc_kg: 0.008, packaging_weight_per_carton_kg: 0.8, volume_per_carton_cbm: 0.04 } } 
+        ],
         findQuantities: findQuantitiesAnXinUSD, extraInvoiceLines: () => `<tr class="h-4"><td class="no-border"></td><td class="no-border"></td><td class="no-border"></td><td class="no-border"></td></tr>`,
       },
       'anxin_eur': {
         type: 'sell', name: "An Xin Enterprise Co.,Ltd", address: "9F., No. 222, Sec. 1, Fuxing S. Rd., Da’an Dist., Taipei City ,106458,Taiwan (R.O.C.)", tel: "886-968-353738", country: "TAIWAN", priceTerm: "FOB TAIPEI", paymentTerms: "T/T", currencySymbol: '€', currencyCode: 'EUR',
-        products: [ { id: 'JC-108A-08', desc: 'Bottom Housing-JC-8GB', price: 1.55 }, { id: 'JC-108B-08', desc: 'Bottom Housing-JC-8GB', price: 1.45 }, { id: 'JC-109A-08', desc: 'Bottom Housing-JC-8GB', price: 2.00 } ],
+        products: [ 
+          { id: 'JC-108A-08', desc: 'Bottom Housing-JC-8GB', price: 1.55, est: { pcs_per_carton: 2000, net_weight_per_pc_kg: 0.005, packaging_weight_per_carton_kg: 0.8, volume_per_carton_cbm: 0.035 } }, 
+          { id: 'JC-108B-08', desc: 'Bottom Housing-JC-8GB', price: 1.45, est: { pcs_per_carton: 2000, net_weight_per_pc_kg: 0.005, packaging_weight_per_carton_kg: 0.8, volume_per_carton_cbm: 0.035 } }, 
+          { id: 'JC-109A-08', desc: 'Bottom Housing-JC-8GB', price: 2.00, est: { pcs_per_carton: 1500, net_weight_per_pc_kg: 0.008, packaging_weight_per_carton_kg: 0.8, volume_per_carton_cbm: 0.04 } } 
+        ],
         findQuantities: findQuantitiesAnXinEur, extraInvoiceLines: () => `<tr class="h-4"><td class="no-border"></td><td class="no-border"></td><td class="no-border"></td><td class="no-border"></td></tr>`,
       },
       'winteam': {
         type: 'sell', name: "WIN TEAM CO.,LTD.", address: "NO.117,KANGLE ST.,NEIHU DIST., Taipei City ,114038,Taiwan (R.O.C.)", tel: "886-2-26339869", country: "TAIWAN", priceTerm: "FOB TAIPEI", paymentTerms: "T/T", currencySymbol: 'US$', currencyCode: 'USD',
-        products: [ { id: 'K 2 - 0 6', desc: 'Intelligent cooking machine', price: 9000 }, { id: 'J D J - A 1', desc: 'Fully automatic intelligent egg fryer', price: 3000 }, { id: 'Accessories', desc: 'Feeding boxes and accessories', price: 600 } ],
+        products: [ 
+          { id: 'K 2 - 0 6', desc: 'Intelligent cooking machine', price: 9000, est: { pcs_per_carton: 1, net_weight_per_pc_kg: 12.50, packaging_weight_per_carton_kg: 2.0, volume_per_carton_cbm: 0.16 } }, 
+          { id: 'J D J - A 1', desc: 'Fully automatic intelligent egg fryer', price: 3000, est: { pcs_per_carton: 1, net_weight_per_pc_kg: 8.50, packaging_weight_per_carton_kg: 1.5, volume_per_carton_cbm: 0.12 } }, 
+          { id: 'Accessories', desc: 'Feeding boxes and accessories', price: 600, est: { pcs_per_carton: 50, net_weight_per_pc_kg: 0.50, packaging_weight_per_carton_kg: 1.0, volume_per_carton_cbm: 0.05 } } 
+        ],
         findQuantities: findQuantitiesWinTeam, extraInvoiceLines: () => ``,
       },
       'styleup': {
         type: 'sell', name: "StyleUp Technology Co., Ltd.", address: "10 F., No. 150, Sec. 2, Nanjing E. Rd., Zhongshan Dist., Taipei City 104695, Taiwan (R.O.C.)", tel: "886-989-553839", country: "TAIWAN", priceTerm: "FOB TAIPEI", paymentTerms: "T/T", currencySymbol: 'US$', currencyCode: 'USD',
-        products: [ { id: 'JC-108A-08', desc: 'Bottom Housing-JC-8GB', price: 1.65 }, { id: 'JC-108B-08', desc: 'Bottom Housing-JC-8GB', price: 1.60 }, { id: 'JC-109A-08', desc: 'Bottom Housing-JC-8GB', price: 2.10 } ],
+        products: [ 
+          { id: 'JC-108A-08', desc: 'Bottom Housing-JC-8GB', price: 1.65, est: { pcs_per_carton: 2000, net_weight_per_pc_kg: 0.005, packaging_weight_per_carton_kg: 0.8, volume_per_carton_cbm: 0.035 } }, 
+          { id: 'JC-108B-08', desc: 'Bottom Housing-JC-8GB', price: 1.60, est: { pcs_per_carton: 2000, net_weight_per_pc_kg: 0.005, packaging_weight_per_carton_kg: 0.8, volume_per_carton_cbm: 0.035 } }, 
+          { id: 'JC-109A-08', desc: 'Bottom Housing-JC-8GB', price: 2.10, est: { pcs_per_carton: 1500, net_weight_per_pc_kg: 0.008, packaging_weight_per_carton_kg: 0.8, volume_per_carton_cbm: 0.04 } } 
+        ],
         findQuantities: findQuantitiesStyleUp, extraInvoiceLines: () => `<tr class="h-4"><td class="no-border"></td><td class="no-border"></td><td class="no-border"></td><td class="no-border"></td></tr>`,
       },
       'converge': {
         type: 'sell', name: "Converge Cloud Co., Ltd.", address: "Morgan Tower, Floor 35th Unit 08B-11, Street Sopheak Mongkul,\nPhum 14, Sangkat Tonle Bassac, Khan Chamka Mon, Phnom Penh, Cambodia", tel: "088-590-9999", country: "Cambodia", priceTerm: "", paymentTerms: "T/T-USD/USTD", currencySymbol: 'US$', currencyCode: 'USD',
-        products: [ { id: 'AI Cloud storage and advertising service charges', desc: '', price: 0 } ],
+        products: [ { id: 'AI Cloud storage and advertising service charges', desc: '', price: 0, est: { pcs_per_carton: 999999, net_weight_per_pc_kg: 0, packaging_weight_per_carton_kg: 0, volume_per_carton_cbm: 0 } } ],
         findQuantities: (totalAmount) => ([{ q1: 1 }]), extraInvoiceLines: () => ``,
       },
       // --- BUY CONFIGS ---
       'buy_foreign_usd': {
         type: 'buy', name: "外國公司 (Foreign Company)", address: " ", tel: " ", country: " ", priceTerm: " ", paymentTerms: "T/T", currencySymbol: 'US$', currencyCode: 'USD',
-        products: [ { id: 'JC-108A-08', desc: 'Bottom Housing-JC-8GB', price: 1.5 }, { id: 'JC-108B-08', desc: 'Bottom Housing-JC-8GB', price: 1.4 }, { id: 'JC-109A-08', desc: 'Bottom Housing-JC-8GB', price: 2.0 } ],
+        products: [ 
+          { id: 'JC-108A-08', desc: 'Bottom Housing-JC-8GB', price: 1.5, est: { pcs_per_carton: 2000, net_weight_per_pc_kg: 0.005, packaging_weight_per_carton_kg: 0.8, volume_per_carton_cbm: 0.035 } }, 
+          { id: 'JC-108B-08', desc: 'Bottom Housing-JC-8GB', price: 1.4, est: { pcs_per_carton: 2000, net_weight_per_pc_kg: 0.005, packaging_weight_per_carton_kg: 0.8, volume_per_carton_cbm: 0.035 } }, 
+          { id: 'JC-109A-08', desc: 'Bottom Housing-JC-8GB', price: 2.0, est: { pcs_per_carton: 1500, net_weight_per_pc_kg: 0.008, packaging_weight_per_carton_kg: 0.8, volume_per_carton_cbm: 0.04 } } 
+        ],
         findQuantities: findQuantitiesAnXinUSD, extraInvoiceLines: () => `<tr class="h-4"><td class="no-border"></td><td class="no-border"></td><td class="no-border"></td><td class="no-border"></td></tr>`,
       },
       'buy_foreign_eur': {
         type: 'buy', name: "外國公司 (Foreign Company)", address: " ", tel: " ", country: " ", priceTerm: " ", paymentTerms: "T/T", currencySymbol: '€', currencyCode: 'EUR',
-        products: [ { id: 'JC-108A-08', desc: 'Bottom Housing-JC-8GB', price: 1.40 }, { id: 'JC-108B-08', desc: 'Bottom Housing-JC-8GB', price: 1.30 }, { id: 'JC-109A-08', desc: 'Bottom Housing-JC-8GB', price: 1.85 } ],
+        products: [ 
+          { id: 'JC-108A-08', desc: 'Bottom Housing-JC-8GB', price: 1.40, est: { pcs_per_carton: 2000, net_weight_per_pc_kg: 0.005, packaging_weight_per_carton_kg: 0.8, volume_per_carton_cbm: 0.035 } }, 
+          { id: 'JC-108B-08', desc: 'Bottom Housing-JC-8GB', price: 1.30, est: { pcs_per_carton: 2000, net_weight_per_pc_kg: 0.005, packaging_weight_per_carton_kg: 0.8, volume_per_carton_cbm: 0.035 } }, 
+          { id: 'JC-109A-08', desc: 'Bottom Housing-JC-8GB', price: 1.85, est: { pcs_per_carton: 1500, net_weight_per_pc_kg: 0.008, packaging_weight_per_carton_kg: 0.8, volume_per_carton_cbm: 0.04 } } 
+        ],
         findQuantities: findQuantitiesAnXinEur, extraInvoiceLines: () => `<tr class="h-4"><td class="no-border"></td><td class="no-border"></td><td class="no-border"></td><td class="no-border"></td></tr>`,
       },
     };
@@ -465,27 +489,18 @@ function generateInvoiceHTML(config, inputs, totalAmount, quantities){
       const paymentTerms = formatPackingValue(config.paymentTerms);
       const currencyCode = formatPackingValue(config.currencyCode);
       const items = (currentInvoiceData.items||[]).filter(x=>x && x.qty>0);
-      const ESTIMATES = {
-        'default': { pcs_per_carton: 1000, net_weight_per_pc_kg: 0.085, packaging_weight_per_carton_kg: 2.0, volume_per_carton_cbm: 0.06 },
-        'K 2 - 0 6': { pcs_per_carton: 1, net_weight_per_pc_kg: 12.50, packaging_weight_per_carton_kg: 2.0, volume_per_carton_cbm: 0.16 },
-        'J D J - A 1': { pcs_per_carton: 1, net_weight_per_pc_kg: 8.50, packaging_weight_per_carton_kg: 1.5, volume_per_carton_cbm: 0.12 },
-        'Accessories': { pcs_per_carton: 50, net_weight_per_pc_kg: 0.50, packaging_weight_per_carton_kg: 1.0, volume_per_carton_cbm: 0.05 },
-        'JC-108A-08': { pcs_per_carton: 2000, net_weight_per_pc_kg: 0.005, packaging_weight_per_carton_kg: 0.8, volume_per_carton_cbm: 0.035 },
-        'JC-108B-08': { pcs_per_carton: 2000, net_weight_per_pc_kg: 0.005, packaging_weight_per_carton_kg: 0.8, volume_per_carton_cbm: 0.035 },
-        'JC-109A-08': { pcs_per_carton: 1500, net_weight_per_pc_kg: 0.008, packaging_weight_per_carton_kg: 0.8, volume_per_carton_cbm: 0.04 },
-        'AI Cloud storage and advertising service charges': { pcs_per_carton: 999999, net_weight_per_pc_kg: 0, packaging_weight_per_carton_kg: 0, volume_per_carton_cbm: 0 }
-      };
+      const DEFAULT_EST = { pcs_per_carton: 1000, net_weight_per_pc_kg: 0.085, packaging_weight_per_carton_kg: 2.0, volume_per_carton_cbm: 0.06 };
       const lookupProduct = (id)=> (config.products || []).find(p=>p.id === id) || {};
       let rows=[], sum={ total_cartons:0, total_quantity:0, total_net_weight:0, total_gross_weight:0, total_volume:0 };
       items.forEach(it=>{
-        const est = ESTIMATES[it.id] || ESTIMATES['default'];
+        const product = lookupProduct(it.id);
+        const est = product.est || DEFAULT_EST;
         const q = it.qty;
         const isService = est.net_weight_per_pc_kg === 0;
         const cartons = isService ? 0 : Math.ceil(q/est.pcs_per_carton);
         const nw = q*est.net_weight_per_pc_kg;
         const gw = nw + cartons*est.packaging_weight_per_carton_kg;
         const vol = cartons*est.volume_per_carton_cbm;
-        const product = lookupProduct(it.id);
         const description = (product.desc || it.desc || it.id || '').trim();
         rows.push({ item_no: it.id, description, cartons, total_quantity: q, net_weight_kgs: nw, gross_weight_kgs: gw, volume_cbm: vol });
         sum.total_cartons += cartons;
@@ -611,32 +626,116 @@ function generateInvoiceHTML(config, inputs, totalAmount, quantities){
   syncInvoiceNoFromDate();
 
   document.getElementById('generateBtn').addEventListener('click', ()=>{
-    const companyKey = document.getElementById('company').value; const config = companyConfigs[companyKey];
-    const dateInput = document.getElementById('date').value; const totalAmountInput = document.getElementById('totalAmount').value;
-    const invoiceType = document.getElementById('invoiceType').value; const invoiceField = document.getElementById('invoiceNo'); const rawInvoiceNo = invoiceField.value.trim();
-    const statusDiv = document.getElementById('status'); const invoiceWrapper = document.getElementById('invoice-wrapper'); const findNextBtn = document.getElementById('findNextBtn');
-      statusDiv.innerHTML=''; invoiceWrapper.classList.add('hidden'); findNextBtn.classList.add('hidden');
-      let errors=[]; if(!/^\d{8}$/.test(dateInput)) errors.push('日期格式不正確 (需為 YYYYMMDD)。');
-      if(!totalAmountInput || isNaN(parseFloat(totalAmountInput)) || parseFloat(totalAmountInput)<=0) errors.push('總金額必須是有效的正數。');
-      const finalDateInput = getDateForInvoiceNo(dateInput) || dateInput;
-      const autoInvoiceNo = buildInvoiceNoFromDate(finalDateInput);
-      let invoiceNo = rawInvoiceNo || autoInvoiceNo;
-      if(!invoiceNo) errors.push('發票號碼為必填項。');
-      if(errors.length>0){ statusDiv.innerHTML = '錯誤：<br>'+errors.join('<br>'); statusDiv.className='mt-4 text-center text-red-300 font-semibold'; return; }
-      invoiceField.value = invoiceNo;
-      const totalAmount = parseFloat(totalAmountInput);
-      statusDiv.textContent='請稍候，正在計算並生成文件...'; statusDiv.className='mt-4 text-center text-blue-200 font-semibold animate-pulse';
-      setTimeout(()=>{
+    const useCustomFields = document.getElementById('custom-fields-checkbox').checked;
+    const statusDiv = document.getElementById('status');
+    const invoiceWrapper = document.getElementById('invoice-wrapper');
+    const findNextBtn = document.getElementById('findNextBtn');
+    statusDiv.innerHTML='';
+    invoiceWrapper.classList.add('hidden');
+    findNextBtn.classList.add('hidden');
+
+    let config;
+    let totalAmount = parseFloat(document.getElementById('totalAmount').value);
+    let findQuantitiesFunc;
+
+    if (useCustomFields) {
+        const customCompanyName = document.getElementById('customCompany').value;
+        const productName = document.getElementById('productName').value;
+        const unitPrice = parseFloat(document.getElementById('unitPrice').value);
+        const itemNo = document.getElementById('customItemNo') ? document.getElementById('customItemNo').value : 'CUSTOM-001';
+
+        if (!customCompanyName || !productName || isNaN(unitPrice) || unitPrice <= 0 || isNaN(totalAmount) || totalAmount <= 0) {
+            statusDiv.innerHTML = '錯誤：<br>請填寫所有自定義欄位，並確保單價和總金額為正數。';
+            statusDiv.className='mt-4 text-center text-red-300 font-semibold';
+            return;
+        }
+
+        config = {
+            type: 'sell',
+            name: customCompanyName,
+            address: " ",
+            tel: " ",
+            country: " ",
+            priceTerm: " ",
+            paymentTerms: "T/T",
+            currencySymbol: 'US$',
+            currencyCode: 'USD',
+            products: [
+                { id: itemNo, desc: productName, price: unitPrice }
+            ],
+            extraInvoiceLines: () => '',
+        };
+
+        findQuantitiesFunc = (total) => {
+            if (unitPrice > 0) {
+                // 處理精度問題，使用四捨五入到整數
+                const quantity = Math.round(total / unitPrice);
+                const calculatedTotal = parseFloat((quantity * unitPrice).toFixed(2));
+                
+                if (Math.abs(calculatedTotal - total) > 0.01) {
+                    return []; // 無法整除
+                }
+                return [{ q1: quantity }];
+            }
+            return [];
+        };
+        config.findQuantities = findQuantitiesFunc;
+
+    } else {
+        const companyKey = document.getElementById('company').value;
+        config = companyConfigs[companyKey];
+        findQuantitiesFunc = config.findQuantities;
+    }
+
+    const dateInput = document.getElementById('date').value;
+    const invoiceType = document.getElementById('invoiceType').value;
+    const invoiceField = document.getElementById('invoiceNo');
+    const rawInvoiceNo = invoiceField.value.trim();
+
+    let errors=[];
+    if(!/^\d{8}$/.test(dateInput)) errors.push('日期格式不正確 (需為 YYYYMMDD)。');
+    if(isNaN(totalAmount) || totalAmount<=0) errors.push('總金額必須是有效的正數。');
+
+    const finalDateInput = getDateForInvoiceNo(dateInput) || dateInput;
+    const autoInvoiceNo = buildInvoiceNoFromDate(finalDateInput);
+    let invoiceNo = rawInvoiceNo || autoInvoiceNo;
+    if(!invoiceNo) errors.push('發票號碼為必填項。');
+
+    if(errors.length>0){
+        statusDiv.innerHTML = '錯誤：<br>'+errors.join('<br>');
+        statusDiv.className='mt-4 text-center text-red-300 font-semibold';
+        return;
+    }
+    invoiceField.value = invoiceNo;
+
+    statusDiv.textContent='請稍候，正在計算並生成文件...';
+    statusDiv.className='mt-4 text-center text-blue-200 font-semibold animate-pulse';
+
+    setTimeout(()=>{
         const inputs = { dateInput: finalDateInput, invoiceType, invoiceNo };
         generationArgs = { config, inputs, originalAmount: totalAmount };
-        foundSolutions = config.findQuantities(totalAmount);
-        if(!foundSolutions || foundSolutions.length===0){ statusDiv.textContent='錯誤：找不到符合條件的數量組合，請檢查總金額。'; statusDiv.className='mt-4 text-center text-red-300 font-semibold'; return; }
-        currentSolutionIndex = 0; renderInvoice(foundSolutions[currentSolutionIndex]);
-        if(!statusDiv.innerHTML.includes('注意')){ statusDiv.textContent='文件已成功生成！'; statusDiv.className='mt-4 text-center text-green-300 font-semibold'; }
-        if(foundSolutions.length>1){ findNextBtn.classList.remove('hidden'); }
-        invoiceWrapper.classList.remove('hidden'); invoiceWrapper.scrollIntoView({ behavior:'smooth' });
-      }, 100);
-    });
+        foundSolutions = findQuantitiesFunc(totalAmount);
+        if(!foundSolutions || foundSolutions.length===0){
+            statusDiv.textContent='錯誤：找不到符合條件的數量組合，請檢查總金額。';
+            if (useCustomFields) {
+                 statusDiv.textContent='錯誤：無法從總金額和單價計算出數量。請檢查輸入。';
+            }
+            statusDiv.className='mt-4 text-center text-red-300 font-semibold';
+            return;
+        }
+        currentSolutionIndex = 0;
+        renderInvoice(foundSolutions[currentSolutionIndex]);
+        if(!statusDiv.innerHTML.includes('注意')){
+            statusDiv.textContent='文件已成功生成！';
+            statusDiv.className='mt-4 text-center text-green-300 font-semibold';
+        }
+        if(foundSolutions.length>1){
+            findNextBtn.classList.remove('hidden');
+        }
+        invoiceWrapper.classList.remove('hidden');
+        invoiceWrapper.scrollIntoView({ behavior:'smooth' });
+    }, 100);
+  });
 
     document.getElementById('findNextBtn').addEventListener('click', ()=>{
       if(foundSolutions.length===0) return; currentSolutionIndex = (currentSolutionIndex + 1) % foundSolutions.length; renderInvoice(foundSolutions[currentSolutionIndex]);
@@ -644,4 +743,86 @@ function generateInvoiceHTML(config, inputs, totalAmount, quantities){
 
     document.getElementById('printBtn').addEventListener('click', ()=> window.print());
     document.getElementById('packingListBtn').addEventListener('click', generatePackingList);
-  
+
+// --- Storage Utility ---
+const Storage = {
+    save: (key, value) => {
+        try { localStorage.setItem(`toptec_invoice_${key}`, JSON.stringify(value)); } catch (e) { console.error('Error saving to localStorage', e); }
+    },
+    load: (key) => {
+        try {
+            const val = localStorage.getItem(`toptec_invoice_${key}`);
+            return val ? JSON.parse(val) : null;
+        } catch (e) { console.error('Error loading from localStorage', e); return null; }
+    }
+};
+
+function saveFormData() {
+    const data = {
+        company: document.getElementById('company').value,
+        date: document.getElementById('date').value,
+        totalAmount: document.getElementById('totalAmount').value,
+        invoiceType: document.getElementById('invoiceType').value,
+        invoiceNo: document.getElementById('invoiceNo').value,
+        customFieldsChecked: document.getElementById('custom-fields-checkbox').checked,
+        customCompany: document.getElementById('customCompany').value,
+        customItemNo: document.getElementById('customItemNo').value,
+        productName: document.getElementById('productName').value,
+        unitPrice: document.getElementById('unitPrice').value,
+        dateAdjustChecked: document.getElementById('date-adjust-checkbox').checked
+    };
+    Storage.save('form_state', data);
+}
+
+function loadFormData() {
+    const data = Storage.load('form_state');
+    if (!data) return;
+    if (data.company) document.getElementById('company').value = data.company;
+    if (data.date) document.getElementById('date').value = data.date;
+    if (data.totalAmount) document.getElementById('totalAmount').value = data.totalAmount;
+    if (data.invoiceType) document.getElementById('invoiceType').value = data.invoiceType;
+    if (data.invoiceNo) document.getElementById('invoiceNo').value = data.invoiceNo;
+    if (data.customCompany) document.getElementById('customCompany').value = data.customCompany;
+    if (data.customItemNo) document.getElementById('customItemNo').value = data.customItemNo;
+    if (data.productName) document.getElementById('productName').value = data.productName;
+    if (data.unitPrice) document.getElementById('unitPrice').value = data.unitPrice;
+    
+    if (data.customFieldsChecked !== undefined) {
+        const cb = document.getElementById('custom-fields-checkbox');
+        cb.checked = data.customFieldsChecked;
+        cb.dispatchEvent(new Event('change'));
+    }
+    if (data.dateAdjustChecked !== undefined) {
+        document.getElementById('date-adjust-checkbox').checked = data.dateAdjustChecked;
+    }
+    document.getElementById('company').dispatchEvent(new Event('change'));
+}
+
+// --- Custom Fields Logic ---
+const customFieldsCheckbox = document.getElementById('custom-fields-checkbox');
+const customFieldsContainer = document.getElementById('custom-fields-container');
+const companyDropdown = document.getElementById('company');
+
+if (customFieldsCheckbox && customFieldsContainer && companyDropdown) {
+  customFieldsCheckbox.addEventListener('change', () => {
+    if (customFieldsCheckbox.checked) {
+      customFieldsContainer.classList.remove('hidden');
+      companyDropdown.disabled = true;
+      companyDropdown.classList.add('bg-slate-800', 'text-slate-500');
+    } else {
+      customFieldsContainer.classList.add('hidden');
+      companyDropdown.disabled = false;
+      companyDropdown.classList.remove('bg-slate-800', 'text-slate-500');
+    }
+    saveFormData();
+  });
+}
+
+// Attach change listeners to all inputs for auto-save
+['company', 'date', 'totalAmount', 'invoiceType', 'invoiceNo', 'customCompany', 'customItemNo', 'productName', 'unitPrice', 'date-adjust-checkbox'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', saveFormData);
+});
+
+// Load on init
+window.addEventListener('DOMContentLoaded', loadFormData);

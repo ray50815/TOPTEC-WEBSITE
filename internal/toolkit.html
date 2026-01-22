@@ -50,26 +50,26 @@
                 <legend class="px-2 text-lg font-semibold text-white">1. &#x6838;&#x5FC3;&#x8CC7;&#x8A0A;</legend>
                 <div class="mt-4 grid gap-6 md:grid-cols-3">
                   <div>
-                    <label for="company" class="mb-1 block text-sm font-medium text-slate-200">&#x516C;&#x53F8;&#x62AC;&#x982D;</label>
+                    <label for="company" class="mb-1 block text-sm font-medium text-slate-200">公司抬頭</label>
                     <select
                       id="company"
                       class="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-2 text-sm text-slate-100 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition"
                     >
-                      <optgroup label="&#x92B7;&#x552E; (Sales)">
-                        <option value="anxin">An Xin (&#x978D;&#x946B;) (USD)</option>
-                        <option value="anxin_eur">An Xin (&#x978D;&#x946B;) (EUR)</option>
-                        <option value="winteam">WIN TEAM (&#x65FA;&#x7DF9;) (USD)</option>
+                      <optgroup label="銷售 (Sales)">
+                        <option value="anxin">An Xin (鞍鑫) (USD)</option>
+                        <option value="anxin_eur">An Xin (鞍鑫) (EUR)</option>
+                        <option value="winteam">WIN TEAM (旺練) (USD)</option>
                         <option value="styleup">StyleUp (USD)</option>
                         <option value="converge">Converge (USD)</option>
                       </optgroup>
-                      <optgroup label="&#x63A1;&#x8CFC; (Purchase)">
-                        <option value="buy_foreign_usd">&#x6D77;&#x5916;&#x4F9B;&#x61C9;&#x5546;&#x63A1;&#x8CFC; (USD)</option>
-                        <option value="buy_foreign_eur">&#x6D77;&#x5916;&#x4F9B;&#x61C9;&#x5546;&#x63A1;&#x8CFC; (EUR)</option>
+                      <optgroup label="採購 (Purchase)">
+                        <option value="buy_foreign_usd">海外供應商採購 (USD)</option>
+                        <option value="buy_foreign_eur">海外供應商採購 (EUR)</option>
                       </optgroup>
                     </select>
                   </div>
                   <div>
-                    <label for="date" class="mb-1 block text-sm font-medium text-slate-200">&#x767C;&#x7968;&#x65E5;&#x671F; (YYYYMMDD)</label>
+                    <label for="date" class="mb-1 block text-sm font-medium text-slate-200">發票日期 (YYYYMMDD)</label>
                     <input
                       type="text"
                       id="date"
@@ -78,7 +78,7 @@
                     />
                   </div>
                   <div>
-                    <label for="totalAmount" class="mb-1 block text-sm font-medium text-slate-200">&#x7E3D;&#x91D1;&#x984D;</label>
+                    <label for="totalAmount" class="mb-1 block text-sm font-medium text-slate-200">總金額</label>
                     <input
                       type="number"
                       id="totalAmount"
@@ -86,6 +86,39 @@
                       class="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-2 text-sm text-slate-100 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition"
                     />
                   </div>
+                </div>
+                <div class="mt-6">
+                  <label class="inline-flex items-center gap-2 text-sm text-slate-200">
+                    <input
+                      id="custom-fields-checkbox"
+                      type="checkbox"
+                      class="h-4 w-4 rounded border-slate-600 bg-slate-950/80 text-blue-500 focus:ring-blue-500"
+                    />
+                    使用自定義公司及產品
+                  </label>
+                </div>
+                <div id="custom-fields-container" class="hidden mt-6">
+                    <fieldset class="rounded-2xl border border-slate-700 p-6">
+                        <legend class="px-2 text-sm font-semibold text-slate-300">自定義欄位</legend>
+                        <div class="mt-4 grid gap-6 md:grid-cols-3">
+                            <div>
+                                <label for="customCompany" class="mb-1 block text-sm font-medium text-slate-200">公司名稱</label>
+                                <input type="text" id="customCompany" placeholder="Your Company Ltd." class="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-2 text-sm text-slate-100 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition" />
+                            </div>
+                            <div>
+                                <label for="customItemNo" class="mb-1 block text-sm font-medium text-slate-200">Item No.</label>
+                                <input type="text" id="customItemNo" placeholder="ITEM-001" class="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-2 text-sm text-slate-100 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition" />
+                            </div>
+                            <div>
+                                <label for="productName" class="mb-1 block text-sm font-medium text-slate-200">產品名稱</label>
+                                <input type="text" id="productName" placeholder="Product Name" class="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-2 text-sm text-slate-100 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition" />
+                            </div>
+                            <div>
+                                <label for="unitPrice" class="mb-1 block text-sm font-medium text-slate-200">單價</label>
+                                <input type="number" id="unitPrice" placeholder="100" class="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-2 text-sm text-slate-100 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition" />
+                            </div>
+                        </div>
+                    </fieldset>
                 </div>
               </fieldset>
             </div>
