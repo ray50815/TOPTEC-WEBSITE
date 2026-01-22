@@ -130,50 +130,42 @@
               </p>
               <fieldset class="rounded-2xl border border-slate-700 p-6">
                 <legend class="px-2 text-lg font-semibold text-white">2. &#x55AE;&#x64DA;&#x7D30;&#x7BC0;</legend>
-                <div class="mt-4 grid gap-6 md:grid-cols-3">
+                <div class="mt-4 grid gap-6 md:grid-cols-4">
                   <div>
                     <label for="invoiceType" class="mb-1 block text-sm font-medium text-slate-200">&#x55AE;&#x64DA;&#x985E;&#x578B;</label>
-                    <select
-                      id="invoiceType"
-                      class="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-2 text-sm text-slate-100 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition"
-                    >
+                    <select id="invoiceType" class="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-2 text-sm text-slate-100 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition">
                       <option value="COMMERCIAL INVOICE">COMMERCIAL INVOICE</option>
                       <option value="PROFORMA INVOICE">PROFORMA INVOICE</option>
                     </select>
                   </div>
                   <div>
-                    <label for="invoiceNo" class="mb-1 block text-sm font-medium text-slate-200">&#x767C;&#x7968;&#x865F;&#x78BC; (&#x81EA;&#x52D5;&#x7522;&#x751F;)</label>
-                    <input
-                      type="text"
-                      id="invoiceNo"
-                      placeholder="&#x6700;&#x7D42;&#x7522;&#x751F;&#x5F8C;&#x81EA;&#x52D5;&#x5E36;&#x5165;"
-                      class="w-full rounded-lg border border-slate-700 bg-slate-900/50 px-4 py-2 text-sm text-slate-300 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition"
-                    />
+                    <label for="bankAccount" class="mb-1 block text-sm font-medium text-slate-200">銀行帳戶 (Bank Account)</label>
+                    <select id="bankAccount" class="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-2 text-sm text-slate-100 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition">
+                      <option value="none">None</option>
+                      <option value="uob">UOB</option>
+                      <option value="ocbc">OCBC</option>
+                    </select>
                   </div>
-                  <div class="flex flex-col justify-end">
-                    <div class="flex flex-wrap items-center gap-5">
-                      <label class="inline-flex items-center gap-2 text-sm text-slate-200">
-                        <input
-                          id="date-adjust-checkbox"
-                          type="checkbox"
-                          class="h-4 w-4 rounded border-slate-600 bg-slate-950/80 text-blue-500 focus:ring-blue-500"
-                          checked
-                        />
-                        &#x81EA;&#x52D5;&#x5728;&#x767C;&#x7968;&#x865F;&#x78BC;&#x6E1B; 3 &#x5929;
-                      </label>
-                      <label class="inline-flex items-center gap-2 text-sm text-slate-200 hidden" id="flexible-quantity-container">
-                        <input
-                          id="flexible-quantity-checkbox"
-                          type="checkbox"
-                          class="h-4 w-4 rounded border-slate-600 bg-slate-950/80 text-blue-500 focus:ring-blue-500"
-                        />
-                        &#x555F;&#x7528;&#x5F48;&#x6027;&#x6578;&#x91CF;
-                      </label>
-                    </div>
+                  <div>
+                    <label for="invoiceNo" class="mb-1 block text-sm font-medium text-slate-200">&#x767C;&#x7968;&#x865F;&#x78BC; (&#x81EA;&#x52D5;&#x7522;&#x751F;)</label>
+                    <input type="text" id="invoiceNo" placeholder="&#x6700;&#x7D42;&#x7522;&#x751F;&#x5F8C;&#x81EA;&#x52D5;&#x5E36;&#x5165;" class="w-full rounded-lg border border-slate-700 bg-slate-900/50 px-4 py-2 text-sm text-slate-300 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition" />
+                  </div>
+                  <div class="flex flex-col justify-center space-y-3 pt-2">
+                    <label class="inline-flex items-center gap-2 text-sm text-slate-200">
+                      <input id="includeSignature" type="checkbox" class="h-4 w-4 rounded border-slate-600 bg-slate-950/80 text-blue-500 focus:ring-blue-500" />
+                      Include Digital Signature
+                    </label>
+                    <label class="inline-flex items-center gap-2 text-sm text-slate-200">
+                      <input id="date-adjust-checkbox" type="checkbox" class="h-4 w-4 rounded border-slate-600 bg-slate-950/80 text-blue-500 focus:ring-blue-500" checked />
+                      &#x81EA;&#x52D5;&#x5728;&#x767C;&#x7968;&#x865F;&#x78BC;&#x6E1B; 3 &#x5929;
+                    </label>
+                    <label class="inline-flex items-center gap-2 text-sm text-slate-200 hidden" id="flexible-quantity-container">
+                      <input id="flexible-quantity-checkbox" type="checkbox" class="h-4 w-4 rounded border-slate-600 bg-slate-950/80 text-blue-500 focus:ring-blue-500" />
+                      &#x555F;&#x7528;&#x5F48;&#x6027;&#x6578;&#x91CF;
+                    </label>
                   </div>
                 </div>
               </fieldset>
-            </div>
 
             <div class="flex flex-wrap items-center justify-end gap-4">
               <button

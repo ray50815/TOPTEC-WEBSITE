@@ -15,6 +15,33 @@ const TOPTEC_GLOBAL = {
   country: "SINGAPORE"
 };
 
+const BANK_DETAILS = {
+  uob: `
+    <div class="remittance-details" style="margin-top: 30px; font-size: 0.75rem; text-align: left;">
+      <p style="font-weight: bold;">REMITTANCE DETAILS</p>
+      <p><strong>Account Name:</strong> Toptec Global Pte. Ltd.</p>
+      <p><strong>Name of Bank:</strong> United Overseas Bank Limited</p>
+      <p><strong>Branch:</strong> UOB PLQ Branch</p>
+      <p><strong>SWIFT Code:</strong> UOVB SGSG</p>
+      <p><strong>Bank Address:</strong> 10 Paya Lebar Road #02-10 Paya Lebar Quarter Singapore 409057</p>
+      <p><strong>USD Account No.:</strong> 335-901-080-8</p>
+    </div>
+  `,
+  ocbc: `
+    <div class="remittance-details" style="margin-top: 30px; font-size: 0.75rem; text-align: left;">
+      <p style="font-weight: bold;">REMITTANCE DETAILS</p>
+      <p><strong>Account Name:</strong> TOPTEC GLOBAL PTE. LTD.</p>
+      <p><strong>Address:</strong> 60 PAYA LEBAR Road, #07-42, PAYA LEBAR SQUARE, Singapore 409051</p>
+      <p><strong>Name of Bank:</strong> OCBC Bank</p>
+      <p><strong>SWIFT Code:</strong> OCBCSGSGXXX</p>
+      <p><strong>Bank Code:</strong> 7339</p>
+      <p><strong>Branch Code:</strong> 501</p>
+      <p><strong>Bank Address:</strong> 65 Chulia Street OCBC Centre Singapore 049513</p>
+      <p><strong>USD Account No.:</strong> 687401091201</p>
+    </div>
+  `
+};
+
     const companyConfigs = {
       // --- SELL CONFIGS ---
       'anxin': {
@@ -349,7 +376,7 @@ function findQuantitiesAnXinUSD(totalAmount) {
     function numberToCurrency(num){ return num.toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2}); }
 
 function generateInvoiceHTML(config, inputs, totalAmount, quantities){
-  const { dateInput, invoiceType, invoiceNo } = inputs;
+  const { dateInput, invoiceType, invoiceNo, bankAccount, includeSignature } = inputs;
   const formattedDate = formatDate(dateInput);
   const isBuyInvoice = config.type === 'buy';
   const seller = isBuyInvoice ? { name: config.name, address: config.address, tel: config.tel } : TOPTEC_GLOBAL;
@@ -371,16 +398,17 @@ function generateInvoiceHTML(config, inputs, totalAmount, quantities){
         }).join('');
   }
 
-  const headerDetailsHTML = config.country.trim() || config.paymentTerms.trim() ? `
+  const headerDetailsHTML = config.paymentTerms.trim() ? `
     <div class="invoice-terms">
-      <div class="flex justify-between">
-        ${config.country.trim()? `<p class="w-1/2"><strong>Country of Origin:</strong> ${config.country}</p>` : '<p class="w-1/2"></p>'}
-        ${config.paymentTerms.trim()? `<p class="w-1/2"><strong>Payment Terms:</strong> ${config.paymentTerms}</p>` : '<p class="w-1/2"></p>'}
-      </div>
+      <p><strong>Payment Terms:</strong> ${config.paymentTerms}</p>
     </div>
   ` : '';
 
       const scoresHTML = '';
+      const remittanceHTML = bankAccount !== 'none' && BANK_DETAILS[bankAccount] ? BANK_DETAILS[bankAccount] : '';
+      const signatureImgHTML = includeSignature
+        ? `<img src="../assets/img/GOLD SIGN.png" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); height: 80px; opacity: 0.95;" alt="Signature">`
+        : '';
 
       const invoiceHTML = `
     <div class="flex justify-between items-start mb-6 invoice-header">
@@ -396,8 +424,7 @@ function generateInvoiceHTML(config, inputs, totalAmount, quantities){
     <div class="flex justify-between mb-4 info-row">
       <div class="w-2/3 buyer-card">
         <p><strong>BUYER:</strong> ${buyer.name}</p>
-        <p><strong>BUYER ADD:</strong> ${buyer.address.replace(/\n/g,'<br>')}</p>
-        <p><strong>TEL:</strong> ${buyer.tel}</p>
+        <p><strong>Country of Origin:</strong> TAIWAN</p>
       </div>
       <div class="w-1/3 text-left invoice-card">
         <p><strong>INV.No.:</strong> <span id="inv-no">${invoiceNo}</span></p>
@@ -419,7 +446,13 @@ function generateInvoiceHTML(config, inputs, totalAmount, quantities){
         <div class="flex justify-between border-t border-black pt-1 mt-2"><strong>TOTAL:</strong><strong>${formatCurrency(totalAmount, config.currencySymbol)}</strong></div>
       </div>
     </div>
-    <div class="flex justify-end" style="margin-top:60px;"><div class="w-1/3 text-center"><div class="border-t border-black pt-1">AUTHORIZED SIGNATURE</div></div></div>
+    ${remittanceHTML}
+    <div class="flex justify-end" style="margin-top:80px;">
+      <div class="w-1/3 text-center" style="position: relative;">
+        ${signatureImgHTML}
+        <div class="border-t border-black pt-1">AUTHORIZED SIGNATURE</div>
+      </div>
+    </div>
   `;
       document.getElementById('invoice-preview').innerHTML = invoiceHTML;
     }
@@ -689,6 +722,8 @@ function generateInvoiceHTML(config, inputs, totalAmount, quantities){
 
     const dateInput = document.getElementById('date').value;
     const invoiceType = document.getElementById('invoiceType').value;
+    const bankAccount = document.getElementById('bankAccount').value;
+    const includeSignature = document.getElementById('includeSignature').checked;
     const invoiceField = document.getElementById('invoiceNo');
     const rawInvoiceNo = invoiceField.value.trim();
 
@@ -712,7 +747,7 @@ function generateInvoiceHTML(config, inputs, totalAmount, quantities){
     statusDiv.className='mt-4 text-center text-blue-200 font-semibold animate-pulse';
 
     setTimeout(()=>{
-        const inputs = { dateInput: finalDateInput, invoiceType, invoiceNo };
+        const inputs = { dateInput: finalDateInput, invoiceType, invoiceNo, bankAccount, includeSignature };
         generationArgs = { config, inputs, originalAmount: totalAmount };
         foundSolutions = findQuantitiesFunc(totalAmount);
         if(!foundSolutions || foundSolutions.length===0){
@@ -764,6 +799,8 @@ function saveFormData() {
         totalAmount: document.getElementById('totalAmount').value,
         invoiceType: document.getElementById('invoiceType').value,
         invoiceNo: document.getElementById('invoiceNo').value,
+        bankAccount: document.getElementById('bankAccount').value,
+        includeSignature: document.getElementById('includeSignature').checked,
         customFieldsChecked: document.getElementById('custom-fields-checkbox').checked,
         customCompany: document.getElementById('customCompany').value,
         customItemNo: document.getElementById('customItemNo').value,
@@ -782,6 +819,8 @@ function loadFormData() {
     if (data.totalAmount) document.getElementById('totalAmount').value = data.totalAmount;
     if (data.invoiceType) document.getElementById('invoiceType').value = data.invoiceType;
     if (data.invoiceNo) document.getElementById('invoiceNo').value = data.invoiceNo;
+    if (data.bankAccount) document.getElementById('bankAccount').value = data.bankAccount;
+    if (data.includeSignature) document.getElementById('includeSignature').checked = data.includeSignature;
     if (data.customCompany) document.getElementById('customCompany').value = data.customCompany;
     if (data.customItemNo) document.getElementById('customItemNo').value = data.customItemNo;
     if (data.productName) document.getElementById('productName').value = data.productName;
@@ -819,7 +858,7 @@ if (customFieldsCheckbox && customFieldsContainer && companyDropdown) {
 }
 
 // Attach change listeners to all inputs for auto-save
-['company', 'date', 'totalAmount', 'invoiceType', 'invoiceNo', 'customCompany', 'customItemNo', 'productName', 'unitPrice', 'date-adjust-checkbox'].forEach(id => {
+['company', 'date', 'totalAmount', 'invoiceType', 'invoiceNo', 'bankAccount', 'includeSignature', 'customCompany', 'customItemNo', 'productName', 'unitPrice', 'date-adjust-checkbox'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('change', saveFormData);
 });
