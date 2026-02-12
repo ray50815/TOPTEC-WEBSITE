@@ -1,5 +1,5 @@
 ﻿const translations = {};
-const translationVersion = '20241208';
+const translationVersion = '20260212';
 const translationSources = {
   'zh-Hant': `/locales/zh-Hant.json?v=${translationVersion}`
 };
@@ -291,31 +291,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
-
-  function showTestimonial(index) {
-    testimonialSlides.forEach((slide, idx) => {
-      slide.classList.toggle('active', idx === index);
-    });
-  }
-
-  if (testimonialSlides.length > 0) {
-    showTestimonial(testimonialIndex);
-
-    prevBtn?.addEventListener('click', () => {
-      testimonialIndex = (testimonialIndex - 1 + testimonialSlides.length) % testimonialSlides.length;
-      showTestimonial(testimonialIndex);
-    });
-
-    nextBtn?.addEventListener('click', () => {
-      testimonialIndex = (testimonialIndex + 1) % testimonialSlides.length;
-      showTestimonial(testimonialIndex);
-    });
-
-    setInterval(() => {
-      testimonialIndex = (testimonialIndex + 1) % testimonialSlides.length;
-      showTestimonial(testimonialIndex);
-    }, 8000);
-  }
 
   const contactForm = document.querySelector('#contact-form');
   if (contactForm) {
