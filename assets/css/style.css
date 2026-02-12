@@ -399,6 +399,8 @@ nav.primary-nav a.active::after {
   font-weight: 700;
   letter-spacing: 0.5px;
   margin-bottom: 1.25rem;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 .hero-content p {
