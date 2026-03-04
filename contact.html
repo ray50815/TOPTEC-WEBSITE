@@ -32,29 +32,39 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="assets/css/style.css" />
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <!-- 延遲載入分析工具以提升效能 -->
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag('js', new Date());
-      gtag('config', 'G-XXXXXXXXXX');
-    </script>
-    <script>
-      (function (h, o, t, j, a, r) {
-        h.hj =
-          h.hj ||
-          function () {
-            (h.hj.q = h.hj.q || []).push(arguments);
+      // 頁面互動後延遲載入分析工具
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          // Google Analytics
+          var gaScript = document.createElement('script');
+          gaScript.async = true;
+          gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX';
+          document.head.appendChild(gaScript);
+
+          gaScript.onload = function() {
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XXXXXXXXXX');
           };
-        h._hjSettings = { hjid: 0, hjsv: 6 };
-        a = o.getElementsByTagName('head')[0];
-        r = o.createElement('script');
-        r.async = 1;
-        r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
-        a.appendChild(r);
-      })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
+
+          // Hotjar
+          var hjScript = document.createElement('script');
+          hjScript.innerHTML = `
+            (function(h,o,t,j,a,r){
+              h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+              h._hjSettings={hjid:0,hjsv:6};
+              a=o.getElementsByTagName('head')[0];
+              r=o.createElement('script');r.async=1;
+              r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+              a.appendChild(r);
+            })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+          `;
+          document.head.appendChild(hjScript);
+        }, 2000);
+      });
     </script>
   </head>
   <body data-page="contact" data-lang="en">
@@ -119,23 +129,23 @@
               </div>
               <div class="form-field">
                 <label for="name" data-i18n="contact.form.nameLabel">Full name</label>
-                <input id="name" name="name" type="text" placeholder="Your name" data-i18n-placeholder="contact.form.namePlaceholder" required />
+                <input id="name" name="name" type="text" placeholder="Your name" data-i18n-placeholder="contact.form.namePlaceholder" autocomplete="name" required />
               </div>
               <div class="form-field">
                 <label for="company" data-i18n="contact.form.companyLabel">Company</label>
-                <input id="company" name="company" type="text" placeholder="Company name" data-i18n-placeholder="contact.form.companyPlaceholder" required />
+                <input id="company" name="company" type="text" placeholder="Company name" data-i18n-placeholder="contact.form.companyPlaceholder" autocomplete="organization" required />
               </div>
               <div class="form-field">
                 <label for="title" data-i18n="contact.form.titleLabel">Job title</label>
-                <input id="title" name="title" type="text" placeholder="e.g. Procurement Manager" data-i18n-placeholder="contact.form.titlePlaceholder" required />
+                <input id="title" name="title" type="text" placeholder="e.g. Procurement Manager" data-i18n-placeholder="contact.form.titlePlaceholder" autocomplete="organization-title" required />
               </div>
               <div class="form-field">
                 <label for="email" data-i18n="contact.form.emailLabel">Business email</label>
-                <input id="email" name="email" type="email" placeholder="name@company.com" data-i18n-placeholder="contact.form.emailPlaceholder" required />
+                <input id="email" name="email" type="email" placeholder="name@company.com" data-i18n-placeholder="contact.form.emailPlaceholder" autocomplete="email" inputmode="email" required />
               </div>
               <div class="form-field">
                 <label for="phone" data-i18n="contact.form.phoneLabel">Phone (optional)</label>
-                <input id="phone" name="phone" type="tel" placeholder="Country code + number" data-i18n-placeholder="contact.form.phonePlaceholder" />
+                <input id="phone" name="phone" type="tel" placeholder="Country code + number" data-i18n-placeholder="contact.form.phonePlaceholder" autocomplete="tel" inputmode="tel" />
               </div>
               <div class="form-field">
                 <label for="message" data-i18n="contact.form.messageLabel">How can we support you?</label>
