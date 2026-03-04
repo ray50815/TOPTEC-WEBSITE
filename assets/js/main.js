@@ -82,14 +82,23 @@ document.addEventListener('DOMContentLoaded', () => {
       nav.classList.remove('open');
       toggle.setAttribute('aria-expanded', 'false');
       body.classList.remove('menu-open');
+      htmlElement.classList.remove('menu-open');
     };
+    // Guard against stale menu state restored by mobile browser back/forward cache.
+    closeMenu();
 
     toggle.addEventListener('click', () => {
       const expanded = toggle.getAttribute('aria-expanded') === 'true';
       const nextState = !expanded;
-      toggle.setAttribute('aria-expanded', String(nextState));
-      nav.classList.toggle('open', nextState);
-      body.classList.toggle('menu-open', nextState);
+      if (nextState) {
+        toggle.setAttribute('aria-expanded', 'true');
+        nav.classList.add('open');
+        body.classList.add('menu-open');
+        htmlElement.classList.add('menu-open');
+        nav.scrollTop = 0;
+      } else {
+        closeMenu();
+      }
     });
 
     navLinks.forEach((link) => {
@@ -114,6 +123,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (event.key === 'Escape') {
         closeMenu();
       }
+    });
+
+    window.addEventListener('pageshow', () => {
+      closeMenu();
     });
   }
 

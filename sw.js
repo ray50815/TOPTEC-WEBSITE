@@ -1,4 +1,4 @@
-const CACHE_NAME = 'toptec-v1';
+const CACHE_NAME = 'toptec-v7';
 const RUNTIME_CACHE = 'toptec-runtime';
 
 // 預快取關鍵資源
