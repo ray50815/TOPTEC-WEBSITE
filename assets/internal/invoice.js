@@ -26,54 +26,75 @@ const supplierProductLines = {
     ]
 };
 
-const toptecBuyerInfo = `
-    <strong>TOPTEC GLOBAL PTE. LTD.</strong><br>
-    60 Paya Lebar Road, #07-42 Paya Lebar Square<br>
-    Singapore 409051
-`;
+// --- ISSUING COMPANIES (Seller / Our Company) ---
+const ISSUING_COMPANIES = {
+  'toptec': {
+    name: "TOPTEC GLOBAL PTE. LTD.",
+    address: "60 Paya Lebar Road, #07-42 Paya Lebar Square\nSingapore 409051",
+    tel: "+65 8965 6938",
+    email: "sales@toptec.com.sg",
+    uen: "201932202N",
+    country: "SINGAPORE",
+    logoSrc: "../assets/img/toptec-logo.svg",
+    invoicePrefix: "TOP",
+    buyerInfoHTML: `<strong>TOPTEC GLOBAL PTE. LTD.</strong><br>60 Paya Lebar Road, #07-42 Paya Lebar Square<br>Singapore 409051`,
+    bankDetails: {
+      uob: `
+        <div class="remittance-details" style="margin-top: 30px; font-size: 0.75rem; text-align: left;">
+          <p style="font-weight: bold;">REMITTANCE DETAILS</p>
+          <p><strong>Account Name:</strong> Toptec Global Pte. Ltd.</p>
+          <p><strong>Name of Bank:</strong> United Overseas Bank Limited</p>
+          <p><strong>Branch:</strong> UOB PLQ Branch</p>
+          <p><strong>SWIFT Code:</strong> UOVB SGSG</p>
+          <p><strong>Bank Address:</strong> 10 Paya Lebar Road #02-10 Paya Lebar Quarter Singapore 409057</p>
+          <p><strong>USD Account No.:</strong> 335-901-080-8</p>
+        </div>
+      `,
+      ocbc: `
+        <div class="remittance-details" style="margin-top: 30px; font-size: 0.75rem; text-align: left;">
+          <p style="font-weight: bold;">REMITTANCE DETAILS</p>
+          <p><strong>Account Name:</strong> TOPTEC GLOBAL PTE. LTD.</p>
+          <p><strong>Address:</strong> 60 PAYA LEBAR Road, #07-42, PAYA LEBAR SQUARE, Singapore 409051</p>
+          <p><strong>Name of Bank:</strong> OCBC Bank</p>
+          <p><strong>SWIFT Code:</strong> OCBCSGSGXXX</p>
+          <p><strong>Bank Code:</strong> 7339</p>
+          <p><strong>Branch Code:</strong> 501</p>
+          <p><strong>Bank Address:</strong> 65 Chulia Street OCBC Centre Singapore 049513</p>
+          <p><strong>USD Account No.:</strong> 687401091201</p>
+        </div>
+      `
+    }
+  },
+  'mdmv': {
+    name: "MDM V PTE. LTD.",
+    address: "60 PAYA LEBAR ROAD, #07-42\nPAYA LEBAR SQUARE\nSingapore 409051",
+    tel: "+886 968-353-738",
+    email: "mdmv888@gmail.com",
+    uen: "202307184N",
+    country: "SINGAPORE",
+    logoSrc: "../assets/img/MDM V LOGO.png",
+    invoicePrefix: "MDM",
+    buyerInfoHTML: `<strong>MDM V PTE. LTD.</strong><br>60 PAYA LEBAR ROAD, #07-42<br>PAYA LEBAR SQUARE<br>Singapore 409051`,
+    bankDetails: {
+      ocbc: `
+        <div class="remittance-details" style="margin-top: 30px; font-size: 0.75rem; text-align: left;">
+          <p style="font-weight: bold;">REMITTANCE DETAILS</p>
+          <p><strong>Account Name:</strong> MDM V PTE. LTD.</p>
+          <p><strong>Name of Bank:</strong> OCBC Bank</p>
+          <p><strong>SWIFT Code:</strong> OCBCSGSGXXX</p>
+          <p><strong>Bank Address:</strong> 65 Chulia Street OCBC Centre Singapore 049513</p>
+          <p><strong>USD Account No.:</strong> 601805211201</p>
+        </div>
+      `
+    }
+  }
+};
 
 // --- GLOBAL STATE ---
 let currentInvoiceData = {};
 let generationArgs = {};
 let foundSolutions = [];
 let currentSolutionIndex = 0;
-
-// --- COMPANY & PRICE CONFIGS (Sell Mode) ---
-const TOPTEC_GLOBAL = {
-  name: "TOPTEC GLOBAL PTE. LTD.",
-  address: "60 Paya Lebar Road, #07-42 Paya Lebar Square\nSingapore 409051",
-  tel: "+65 8965 6938",
-  email: "sales@toptec.com.sg",
-  uen: "201932202N",
-  country: "SINGAPORE"
-};
-
-const BANK_DETAILS = {
-  uob: `
-    <div class="remittance-details" style="margin-top: 30px; font-size: 0.75rem; text-align: left;">
-      <p style="font-weight: bold;">REMITTANCE DETAILS</p>
-      <p><strong>Account Name:</strong> Toptec Global Pte. Ltd.</p>
-      <p><strong>Name of Bank:</strong> United Overseas Bank Limited</p>
-      <p><strong>Branch:</strong> UOB PLQ Branch</p>
-      <p><strong>SWIFT Code:</strong> UOVB SGSG</p>
-      <p><strong>Bank Address:</strong> 10 Paya Lebar Road #02-10 Paya Lebar Quarter Singapore 409057</p>
-      <p><strong>USD Account No.:</strong> 335-901-080-8</p>
-    </div>
-  `,
-  ocbc: `
-    <div class="remittance-details" style="margin-top: 30px; font-size: 0.75rem; text-align: left;">
-      <p style="font-weight: bold;">REMITTANCE DETAILS</p>
-      <p><strong>Account Name:</strong> TOPTEC GLOBAL PTE. LTD.</p>
-      <p><strong>Address:</strong> 60 PAYA LEBAR Road, #07-42, PAYA LEBAR SQUARE, Singapore 409051</p>
-      <p><strong>Name of Bank:</strong> OCBC Bank</p>
-      <p><strong>SWIFT Code:</strong> OCBCSGSGXXX</p>
-      <p><strong>Bank Code:</strong> 7339</p>
-      <p><strong>Branch Code:</strong> 501</p>
-      <p><strong>Bank Address:</strong> 65 Chulia Street OCBC Centre Singapore 049513</p>
-      <p><strong>USD Account No.:</strong> 687401091201</p>
-    </div>
-  `
-};
 
 const companyConfigs = {
       // --- SELL CONFIGS ---
@@ -234,7 +255,7 @@ function syncInvoiceNoFromDate(){
   const invoiceField = document.getElementById('invoiceNo');
   if(adjustedDate){
     const isSupplierMode = document.getElementById('mode-supplier-toggle').checked;
-    let prefix = 'TOP';
+    let prefix = getIssuingCompany().invoicePrefix;
     if (isSupplierMode) {
         const supplierKey = document.getElementById('supplier-select').value;
         if(supplierKey) {
@@ -565,6 +586,28 @@ function findQuantitiesStyleUp(totalAmount){
   return scoreAndSortSolutionsForConfig(config, solutions, totalAmount);
 }
 
+// ---- ISSUING COMPANY HELPERS ----
+function getIssuingCompany() {
+  const el = document.getElementById('issuingCompany');
+  const key = el ? el.value : 'toptec';
+  return ISSUING_COMPANIES[key] || ISSUING_COMPANIES['toptec'];
+}
+
+function updateBankOptions() {
+  const issuer = getIssuingCompany();
+  const bankSelect = document.getElementById('bankAccount');
+  if (!bankSelect) return;
+  const currentVal = bankSelect.value;
+  bankSelect.innerHTML = '<option value="none">None</option>';
+  Object.keys(issuer.bankDetails).forEach(key => {
+    bankSelect.add(new Option(key.toUpperCase(), key));
+  });
+  // Restore previous selection if still valid
+  if ([...bankSelect.options].some(o => o.value === currentVal)) {
+    bankSelect.value = currentVal;
+  }
+}
+
 // ---- FORMATTING & GENERATORS ----
 function formatDate(yyyymmdd){ if(!yyyymmdd||yyyymmdd.length!==8) return ''; const y=yyyymmdd.substring(0,4); const m=yyyymmdd.substring(4,6); const d=yyyymmdd.substring(6,8); const date=new Date(`${y}-${m}-${d}T00:00:00Z`); const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return `${monthNames[date.getUTCMonth()]}.${d}.${y}`; }
 function formatCurrency(num, symbol='US$'){ return `${symbol}${numberToCurrency(num, 2)}`; }
@@ -642,7 +685,7 @@ function generateSupplierInvoiceHTML(supplier, inputs, totalAmount, quantResult)
         <div class="flex justify-between mb-4 info-row">
           <div class="w-2/3 buyer-card">
             <p><strong>BILL TO:</strong></p>
-            ${toptecBuyerInfo}
+            ${getIssuingCompany().buyerInfoHTML}
           </div>
           <div class="w-1/3 text-left invoice-card">
             <p><strong>INVOICE #:</strong> <span id="inv-no">${invoiceNo}</span></p>
@@ -679,9 +722,12 @@ function generateSupplierInvoiceHTML(supplier, inputs, totalAmount, quantResult)
 function generateSellInvoiceHTML(config, inputs, totalAmount, quantities){
   const { dateInput, invoiceType, invoiceNo, bankAccount, includeSignature } = inputs;
   const formattedDate = formatDate(dateInput);
-  const seller = TOPTEC_GLOBAL;
+  const issuer = getIssuingCompany();
+  const seller = issuer;
   const buyer  = { name: config.name, address: config.address, tel: config.tel };
-  const sellerLogoHTML = `<img src="../assets/img/toptec-logo.svg" alt="TOPTEC logo" class="invoice-logo">`;
+  const sellerLogoHTML = issuer.logoSrc
+    ? `<img src="${issuer.logoSrc}" alt="${issuer.name} logo" class="invoice-logo">`
+    : `<span class="font-bold text-lg">${issuer.name}</span>`;
 
   let tableRows = config.products.map((p,i)=>{
       const qty = quantities[`q${i+1}`] || 0;
@@ -694,7 +740,7 @@ function generateSellInvoiceHTML(config, inputs, totalAmount, quantities){
       `;
     }).join('');
 
-    const remittanceHTML = bankAccount !== 'none' && BANK_DETAILS[bankAccount] ? BANK_DETAILS[bankAccount] : '';
+    const remittanceHTML = bankAccount !== 'none' && issuer.bankDetails[bankAccount] ? issuer.bankDetails[bankAccount] : '';
     const signatureImgHTML = includeSignature ? `<img src="../assets/img/GOLD SIGN.png" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); height: 80px; opacity: 0.95;" alt="Signature">` : '';
 
     const invoiceHTML = `
@@ -758,7 +804,7 @@ document.getElementById('generateBtn').addEventListener('click', ()=>{
     const invoiceField = document.getElementById('invoiceNo');
     
     const isSupplierModeForPrefix = document.getElementById('mode-supplier-toggle').checked;
-    let prefix = 'TOP';
+    let prefix = getIssuingCompany().invoicePrefix;
     if (isSupplierModeForPrefix) {
         const supplierKey = document.getElementById('supplier-select').value;
         if(supplierKey) {
@@ -1046,6 +1092,7 @@ const Storage = {
 function saveFormData() {
     const data = {
         // Regular fields
+        issuingCompany: document.getElementById('issuingCompany').value,
         company: document.getElementById('company').value,
         totalAmount: document.getElementById('totalAmount').value,
         invoiceType: document.getElementById('invoiceType').value,
@@ -1080,6 +1127,7 @@ function loadFormData() {
     if (!data) return;
 
     const idMap = {
+        issuingCompany: 'issuingCompany',
         company: 'company', totalAmount: 'totalAmount', invoiceType: 'invoiceType',
         bankAccount: 'bankAccount', includeSignature: 'includeSignature', flexibleQuantity: 'flexible-quantity-checkbox',
         date: 'date', invoiceNo: 'invoiceNo', dateAdjustChecked: 'date-adjust-checkbox',
@@ -1105,6 +1153,11 @@ function loadFormData() {
 window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('date').addEventListener('input', syncInvoiceNoFromDate);
     document.getElementById('date-adjust-checkbox').addEventListener('change', syncInvoiceNoFromDate);
+    document.getElementById('issuingCompany').addEventListener('change', () => {
+        updateBankOptions();
+        syncInvoiceNoFromDate();
+        saveFormData();
+    });
     document.getElementById('printBtn').addEventListener('click', () => window.print());
     document.getElementById('packingListBtn').addEventListener('click', ()=>{/* placeholder for original func */});
     document.getElementById('findNextBtn').addEventListener('click', ()=>{
@@ -1115,17 +1168,15 @@ window.addEventListener('DOMContentLoaded', () => {
     
     document.querySelectorAll('input, select').forEach(el => {
         el.addEventListener('change', saveFormData);
-        el.addEventListener('input', (e) => {
-            // Avoid saving on every character input for performance, only on blur/change
-            if(e.type !== 'input') saveFormData();
-        });
+        el.addEventListener('input', saveFormData);
     });
-    
+
     setupSupplierMode();
-    setupFieldInteractions(); 
-    
+    setupFieldInteractions();
+
     loadFormData();
-    
+    updateBankOptions(); // Apply bank options after loading saved company selection
+
     // Trigger events to apply loaded state correctly
     document.getElementById('mode-supplier-toggle').dispatchEvent(new Event('change'));
     document.getElementById('custom-fields-checkbox').dispatchEvent(new Event('change'));

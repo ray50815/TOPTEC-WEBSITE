@@ -49,9 +49,19 @@
               </p>
               <fieldset class="rounded-2xl border border-slate-700 p-6">
                 <legend class="px-2 text-lg font-semibold text-white">1. &#x6838;&#x5FC3;&#x8CC7;&#x8A0A;</legend>
-                <div class="mt-4 grid gap-6 md:grid-cols-3">
+                <div class="mt-4 grid gap-6 md:grid-cols-2">
                   <div>
-                    <label for="company" class="mb-1 block text-sm font-medium text-slate-200">公司抬頭</label>
+                    <label for="issuingCompany" class="mb-1 block text-sm font-medium text-slate-200">發票抬頭公司 (Issuing)</label>
+                    <select
+                      id="issuingCompany"
+                      class="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-2 text-sm text-slate-100 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition"
+                    >
+                      <option value="toptec">TOPTEC GLOBAL PTE. LTD.</option>
+                      <option value="mdmv">MDM V</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="company" class="mb-1 block text-sm font-medium text-slate-200">買方公司抬頭 (Buyer)</label>
                     <select
                       id="company"
                       class="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-2 text-sm text-slate-100 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition"
@@ -190,9 +200,7 @@
                   <div>
                     <label for="bankAccount" class="mb-1 block text-sm font-medium text-slate-200">銀行帳戶 (Bank Account)</label>
                     <select id="bankAccount" class="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-2 text-sm text-slate-100 shadow-sm placeholder-slate-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition">
-                      <option value="none">None</option>
-                      <option value="uob">UOB</option>
-                      <option value="ocbc">OCBC</option>
+                      <!-- Options populated dynamically by updateBankOptions() -->
                     </select>
                   </div>
                   <div>
