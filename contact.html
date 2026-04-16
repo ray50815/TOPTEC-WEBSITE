@@ -106,10 +106,19 @@
             </p>
           </div>
           <div class="hero-media">
-            <img
-              src="assets/img/contact-office.jpg"
-              alt="Toptec Global regional headquarters office environment"
-            />
+            <picture>
+              <source type="image/webp" srcset="assets/img/contact-office-400.webp 400w, assets/img/contact-office-640.webp 640w, assets/img/contact-office-800.webp 800w" sizes="(min-width: 1200px) 50vw, (min-width: 768px) 50vw, 100vw" />
+              <source type="image/jpeg" srcset="assets/img/contact-office-400.jpg 400w, assets/img/contact-office-640.jpg 640w, assets/img/contact-office-800.jpg 800w" sizes="(min-width: 1200px) 50vw, (min-width: 768px) 50vw, 100vw" />
+              <img
+                src="assets/img/contact-office-640.jpg"
+                alt="Toptec Global regional headquarters office environment"
+                loading="eager"
+                decoding="async"
+                fetchpriority="high"
+                width="800"
+                height="600"
+              />
+            </picture>
           </div>
           </div>
       </section>

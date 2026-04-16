@@ -86,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     // Guard against stale menu state restored by mobile browser back/forward cache.
     closeMenu();
+    body.style.top = '';
 
     toggle.addEventListener('click', () => {
       const expanded = toggle.getAttribute('aria-expanded') === 'true';

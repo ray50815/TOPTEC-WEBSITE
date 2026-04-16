@@ -113,15 +113,30 @@
           </div>
           <div class="hero-media">
             <picture>
-              <source srcset="assets/img/hero-case-studies.jpg" type="image/jpeg" />
+              <source
+                type="image/webp"
+                srcset="
+                  assets/img/hero-case-studies-800.webp 800w,
+                  assets/img/hero-case-studies-1280.webp 1280w,
+                  assets/img/hero-case-studies-1920.webp 1920w"
+                sizes="(min-width: 1200px) 960px, (min-width: 768px) 80vw, 100vw"
+              />
+              <source
+                type="image/jpeg"
+                srcset="
+                  assets/img/hero-case-studies-800.jpg 800w,
+                  assets/img/hero-case-studies-1280.jpg 1280w,
+                  assets/img/hero-case-studies-1920.jpg 1920w"
+                sizes="(min-width: 1200px) 960px, (min-width: 768px) 80vw, 100vw"
+              />
               <img
-                src="assets/img/hero-case-studies.jpg"
+                src="assets/img/hero-case-studies-1280.jpg"
                 alt="Supply chain governance scenario overview"
                 loading="eager"
                 decoding="async"
                 fetchpriority="high"
-                width="1200"
-                height="900"
+                width="1920"
+                height="1080"
               />
             </picture>
           </div>
@@ -133,8 +148,17 @@
           <div class="card-grid case-grid">
             <article class="card">
               <picture>
-                <source srcset="assets/img/case-energy-storage.jpg" type="image/jpeg" />
-                <img src="assets/img/case-energy-storage.jpg" alt="Energy storage and logistics coordination scenario" loading="lazy" decoding="async" width="960" height="640" />
+                <source
+                  type="image/webp"
+                  srcset="assets/img/case-energy-storage-400.webp 400w, assets/img/case-energy-storage-640.webp 640w, assets/img/case-energy-storage-800.webp 800w"
+                  sizes="(min-width: 1200px) 25vw, (min-width: 768px) 50vw, 100vw"
+                />
+                <source
+                  type="image/jpeg"
+                  srcset="assets/img/case-energy-storage-400.jpg 400w, assets/img/case-energy-storage-640.jpg 640w, assets/img/case-energy-storage-800.jpg 800w"
+                  sizes="(min-width: 1200px) 25vw, (min-width: 768px) 50vw, 100vw"
+                />
+                <img src="assets/img/case-energy-storage-640.jpg" alt="Energy storage and logistics coordination scenario" loading="lazy" decoding="async" width="800" height="450" />
               </picture>
               <h3 data-i18n="cases.card1Title">Energy continuity engagement scenario</h3>
               <p data-i18n="cases.card1Text">
@@ -149,8 +173,17 @@
 
             <article class="card">
               <picture>
-                <source srcset="assets/img/case-auto-interior.jpg" type="image/jpeg" />
-                <img src="assets/img/case-auto-interior.jpg" alt="Automotive dashboard with tactile switches" loading="lazy" decoding="async" width="960" height="640" />
+                <source
+                  type="image/webp"
+                  srcset="assets/img/case-auto-interior-400.webp 400w, assets/img/case-auto-interior-640.webp 640w, assets/img/case-auto-interior-800.webp 800w"
+                  sizes="(min-width: 1200px) 25vw, (min-width: 768px) 50vw, 100vw"
+                />
+                <source
+                  type="image/jpeg"
+                  srcset="assets/img/case-auto-interior-400.jpg 400w, assets/img/case-auto-interior-640.jpg 640w, assets/img/case-auto-interior-800.jpg 800w"
+                  sizes="(min-width: 1200px) 25vw, (min-width: 768px) 50vw, 100vw"
+                />
+                <img src="assets/img/case-auto-interior-640.jpg" alt="Automotive dashboard with tactile switches" loading="lazy" decoding="async" width="800" height="533" />
               </picture>
               <h3 data-i18n="cases.card2Title">Automotive switch sourcing scenario</h3>
               <p data-i18n="cases.card2Text">
@@ -165,8 +198,17 @@
 
             <article class="card">
               <picture>
-                <source srcset="assets/img/case-solar-glass.jpg" type="image/jpeg" />
-                <img src="assets/img/case-solar-glass.jpg" alt="Industrial feedstock quality and delivery coordination" loading="lazy" decoding="async" width="960" height="640" />
+                <source
+                  type="image/webp"
+                  srcset="assets/img/case-solar-glass-400.webp 400w, assets/img/case-solar-glass-640.webp 640w, assets/img/case-solar-glass-800.webp 800w"
+                  sizes="(min-width: 1200px) 25vw, (min-width: 768px) 50vw, 100vw"
+                />
+                <source
+                  type="image/jpeg"
+                  srcset="assets/img/case-solar-glass-400.jpg 400w, assets/img/case-solar-glass-640.jpg 640w, assets/img/case-solar-glass-800.jpg 800w"
+                  sizes="(min-width: 1200px) 25vw, (min-width: 768px) 50vw, 100vw"
+                />
+                <img src="assets/img/case-solar-glass-640.jpg" alt="Industrial feedstock quality and delivery coordination" loading="lazy" decoding="async" width="800" height="532" />
               </picture>
               <h3 data-i18n="cases.card3Title">Industrial feedstock sourcing scenario</h3>
               <p data-i18n="cases.card3Text">
@@ -181,8 +223,17 @@
 
             <article class="card">
               <picture>
-                <source srcset="assets/img/case-smart-device.jpg" type="image/jpeg" />
-                <img src="assets/img/case-smart-device.jpg" alt="Smart home controller with rotary dial" loading="lazy" decoding="async" width="960" height="640" />
+                <source
+                  type="image/webp"
+                  srcset="assets/img/case-smart-device-400.webp 400w, assets/img/case-smart-device-640.webp 640w, assets/img/case-smart-device-800.webp 800w"
+                  sizes="(min-width: 1200px) 25vw, (min-width: 768px) 50vw, 100vw"
+                />
+                <source
+                  type="image/jpeg"
+                  srcset="assets/img/case-smart-device-400.jpg 400w, assets/img/case-smart-device-640.jpg 640w, assets/img/case-smart-device-800.jpg 800w"
+                  sizes="(min-width: 1200px) 25vw, (min-width: 768px) 50vw, 100vw"
+                />
+                <img src="assets/img/case-smart-device-640.jpg" alt="Smart home controller with rotary dial" loading="lazy" decoding="async" width="800" height="533" />
               </picture>
               <h3 data-i18n="cases.card4Title">Smart device reliability sourcing scenario</h3>
               <p data-i18n="cases.card4Text">

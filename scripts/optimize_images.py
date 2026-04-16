@@ -27,9 +27,16 @@ TARGETS: Dict[Path, str] = {
     Path("assets/img/lab-testing-bench.jpg"): "content",
     Path("assets/img/quality-control-meters.jpg"): "content",
     Path("assets/img/logistics-port-aerial.jpg"): "hero",
-    Path("assets/img/contact-office.jpg"): "hero",
+    Path("assets/img/contact-office.jpg"): "content",
+    Path("assets/img/contact-team-meeting.jpg"): "content",
     Path("assets/img/global-trade-ship.jpg"): "content",
     Path("assets/img/hero-case-studies.jpg"): "hero",
+    Path("assets/img/hero-trading-refinery.jpg"): "hero",
+    Path("assets/img/trading-minerals-sand.jpg"): "content",
+    Path("assets/img/case-auto-interior.jpg"): "content",
+    Path("assets/img/case-energy-storage.jpg"): "content",
+    Path("assets/img/case-smart-device.jpg"): "content",
+    Path("assets/img/case-solar-glass.jpg"): "content",
 }
 
 # Widths to generate per profile
