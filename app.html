@@ -125,12 +125,28 @@
           </div>
           <div class="hero-media">
             <picture>
-              <source srcset="assets/img/contact-team-meeting.jpg" type="image/jpeg" />
+              <source
+                type="image/webp"
+                srcset="
+                  assets/img/contact-team-meeting-400.webp 400w,
+                  assets/img/contact-team-meeting-640.webp 640w,
+                  assets/img/contact-team-meeting-800.webp 800w"
+                sizes="(min-width: 1200px) 560px, (min-width: 992px) 48vw, 100vw"
+              />
+              <source
+                type="image/jpeg"
+                srcset="
+                  assets/img/contact-team-meeting-400.jpg 400w,
+                  assets/img/contact-team-meeting-640.jpg 640w,
+                  assets/img/contact-team-meeting-800.jpg 800w"
+                sizes="(min-width: 1200px) 560px, (min-width: 992px) 48vw, 100vw"
+              />
               <img
-                src="assets/img/contact-team-meeting.jpg"
+                src="assets/img/contact-team-meeting-640.jpg"
                 alt="Toptec team collaborating on a laptop and mobile devices"
                 loading="eager"
                 decoding="async"
+                fetchpriority="high"
                 width="960"
                 height="720"
               />
@@ -195,9 +211,24 @@
           </div>
           <div>
             <picture>
-              <source srcset="assets/img/global-trade-ship.jpg" type="image/jpeg" />
+              <source
+                type="image/webp"
+                srcset="
+                  assets/img/global-trade-ship-400.webp 400w,
+                  assets/img/global-trade-ship-640.webp 640w,
+                  assets/img/global-trade-ship-800.webp 800w"
+                sizes="(min-width: 992px) 48vw, 100vw"
+              />
+              <source
+                type="image/jpeg"
+                srcset="
+                  assets/img/global-trade-ship-400.jpg 400w,
+                  assets/img/global-trade-ship-640.jpg 640w,
+                  assets/img/global-trade-ship-800.jpg 800w"
+                sizes="(min-width: 992px) 48vw, 100vw"
+              />
               <img
-                src="assets/img/global-trade-ship.jpg"
+                src="assets/img/global-trade-ship-640.jpg"
                 alt="Container ship and logistics network visuals"
                 loading="lazy"
                 decoding="async"
