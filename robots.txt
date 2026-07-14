@@ -1,5 +1,4 @@
 User-agent: *
-Disallow: /internal/
 Allow: /
 
 Sitemap: https://toptec.com.sg/sitemap.xml

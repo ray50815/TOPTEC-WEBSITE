@@ -5,7 +5,7 @@ Public corporate website for **TOPTEC GLOBAL PTE. LTD.** (UEN: 201932202N, Singa
 ## Stack
 
 - Static HTML/CSS/JS — no build step required. Each page is a standalone HTML file with its own `<head>`, header, and footer.
-- Hosted on **Netlify**: contact form uses Netlify Forms (`data-netlify="true"`, redirects to `/success`); `_redirects` maps legacy URLs; `netlify/functions/translate.js` is a serverless DeepL proxy used by the password-gated internal tools under `/internal/` (excluded from search engines via `robots.txt`).
+- Hosted on **Netlify**: contact form uses Netlify Forms (`data-netlify="true"`, redirects to `/success`); `_redirects` maps legacy URLs.
 - **PWA**: `site.webmanifest` + `sw.js` service worker (cache version `toptec-v8`).
 
 ## Internationalization (i18n)
