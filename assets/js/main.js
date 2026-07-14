@@ -1,7 +1,7 @@
 /* TOPTEC GLOBAL — site interactions: i18n, navigation, contact form, scroll reveal */
 
 const translations = {};
-const translationVersion = '20260212';
+const translationVersion = '20260714';
 const translationSources = {
   'zh-Hant': `/locales/zh-Hant.json?v=${translationVersion}`
 };
