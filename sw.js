@@ -1,5 +1,5 @@
-const CACHE_NAME = 'toptec-v8';
-const RUNTIME_CACHE = 'toptec-runtime';
+const CACHE_NAME = 'toptec-v9';
+const RUNTIME_CACHE = 'toptec-runtime-v9';
 
 // 預快取關鍵資源
 const PRECACHE_ASSETS = [

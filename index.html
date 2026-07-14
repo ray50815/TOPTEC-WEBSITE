@@ -17,7 +17,6 @@
     <meta name="twitter:title" content="Toptec Global | Supply Chain Governance &amp; Procurement Control" />
     <meta name="twitter:description" content="Asset-light procurement and compliance governance for electronics components and energy commodities logistics." />
     <meta name="twitter:image" content="https://toptec.com.sg/assets/img/components-overview-1280.jpg" />
-    <meta name="google-site-verification" content="verification-token" />
     <title>Toptec Global | Supply Chain Governance &amp; Procurement Control</title>
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
@@ -32,65 +31,48 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="assets/css/style.css" />
-    <!-- 延遲載入分析工具以提升效能 -->
-    <script>
-      // 頁面互動後延遲載入分析工具
-      window.addEventListener('load', function() {
-        setTimeout(function() {
-          // Google Analytics
-          var gaScript = document.createElement('script');
-          gaScript.async = true;
-          gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX';
-          document.head.appendChild(gaScript);
-
-          gaScript.onload = function() {
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-XXXXXXXXXX');
-          };
-
-          // Hotjar
-          var hjScript = document.createElement('script');
-          hjScript.innerHTML = `
-            (function(h,o,t,j,a,r){
-              h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-              h._hjSettings={hjid:0,hjsv:6};
-              a=o.getElementsByTagName('head')[0];
-              r=o.createElement('script');r.async=1;
-              r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-              a.appendChild(r);
-            })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-          `;
-          document.head.appendChild(hjScript);
-        }, 2000);
-      });
-    </script>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "Organization",
-        "name": "TOPTEC GLOBAL PTE. LTD.",
+        "name": "Toptec Global",
+        "legalName": "TOPTEC GLOBAL PTE. LTD.",
         "description": "Asset-light supply chain governance firm coordinating electronics component sourcing and energy commodities logistics.",
         "url": "https://toptec.com.sg/",
         "logo": "https://toptec.com.sg/assets/img/toptec-logo.svg",
-        "email": "Toptecgc@gmail.com",
+        "foundingDate": "2019",
+        "identifier": {
+          "@type": "PropertyValue",
+          "name": "UEN",
+          "value": "201932202N"
+        },
+        "email": "contact@toptec.com.sg",
+        "areaServed": ["SG", "TW"],
         "contactPoint": [
           {
             "@type": "ContactPoint",
             "telephone": "+65 8965 6938",
             "contactType": "customer service",
-            "areaServed": "SG",
+            "areaServed": ["SG", "TW"],
             "availableLanguage": ["en", "zh-Hant"]
           }
         ],
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "60 Paya Lebar Road, #07-42 Paya Lebar Square",
-          "addressLocality": "Singapore",
-          "postalCode": "409051",
-          "addressCountry": "SG"
-        }
+        "address": [
+          {
+            "@type": "PostalAddress",
+            "streetAddress": "60 Paya Lebar Road, #07-42 Paya Lebar Square",
+            "addressLocality": "Singapore",
+            "postalCode": "409051",
+            "addressCountry": "SG"
+          },
+          {
+            "@type": "PostalAddress",
+            "streetAddress": "4C-30, No. 5, Section 5, Xinyi Rd, Xinyi District",
+            "addressLocality": "Taipei City",
+            "postalCode": "110",
+            "addressCountry": "TW"
+          }
+        ]
       }
     </script>
   </head>

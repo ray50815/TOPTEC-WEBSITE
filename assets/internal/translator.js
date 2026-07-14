@@ -8,7 +8,7 @@
   const FALLBACK_TRANSLATE_URL = 'https://api.mymemory.translated.net/get';
   const FALLBACK_SOURCE_LANG = 'EN';
   const FALLBACK_DELAY_MS = 160;
-  const FALLBACK_CONTACT_EMAIL = 'support@toptecglobal.com';
+  const FALLBACK_CONTACT_EMAIL = 'contact@toptec.com.sg';
   const SERVER_MANAGED_API_KEY = true;
 
   const GLOSSARY_TERMS = {
