@@ -1,0 +1,132 @@
+{
+  ".claude/settings.local.json": {
+    "mtime": 1783940249.2807028,
+    "ast_hash": "dfa7107c015a5d96bf1e593a44d5cd69",
+    "semantic_hash": "dfa7107c015a5d96bf1e593a44d5cd69"
+  },
+  "locales/zh-Hant.json": {
+    "mtime": 1784022372.9041944,
+    "ast_hash": "8242c7fcdc0e58b7af64a0a7ec3a753e",
+    "semantic_hash": "8242c7fcdc0e58b7af64a0a7ec3a753e"
+  },
+  "netlify/functions/translate.js": {
+    "mtime": 1783940250.2178912,
+    "ast_hash": "6fbf1a8e4ed0063bbb450f0751f88c63",
+    "semantic_hash": "6fbf1a8e4ed0063bbb450f0751f88c63"
+  },
+  "scripts/optimize_images.py": {
+    "mtime": 1783940250.2178912,
+    "ast_hash": "87f604c5b8637f535fc54125fffe5109",
+    "semantic_hash": "87f604c5b8637f535fc54125fffe5109"
+  },
+  "sw.js": {
+    "mtime": 1784022372.9041944,
+    "ast_hash": "3399c0698f38e2642ebe4b8d82bd83b0",
+    "semantic_hash": "3399c0698f38e2642ebe4b8d82bd83b0"
+  },
+  "404.html": {
+    "mtime": 1783940249.2807028,
+    "ast_hash": "3cd63ec3bf3e53097ef545487b05570c",
+    "semantic_hash": "3cd63ec3bf3e53097ef545487b05570c"
+  },
+  "README.md": {
+    "mtime": 1784022372.8961942,
+    "ast_hash": "87cca87e45aa653360056cd90cc6df98",
+    "semantic_hash": "87cca87e45aa653360056cd90cc6df98"
+  },
+  "about.html": {
+    "mtime": 1784022372.9001944,
+    "ast_hash": "6fce95884cbad073a4e83204f963efeb",
+    "semantic_hash": "6fce95884cbad073a4e83204f963efeb"
+  },
+  "app.html": {
+    "mtime": 1784022372.9001944,
+    "ast_hash": "68bbae8c98c38725b8db9404e1f7549d",
+    "semantic_hash": "68bbae8c98c38725b8db9404e1f7549d"
+  },
+  "case-studies.html": {
+    "mtime": 1784022372.9001944,
+    "ast_hash": "05e09c7d819b243af2399ba5ab088d21",
+    "semantic_hash": "05e09c7d819b243af2399ba5ab088d21"
+  },
+  "contact.html": {
+    "mtime": 1784022372.9001944,
+    "ast_hash": "a15fa70be610ff54d718ca72f51a3ca2",
+    "semantic_hash": "a15fa70be610ff54d718ca72f51a3ca2"
+  },
+  "electronics.html": {
+    "mtime": 1784022372.9001944,
+    "ast_hash": "5b216cbb4b5f535cd3dfe8a1eeebc2d6",
+    "semantic_hash": "5b216cbb4b5f535cd3dfe8a1eeebc2d6"
+  },
+  "index.html": {
+    "mtime": 1784022372.9001944,
+    "ast_hash": "1b10528e092ae836d7e5a9413fa1bf3e",
+    "semantic_hash": "1b10528e092ae836d7e5a9413fa1bf3e"
+  },
+  "internal/toolkit.html": {
+    "mtime": 1783940250.2127028,
+    "ast_hash": "0624544e019ee3551912b0bc184f02ee",
+    "semantic_hash": "0624544e019ee3551912b0bc184f02ee"
+  },
+  "internal/toolkit2.html": {
+    "mtime": 1783940250.2158823,
+    "ast_hash": "f0e270774cc537a829875d5bff9381f8",
+    "semantic_hash": "f0e270774cc537a829875d5bff9381f8"
+  },
+  "internal/toolselect.html": {
+    "mtime": 1783940250.2158823,
+    "ast_hash": "8a95dcec35ffa9ed9a0af404e03242c6",
+    "semantic_hash": "8a95dcec35ffa9ed9a0af404e03242c6"
+  },
+  "privacy.html": {
+    "mtime": 1784022372.9041944,
+    "ast_hash": "f34e0b9110f87efe938a2b5a4c26d8cd",
+    "semantic_hash": "f34e0b9110f87efe938a2b5a4c26d8cd"
+  },
+  "robots.txt": {
+    "mtime": 1783940250.2178912,
+    "ast_hash": "7820d32d73b528bd61c8a71844865ad0",
+    "semantic_hash": "7820d32d73b528bd61c8a71844865ad0"
+  },
+  "success.html": {
+    "mtime": 1783940250.2178912,
+    "ast_hash": "7856927c46a5048b1a73e71079aff9fb",
+    "semantic_hash": "7856927c46a5048b1a73e71079aff9fb"
+  },
+  "terms.html": {
+    "mtime": 1784022372.9041944,
+    "ast_hash": "3f1a51f1ba788d1e0a8d54bacce52c44",
+    "semantic_hash": "3f1a51f1ba788d1e0a8d54bacce52c44"
+  },
+  "trading.html": {
+    "mtime": 1784022372.9041944,
+    "ast_hash": "eb2722dfe18de0c459dc4e976dfb7600",
+    "semantic_hash": "eb2722dfe18de0c459dc4e976dfb7600"
+  },
+  "android-chrome-192x192.png": {
+    "mtime": 1783940249.2807028,
+    "ast_hash": "8d535c3b4a9d492ffea5c1e79963d3af",
+    "semantic_hash": "8d535c3b4a9d492ffea5c1e79963d3af"
+  },
+  "android-chrome-512x512.png": {
+    "mtime": 1783940249.2807028,
+    "ast_hash": "93ad124d83337913171da474c97877fd",
+    "semantic_hash": "93ad124d83337913171da474c97877fd"
+  },
+  "apple-touch-icon.png": {
+    "mtime": 1783940249.2847028,
+    "ast_hash": "8c94f528a5c9ce538c8e46eea67e5fa9",
+    "semantic_hash": "8c94f528a5c9ce538c8e46eea67e5fa9"
+  },
+  "favicon-16x16.png": {
+    "mtime": 1783940250.2127028,
+    "ast_hash": "e242ed69a37e531745475a1d222addb3",
+    "semantic_hash": "e242ed69a37e531745475a1d222addb3"
+  },
+  "favicon-32x32.png": {
+    "mtime": 1783940250.2127028,
+    "ast_hash": "06593928f476316791e1c0ab2a0cfcca",
+    "semantic_hash": "06593928f476316791e1c0ab2a0cfcca"
+  }
+}
