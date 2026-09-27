@@ -75,7 +75,7 @@ const ROUTES = [
       "en": "Transaction-specific storage, terminal handling and marine logistics coordination through third-party providers.",
       "zh": "依個別交易需求，透過第三方業者協調儲存、碼頭作業與海運物流。"
     },
-    "image": "/assets/img/energy-marine-1280.jpg"
+    "image": "/assets/img/energy-storage-1280.jpg"
   },
   {
     "source": "compliance.html",
@@ -145,32 +145,71 @@ const ROUTES = [
 ];
 
 const SPECIAL_PAGES = [
-  { source: '404.html', route: '/404', output: '404.html' },
-  { source: 'success.html', route: '/success', output: 'success.html' },
-  { source: 'offline.html', route: '/offline', output: 'offline.html' }
+  {
+    source: '404.html',
+    route: '/404',
+    output: '404.html',
+    robots: 'noindex,follow',
+    title: { en: 'Page Not Found | TOPTEC Global', zh: '找不到頁面｜TOPTEC Global' },
+    description: { en: 'The requested page could not be found.', zh: '找不到您要求的頁面。' }
+  },
+  {
+    source: 'success.html',
+    route: '/success',
+    output: 'success.html',
+    robots: 'noindex,follow',
+    title: { en: 'Enquiry Received | TOPTEC Global', zh: '已收到詢問｜TOPTEC Global' },
+    description: {
+      en: 'Thank you for contacting TOPTEC Global. Your enquiry has been received.',
+      zh: '感謝您聯絡 TOPTEC Global，我們已收到您的詢問。'
+    }
+  },
+  {
+    source: 'offline.html',
+    route: '/offline',
+    output: 'offline.html',
+    robots: 'noindex,nofollow',
+    title: { en: 'Offline | TOPTEC Global', zh: '目前離線｜TOPTEC Global' },
+    description: {
+      en: 'The TOPTEC Global public website is currently unavailable offline.',
+      zh: '目前無法連線至 TOPTEC Global 公開官網。'
+    }
+  }
 ];
 
-const SPECIAL_ZH_COPY = {
-  '404.html': {
-    title: '找不到頁面｜Toptec Global',
-    description: '找不到您要求的頁面。',
-    heading: '找不到頁面',
-    paragraph: '您尋找的頁面可能已移動、網址已變更，或目前不存在。',
-    links: ['返回首頁', '聯絡我們']
+// Share-image metadata. Dimensions are the measured size of the 1280px JPEG
+// variants; alt text describes a general industry scene only.
+const SHARE_IMAGE_SIZE = { width: '1280', height: '720' };
+const SHARE_IMAGE_ALT = {
+  '/assets/img/energy-marine-1280.jpg': {
+    en: 'Oil tanker at a marine terminal',
+    zh: '海運碼頭旁的油輪'
   },
-  'success.html': {
-    title: '已收到訊息｜Toptec Global',
-    description: '感謝您聯絡 Toptec Global，我們已收到您的訊息。',
-    heading: '已收到您的訊息',
-    paragraph: '感謝您聯絡 Toptec Global。我們已收到您的詢問，並會儘快回覆。',
-    links: ['返回首頁']
-  },
-  'offline.html': {
-    title: '目前離線｜Toptec Global',
-    description: '目前無法連線至 Toptec Global 公開官網。',
-    heading: '您目前處於離線狀態',
-    paragraph: '您仍可閱讀已儲存的公開頁面。請恢復網路連線後再提交聯絡表單或載入最新內容。',
-    links: ['嘗試開啟首頁']
+  '/assets/img/energy-storage-1280.jpg': {
+    en: 'Petroleum storage tanks beside a marine jetty',
+    zh: '海運碼頭旁的石油儲槽'
+  }
+};
+
+// Public corporate facts used for structured data. `name` is the brand shown
+// on the site; `legalName` must remain the registered entity name.
+const ORGANIZATION = {
+  '@type': 'Organization',
+  '@id': `${SITE_ORIGIN}/#organization`,
+  name: 'TOPTEC Global',
+  legalName: 'TOPTEC GLOBAL PTE. LTD.',
+  url: `${SITE_ORIGIN}/`,
+  logo: `${SITE_ORIGIN}/assets/img/toptec-logo.svg`,
+  foundingDate: '2019-09-26',
+  identifier: { '@type': 'PropertyValue', name: 'UEN', value: '201932202N' },
+  email: 'contact@toptec.com.sg',
+  telephone: '+65 8965 6938',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '711 Geylang Road, #03-01, Oriental Venture Building',
+    addressLocality: 'Singapore',
+    postalCode: '389626',
+    addressCountry: 'SG'
   }
 };
 
@@ -392,18 +431,78 @@ function setIndexableMetadata($, route, language) {
   upsertMeta($, 'meta[property="og:description"]', { property: 'og:description', content: pageDescription });
   upsertMeta($, 'meta[property="og:type"]', { property: 'og:type', content: 'website' });
   upsertMeta($, 'meta[property="og:url"]', { property: 'og:url', content: selfUrl });
+  const imageAlt = SHARE_IMAGE_ALT[route.image]?.[key];
+  if (!imageAlt) fail(`${route.source}: share image ${route.image} has no alt text`);
+  upsertMeta($, 'meta[property="og:site_name"]', { property: 'og:site_name', content: 'TOPTEC Global' });
   upsertMeta($, 'meta[property="og:image"]', { property: 'og:image', content: `${SITE_ORIGIN}${route.image}` });
+  upsertMeta($, 'meta[property="og:image:width"]', { property: 'og:image:width', content: SHARE_IMAGE_SIZE.width });
+  upsertMeta($, 'meta[property="og:image:height"]', { property: 'og:image:height', content: SHARE_IMAGE_SIZE.height });
+  upsertMeta($, 'meta[property="og:image:alt"]', { property: 'og:image:alt', content: imageAlt });
+  // Open Graph expects language_TERRITORY locales; hreflang and JSON-LD keep BCP 47 tags.
   upsertMeta($, 'meta[property="og:locale"]', { property: 'og:locale', content: language === 'zh' ? 'zh_TW' : 'en_SG' });
+  upsertMeta($, 'meta[property="og:locale:alternate"]', { property: 'og:locale:alternate', content: language === 'zh' ? 'en_SG' : 'zh_TW' });
   upsertMeta($, 'meta[name="twitter:card"]', { name: 'twitter:card', content: 'summary_large_image' });
   upsertMeta($, 'meta[name="twitter:title"]', { name: 'twitter:title', content: pageTitle });
   upsertMeta($, 'meta[name="twitter:description"]', { name: 'twitter:description', content: pageDescription });
   upsertMeta($, 'meta[name="twitter:image"]', { name: 'twitter:image', content: `${SITE_ORIGIN}${route.image}` });
+  upsertMeta($, 'meta[name="twitter:image:alt"]', { name: 'twitter:image:alt', content: imageAlt });
 
   $('link[rel="canonical"], link[rel="alternate"][hreflang]').remove();
   $('head').append(`<link rel="canonical" href="${selfUrl}">`);
   $('head').append(`<link rel="alternate" hreflang="en" href="${enUrl}">`);
   $('head').append(`<link rel="alternate" hreflang="zh-Hant" href="${zhUrl}">`);
   $('head').append(`<link rel="alternate" hreflang="x-default" href="${enUrl}">`);
+  setStructuredData($, route, language, pageTitle, pageDescription);
+}
+
+function pageName(title) {
+  return title.split(/\s+\|\s+|｜/)[0].trim();
+}
+
+// Generates one JSON-LD graph per indexable page. Hand-written JSON-LD in the
+// source is replaced so both languages carry localized, consistent data.
+function setStructuredData($, route, language, pageTitle, pageDescription) {
+  const inLanguage = language === 'zh' ? 'zh-Hant' : 'en';
+  const selfUrl = canonical(route.route, language);
+  const homeUrl = canonical('/', language);
+  const pageTypes = { '/about': 'AboutPage', '/contact': 'ContactPage' };
+  const webPage = {
+    '@type': pageTypes[route.route] || 'WebPage',
+    '@id': `${selfUrl}#webpage`,
+    url: selfUrl,
+    name: pageTitle,
+    description: pageDescription,
+    inLanguage,
+    isPartOf: { '@id': `${SITE_ORIGIN}/#website` },
+    about: { '@id': ORGANIZATION['@id'] },
+    primaryImageOfPage: { '@type': 'ImageObject', url: `${SITE_ORIGIN}${route.image}` }
+  };
+  const graph = [
+    route.route === '/' ? { ...ORGANIZATION, description: pageDescription } : ORGANIZATION,
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE_ORIGIN}/#website`,
+      url: `${SITE_ORIGIN}/`,
+      name: 'TOPTEC Global',
+      inLanguage: ['en', 'zh-Hant'],
+      publisher: { '@id': ORGANIZATION['@id'] }
+    },
+    webPage
+  ];
+  if (route.route !== '/') {
+    webPage.breadcrumb = { '@id': `${selfUrl}#breadcrumb` };
+    graph.push({
+      '@type': 'BreadcrumbList',
+      '@id': `${selfUrl}#breadcrumb`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: language === 'zh' ? '首頁' : 'Home', item: homeUrl },
+        { '@type': 'ListItem', position: 2, name: pageName(pageTitle), item: selfUrl }
+      ]
+    });
+  }
+  $('script[type="application/ld+json"]').remove();
+  const json = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c');
+  $('head').append(`<script type="application/ld+json">${json}</script>`);
 }
 
 function setLanguageSwitcher($, route, language) {
@@ -465,8 +564,9 @@ function renderIndexable(source, route, language, locale, fingerprintMap) {
   return serialize($);
 }
 
-function renderSpecial(source, special, language, fingerprintMap) {
+function renderSpecial(source, special, language, locale, fingerprintMap) {
   const $ = cheerio.load(source);
+  const key = language === 'zh' ? 'zh' : 'en';
   removeHostedFonts($);
   upsertMeta($, 'meta[name="toptec-pwa-enabled"]', {
     name: 'toptec-pwa-enabled',
@@ -474,24 +574,17 @@ function renderSpecial(source, special, language, fingerprintMap) {
   });
   $('html').attr('lang', language === 'zh' ? 'zh-Hant' : 'en');
   $('body').attr('data-lang', language === 'zh' ? 'zh-Hant' : 'en');
-  $('link[rel="canonical"], link[rel="alternate"][hreflang]').remove();
-  upsertMeta($, 'meta[name="robots"]', {
-    name: 'robots',
-    content: special.source === 'offline.html' ? 'noindex,nofollow' : 'noindex,follow'
-  });
+  // Utility pages are never indexable: no canonical, hreflang or JSON-LD.
+  $('link[rel="canonical"], link[rel="alternate"][hreflang], script[type="application/ld+json"]').remove();
+  upsertMeta($, 'meta[name="robots"]', { name: 'robots', content: special.robots });
+  $('title').text(special.title[key]);
+  upsertMeta($, 'meta[name="description"]', { name: 'description', content: special.description[key] });
 
   if (language === 'zh') {
-    const copy = SPECIAL_ZH_COPY[special.source];
-    $('title').text(copy.title);
-    upsertMeta($, 'meta[name="description"]', { name: 'description', content: copy.description });
-    $('main h1').first().text(copy.heading);
-    $('main p').first().text(copy.paragraph);
-    $('main a').each((index, element) => {
-      if (copy.links[index]) $(element).text(copy.links[index]);
-    });
+    translateDocument($, locale, special.source);
   }
-
   rewriteDocumentReferences($, language, fingerprintMap);
+  removeBuildOnlyI18nAttributes($);
   return serialize($);
 }
 
@@ -699,7 +792,12 @@ function createRedirects() {
   ];
 
   const legacyRedirects = Object.entries({ electronics: 'about', services: 'about', 'case-studies': 'trading', solutions: 'trading', trust: 'compliance' }).flatMap(([old, target]) => ['', '/zh-hant'].flatMap(prefix => ['', '.html', '/'].map(suffix => `${prefix}/${old}${suffix} ${prefix}/${target} 301!`)));
-  return `${[...gone, ...legacyRedirects, ...canonicalRedirects].join('\n')}\n`;
+  // Language-specific 404 for unknown Chinese URLs. Netlify stops at the first
+  // matching rule, so this must follow every specific /zh-hant/ redirect above
+  // (those legacy paths have no file and would otherwise be caught here) and
+  // precede any broader /* rule. It is not forced, so existing files still win.
+  const localizedNotFound = ['/zh-hant/* /zh-hant/404.html 404'];
+  return `${[...gone, ...legacyRedirects, ...canonicalRedirects, ...localizedNotFound].join('\n')}\n`;
 }
 
 function escapeXml(value) {
@@ -758,8 +856,8 @@ async function main() {
   }
   for (const special of SPECIAL_PAGES) {
     const source = sources.get(special.source);
-    generated.set(special.output, renderSpecial(source, special, 'en', fingerprintMap));
-    generated.set(`zh-hant/${special.output}`, renderSpecial(source, special, 'zh', fingerprintMap));
+    generated.set(special.output, renderSpecial(source, special, 'en', locale, fingerprintMap));
+    generated.set(`zh-hant/${special.output}`, renderSpecial(source, special, 'zh', locale, fingerprintMap));
   }
 
   for (const [relativePath, html] of generated) {
@@ -791,6 +889,7 @@ async function main() {
     '/zh-hant/offline',
     '/site.webmanifest',
     '/assets/img/toptec-logo.svg',
+    '/assets/img/toptec-logo-light.svg',
     ...ROOT_FILES.map((file) => `/${file}`),
     ...fingerprintMap.values()
   ];

@@ -95,8 +95,10 @@ async function sendFile(request, response, relative, statusCode = 200) {
       createReadStream(absolute).pipe(response);
     }
   } catch {
-    if (relative !== '404.html') {
-      await sendFile(request, response, '404.html', 404);
+    // Mirror the Netlify rules: unknown /zh-hant/ URLs get the Chinese 404.
+    const notFound = relative.startsWith('zh-hant/') ? 'zh-hant/404.html' : '404.html';
+    if (relative !== notFound) {
+      await sendFile(request, response, notFound, 404);
     } else {
       response.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }).end('Not found');
     }

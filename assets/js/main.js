@@ -1,4 +1,4 @@
-/* TOPTEC GLOBAL — navigation, contact form, map consent, and scroll reveal */
+/* TOPTEC GLOBAL — navigation, contact form, map consent, and legal-page reveal */
 
 document.addEventListener('DOMContentLoaded', () => {
   const body = document.body;
@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const formMessages = isChinesePage
     ? {
         required: '請填寫此欄位。',
+        select: '請選擇詢問類型。',
         email: '請輸入有效的電子郵件地址。',
         privacy: '請同意隱私權政策後再送出。',
         submitting: '送出中…',
@@ -43,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     : {
         required: 'Please fill out this field.',
+        select: 'Please select an enquiry type.',
         email: 'Please enter a valid email address.',
         privacy: 'Please agree to the Privacy Policy before submitting.',
         submitting: 'Submitting…',
@@ -235,24 +237,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* === Progressive enhancements =========================================== */
-  const applyLazyLoading = () => {
-    const candidates = document.querySelectorAll('img:not([loading])');
-    candidates.forEach((img) => {
-      const inHeader = img.closest('.site-header');
-      const inHero = img.closest('.hero');
-      if (img.getAttribute('fetchpriority') === 'high' || inHeader || inHero) {
-        return;
-      }
-      img.loading = 'lazy';
-      if (!img.getAttribute('decoding')) {
-        img.decoding = 'async';
-      }
-    });
-  };
-
-  applyLazyLoading();
-
   /* === Contact form ======================================================== */
   const contactForm = document.querySelector('#contact-form');
   if (contactForm) {
@@ -263,6 +247,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorStatus = contactForm.querySelector('[data-form-status="error"]');
     const submitLabel = submitButton ? submitButton.textContent.trim() : '';
     let isSubmitting = false;
+
+    // Page CTAs link to /contact?inquiry=<value>#contact-form. Only a value that
+    // matches an existing option is applied; anything else is ignored, and the
+    // form works unchanged without JavaScript.
+    const inquirySelect = contactForm.querySelector('select[name="inquiry_type"]');
+    const requestedInquiry = new URLSearchParams(window.location.search).get('inquiry');
+    if (inquirySelect && requestedInquiry) {
+      const match = Array.from(inquirySelect.options)
+        .find((option) => option.value && option.value === requestedInquiry);
+      if (match) inquirySelect.value = match.value;
+    }
 
     if (privacyCheckbox) {
       privacyCheckbox.addEventListener('change', () => {
@@ -281,7 +276,9 @@ document.addEventListener('DOMContentLoaded', () => {
       field.addEventListener('invalid', () => {
         if (field.validity.customError) return;
         let message = formMessages.required;
-        if (!field.validity.valueMissing && field.type === 'email') {
+        if (field.tagName === 'SELECT') {
+          message = formMessages.select;
+        } else if (!field.validity.valueMissing && field.type === 'email') {
           message = formMessages.email;
         } else if (privacyCheckbox && field === privacyCheckbox) {
           message = formMessages.privacy;
@@ -382,6 +379,9 @@ document.addEventListener('DOMContentLoaded', () => {
           contactForm.reset();
           requiredFields.forEach((field) => field.setCustomValidity(''));
           showStatus(successStatus, formMessages.success);
+          // Move focus to the confirmation so keyboard and screen-reader users
+          // are not left on a reset form.
+          successStatus?.focus({ preventScroll: false });
         } catch (error) {
           let message = formMessages.error;
           if (navigator.onLine === false) {
@@ -414,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadButton.addEventListener('click', () => {
       const iframe = document.createElement('iframe');
-      iframe.title = isChinesePage ? 'Toptec Global 新加坡登記地址位置' : 'Toptec Global Singapore registered office location';
+      iframe.title = isChinesePage ? 'TOPTEC Global 新加坡登記地址位置' : 'TOPTEC Global Singapore registered office location';
       iframe.src = embedUrl;
       iframe.loading = 'lazy';
       iframe.referrerPolicy = 'no-referrer';
@@ -428,18 +428,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function initScrollAnimations() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Only legal pages still use the legacy reveal groups. Energy pages are
+    // intentionally static so the hero LCP and layout stay stable.
     const animationGroups = [
       { selector: '.hero-content > *', stagger: 0.07 },
-      { selector: '.hero-media', origin: 'right', startDelay: 0.15 },
-      { selector: '.hero-stats .stat', startDelay: 0.2, stagger: 0.06 },
-      { selector: '.section-title', startDelay: 0.05 },
-      { selector: '.section-subtitle', startDelay: 0.1 },
-      { selector: '.card-grid .card', stagger: 0.08 },
-      { selector: '.split-grid > *', stagger: 0.1 },
-      { selector: '.badge-list .badge', stagger: 0.04 },
-      { selector: '.timeline .timeline-item', stagger: 0.08 },
-      { selector: '.legal-card', stagger: 0.08 },
-      { selector: '.contact-grid > *', stagger: 0.1 }
+      { selector: '.legal-card', stagger: 0.08 }
     ];
 
     const seen = new Set();
@@ -451,9 +444,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (!seen.has(element)) {
         element.classList.add('animate-on-scroll');
-        if (options.origin === 'right') {
-          element.classList.add('animate-from-right');
-        }
         seen.add(element);
         orderedElements.push(element);
       }
