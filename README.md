@@ -1,40 +1,59 @@
-# Toptec Global — Corporate Website
+# Toptec Global corporate website
 
-Public corporate website for **TOPTEC GLOBAL PTE. LTD.** (UEN: 201932202N, Singapore), served at [https://toptec.com.sg/](https://toptec.com.sg/).
+Public corporate website for **TOPTEC GLOBAL PTE. LTD.** (UEN 201932202N), served at <https://toptec.com.sg/>.
 
-## Stack
+## Production boundary
 
-- Static HTML/CSS/JS — no build step required. Each page is a standalone HTML file with its own `<head>`, header, and footer.
-- Hosted on **Netlify**: contact form uses Netlify Forms (`data-netlify="true"`, redirects to `/success`); `_redirects` maps legacy URLs.
-- **PWA**: `site.webmanifest` + `sw.js` service worker (cache version `toptec-v8`).
+The repository root is source material and **must never be published directly**. Production is built into the untracked `dist/` directory from an explicit allowlist. Reports, scripts, compliance records, source assets, archives, and repository documentation are excluded from the public artifact.
 
-## Internationalization (i18n)
+Netlify must use:
 
-- English is authored directly in the HTML; elements carry `data-i18n="dot.notation.key"` attributes.
-- Traditional Chinese lives in `locales/zh-Hant.json`; `assets/js/main.js` applies it client-side and persists the choice in `localStorage` (`toptec-lang`).
-- **Rule:** any new visible English string needs a `data-i18n` attribute **and** a matching key in `locales/zh-Hant.json`, or the Chinese view will fall back to English.
+- Build command: `npm ci && npm test`
+- Publish directory: `dist`
+- Node version: `24`
 
-## Structured data
+## Local workflow
 
-`index.html` carries the canonical schema.org `Organization` JSON-LD (legal name, UEN, founding date, offices). Keep it in sync with the footer's corporate disclosure and the Corporate & Compliance Facts section on `about.html`.
+```text
+npm ci
+npm run scan:secrets
+npm test
+npm run lint:js
+npm run lint:css
+npm run test:e2e
+npm run lighthouse
+npm run serve
+```
 
-## Pages
+`npm test` creates `dist/`, runs the deployment allowlist and content/security checks, validates JSON/XML, and validates every generated HTML document. Run the browser and Lighthouse suites and inspect `dist/` before every deployment. A production release must first pass through a Netlify Deploy Preview.
 
-`index` · `about` (company story, leadership, compliance framework, corporate facts) · `electronics` · `trading` · `case-studies` · `contact` · `app` · `privacy` · `terms` · `404` · `success`
+## Site architecture
 
-## Analytics (currently not installed — intentional)
+- English content is authored in the root HTML source pages.
+- Approved Traditional Chinese content is stored in `locales/zh-Hant.json` and rendered into static `/zh-hant/` pages at build time.
+- The language switch is a normal link between equivalent static routes. Translation does not depend on runtime `innerHTML`, network fetches, or local storage.
+- Canonical public URLs are extensionless. Legacy `.html` URLs redirect permanently.
+- CSS and JavaScript are minified and fingerprinted by the build; production HTML references only the generated filenames.
+- `site.webmanifest` and `sw.js` provide an installable website shortcut and limited offline reading of public content. They do not provide accounts, project tracking, document storage, messaging, or push notifications.
 
-Analytics were removed while no real measurement IDs exist; do not ship placeholder IDs. To re-enable once real IDs are available:
+Content routes include home, about, products, trading, logistics, compliance, contact, website shortcut, privacy, and terms. Legacy electronics/services routes redirect to About; case-studies/solutions redirect to Trading; trust redirects to Compliance. English, Traditional Chinese, `.html`, and trailing-slash variants are covered. The success, error, and offline utility pages are excluded from search indexing.
 
-1. Create `assets/js/analytics.js` containing the GA4/Hotjar loaders with the **real** IDs, gated behind a cookie-consent check.
-2. Reference it with a single `<script src="assets/js/analytics.js" defer></script>` line in each page's `<head>` (7 content pages), so IDs live in exactly one file.
-3. Add a lightweight consent banner (pattern: `localStorage`, as `main.js` already does for language) and a Cookies subsection to `privacy.html` — both bilingual via `data-i18n` keys.
-4. Re-add `<meta name="google-site-verification" content="...">` with the real Search Console token to `index.html` only.
+## Contact form
 
-## Local development
+The contact form is processed by Netlify Forms. JavaScript enhances submission feedback, but the native POST path remains functional when JavaScript is unavailable. Only a successful HTTP response may clear the form or display success. Never add file upload or request sensitive documents through this public form without a separately reviewed secure exchange process.
 
-Serve the directory with any static server, e.g. `python3 -m http.server 8000`, then open `http://localhost:8000`. Netlify-specific features (form submission, functions) require `netlify dev`.
+The form name remains `contact`. Both languages submit required `company` and `inquiry_type`; category values are `product_purchase`, `supplier_cooperation`, `logistics_cooperation`, `corporate_kyc_request`, and `other`. The KYC category requests documents **from TOPTEC** and does not accept visitor documents. Keep the hidden `bot-field` honeypot and verify native Netlify spam filtering, detected fields and notification delivery in Deploy Preview; local browser tests intercept submissions.
 
-## Image pipeline
+The September 2026 energy redesign, image prompts, source records and local validation results are documented in `compliance/implementation-review-2026-09-27.md`. Internal records are never deployed.
 
-`scripts/optimize_images.py` generates the responsive WebP/JPEG variants under `assets/img/`.
+## Public claims and evidence
+
+Public operational, security, legal, certification, response-time, and customer claims must be represented in `compliance/claims.json` and approved by the named business owner before publication. Sensitive evidence belongs in an access-controlled data room and must not be committed or deployed.
+
+See `CUSTOMER_REVIEW_CHECKLIST.md` and `OPERATIONS_RUNBOOK.md` for customer-review evidence, release controls, mail-domain protection, and external administrative steps.
+
+Production remains blocked by `npm run review:gate` until every approval and claim status is backed by current evidence. Setting the build environment variable `PWA_KILL_SWITCH=true` creates an emergency artifact that disables registration and removes only `toptec-*` browser caches; use `npm run test:pwa-kill` to exercise and restore that path locally.
+
+## Third parties and analytics
+
+The site intentionally contains no analytics or behavioural tracking. Google Fonts are not used. Google Maps loads only after an explicit visitor action. Do not add a new processor, tracking script, consent mechanism, or external asset without privacy review, CSP updates, documented ownership, and a production test.

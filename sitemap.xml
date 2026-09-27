@@ -1,48 +1,123 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://toptec.com.sg/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://toptec.com.sg/" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://toptec.com.sg/zh-hant/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://toptec.com.sg/" />
   </url>
   <url>
-    <loc>https://toptec.com.sg/about.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://toptec.com.sg/zh-hant/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://toptec.com.sg/" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://toptec.com.sg/zh-hant/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://toptec.com.sg/" />
   </url>
   <url>
-    <loc>https://toptec.com.sg/electronics.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://toptec.com.sg/about</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://toptec.com.sg/about" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://toptec.com.sg/zh-hant/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://toptec.com.sg/about" />
   </url>
   <url>
-    <loc>https://toptec.com.sg/trading.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://toptec.com.sg/zh-hant/about</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://toptec.com.sg/about" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://toptec.com.sg/zh-hant/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://toptec.com.sg/about" />
   </url>
   <url>
-    <loc>https://toptec.com.sg/case-studies.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://toptec.com.sg/products</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://toptec.com.sg/products" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://toptec.com.sg/zh-hant/products" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://toptec.com.sg/products" />
   </url>
   <url>
-    <loc>https://toptec.com.sg/contact.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://toptec.com.sg/zh-hant/products</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://toptec.com.sg/products" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://toptec.com.sg/zh-hant/products" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://toptec.com.sg/products" />
   </url>
   <url>
-    <loc>https://toptec.com.sg/privacy.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://toptec.com.sg/trading</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://toptec.com.sg/trading" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://toptec.com.sg/zh-hant/trading" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://toptec.com.sg/trading" />
   </url>
   <url>
-    <loc>https://toptec.com.sg/terms.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://toptec.com.sg/zh-hant/trading</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://toptec.com.sg/trading" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://toptec.com.sg/zh-hant/trading" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://toptec.com.sg/trading" />
   </url>
   <url>
-    <loc>https://toptec.com.sg/app.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://toptec.com.sg/logistics</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://toptec.com.sg/logistics" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://toptec.com.sg/zh-hant/logistics" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://toptec.com.sg/logistics" />
+  </url>
+  <url>
+    <loc>https://toptec.com.sg/zh-hant/logistics</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://toptec.com.sg/logistics" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://toptec.com.sg/zh-hant/logistics" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://toptec.com.sg/logistics" />
+  </url>
+  <url>
+    <loc>https://toptec.com.sg/compliance</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://toptec.com.sg/compliance" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://toptec.com.sg/zh-hant/compliance" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://toptec.com.sg/compliance" />
+  </url>
+  <url>
+    <loc>https://toptec.com.sg/zh-hant/compliance</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://toptec.com.sg/compliance" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://toptec.com.sg/zh-hant/compliance" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://toptec.com.sg/compliance" />
+  </url>
+  <url>
+    <loc>https://toptec.com.sg/contact</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://toptec.com.sg/contact" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://toptec.com.sg/zh-hant/contact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://toptec.com.sg/contact" />
+  </url>
+  <url>
+    <loc>https://toptec.com.sg/zh-hant/contact</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://toptec.com.sg/contact" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://toptec.com.sg/zh-hant/contact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://toptec.com.sg/contact" />
+  </url>
+  <url>
+    <loc>https://toptec.com.sg/app</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://toptec.com.sg/app" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://toptec.com.sg/zh-hant/app" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://toptec.com.sg/app" />
+  </url>
+  <url>
+    <loc>https://toptec.com.sg/zh-hant/app</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://toptec.com.sg/app" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://toptec.com.sg/zh-hant/app" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://toptec.com.sg/app" />
+  </url>
+  <url>
+    <loc>https://toptec.com.sg/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://toptec.com.sg/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://toptec.com.sg/zh-hant/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://toptec.com.sg/privacy" />
+  </url>
+  <url>
+    <loc>https://toptec.com.sg/zh-hant/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://toptec.com.sg/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://toptec.com.sg/zh-hant/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://toptec.com.sg/privacy" />
+  </url>
+  <url>
+    <loc>https://toptec.com.sg/terms</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://toptec.com.sg/terms" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://toptec.com.sg/zh-hant/terms" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://toptec.com.sg/terms" />
+  </url>
+  <url>
+    <loc>https://toptec.com.sg/zh-hant/terms</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://toptec.com.sg/terms" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://toptec.com.sg/zh-hant/terms" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://toptec.com.sg/terms" />
   </url>
 </urlset>

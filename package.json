@@ -1,0 +1,43 @@
+{
+  "name": "toptec-corporate-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Reproducible static build and deployment checks for the Toptec Global corporate website.",
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25",
+    "npm": ">=11"
+  },
+  "scripts": {
+    "build": "node scripts/build-site.mjs",
+    "check": "node scripts/check-site.mjs",
+    "review:gate": "node scripts/check-site.mjs --review-gate",
+    "test": "npm run build && npm run check && npm run validate:html",
+    "test:e2e": "playwright test",
+    "test:pwa-kill": "node scripts/check-pwa-kill-switch.mjs",
+    "lint:js": "eslint .",
+    "lint:css": "stylelint \"assets/css/**/*.css\"",
+    "validate:html": "html-validate \"dist/**/*.html\"",
+    "scan:secrets": "node scripts/scan-secrets.mjs",
+    "lighthouse": "lhci autorun",
+    "serve": "node scripts/serve.mjs",
+    "sbom": "npm sbom --sbom-format cyclonedx"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.12.1",
+    "@lhci/cli": "0.15.1",
+    "@playwright/test": "1.61.1",
+    "cheerio": "1.1.2",
+    "esbuild": "0.28.1",
+    "eslint": "10.7.0",
+    "fast-xml-parser": "5.10.1",
+    "globals": "17.7.0",
+    "html-validate": "11.5.6",
+    "stylelint": "17.14.0",
+    "stylelint-config-standard": "40.0.0"
+  },
+  "overrides": {
+    "tmp": "0.2.7",
+    "uuid": "11.1.1"
+  }
+}

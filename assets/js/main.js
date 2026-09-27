@@ -1,120 +1,188 @@
-/* TOPTEC GLOBAL — site interactions: i18n, navigation, contact form, scroll reveal */
-
-const translations = {};
-const translationVersion = '20260714';
-const translationSources = {
-  'zh-Hant': `/locales/zh-Hant.json?v=${translationVersion}`
-};
-const translationRequests = {};
-
-async function loadTranslations(lang) {
-  const targetLang = lang === 'zh-Hant' ? 'zh-Hant' : 'en';
-  if (targetLang === 'en') {
-    return translations[targetLang] || {};
-  }
-  if (translations[targetLang]) {
-    return translations[targetLang];
-  }
-  if (translationRequests[targetLang]) {
-    return translationRequests[targetLang];
-  }
-
-  const source = translationSources[targetLang];
-  if (!source) {
-    return null;
-  }
-
-  translationRequests[targetLang] = fetch(source, { cache: 'no-cache' })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Failed to load translations for ${targetLang}`);
-      }
-      return response.json();
-    })
-    .then((data) => {
-      translations[targetLang] = data || {};
-      return translations[targetLang];
-    })
-    .catch((error) => {
-      console.error('[i18n] Unable to load translations:', error);
-      return null;
-    })
-    .finally(() => {
-      translationRequests[targetLang] = null;
-    });
-
-  return translationRequests[targetLang];
-}
+/* TOPTEC GLOBAL — navigation, contact form, map consent, and scroll reveal */
 
 document.addEventListener('DOMContentLoaded', () => {
   const body = document.body;
   const nav = document.querySelector('nav.primary-nav');
   const toggle = document.querySelector('.mobile-toggle');
-  const langButtons = document.querySelectorAll('.language-switcher button[data-lang]');
-  const langToggle = document.querySelector('.language-switcher button[data-lang-toggle]');
   const htmlElement = document.documentElement;
   const currentPage = body.dataset.page;
+  const isChinesePage = htmlElement.lang.toLowerCase().startsWith('zh');
+  const pwaDisabled = document.querySelector('meta[name="toptec-pwa-enabled"]')?.content === 'false';
 
-  let formMessages = {};
-  function updateFormMessages(lang) {
-    const target = lang || body.dataset.lang || 'en';
-    formMessages = {
-      required: getTranslation(target, 'general.form.required') || 'Please fill out this field.',
-      email: getTranslation(target, 'general.form.email') || 'Please enter a valid email address.',
-      businessEmail: getTranslation(target, 'general.form.businessEmail') || 'Please use your business email address.',
-      privacy: getTranslation(target, 'general.form.privacy') || 'Please agree to the Privacy Policy before submitting.',
-      submitting: getTranslation(target, 'general.form.submitting') || 'Submitting...',
-      success: getTranslation(target, 'general.form.success') || 'Your message has been sent. We will respond shortly.',
-      error:
-        getTranslation(target, 'general.form.error') ||
-        'There was an issue submitting the form. Please try again or email us directly.'
-    };
+  // Production kill-switch builds set the meta value to false on every page.
+  // Any fresh network navigation then removes prior Toptec registrations and
+  // caches without touching storage owned by unrelated applications.
+  if (pwaDisabled) {
+    window.addEventListener('load', async () => {
+      if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(registrations
+          .filter((registration) => registration.scope.startsWith(window.location.origin))
+          .map((registration) => registration.unregister()));
+      }
+      if ('caches' in window) {
+        const names = await caches.keys();
+        await Promise.all(names
+          .filter((name) => name.startsWith('toptec-'))
+          .map((name) => caches.delete(name)));
+      }
+    }, { once: true });
   }
 
-  updateFormMessages(body.dataset.lang || 'en');
+  const formMessages = isChinesePage
+    ? {
+        required: '請填寫此欄位。',
+        email: '請輸入有效的電子郵件地址。',
+        privacy: '請同意隱私權政策後再送出。',
+        submitting: '送出中…',
+        success: '您的訊息已送出，我們會儘快回覆。',
+        offline: '目前沒有網路連線。請連線後再試、致電 +65 8965 6938，或來信 contact@toptec.com.sg；您填寫的資料已保留。',
+        timeout: '連線逾時。請再試一次、致電 +65 8965 6938，或來信 contact@toptec.com.sg；您填寫的資料已保留。',
+        httpError: '服務目前無法接收表單。請稍後再試、致電 +65 8965 6938，或來信 contact@toptec.com.sg；您填寫的資料已保留。',
+        error: '表單未送出。請再試一次、致電 +65 8965 6938，或來信 contact@toptec.com.sg；您填寫的資料已保留。'
+      }
+    : {
+        required: 'Please fill out this field.',
+        email: 'Please enter a valid email address.',
+        privacy: 'Please agree to the Privacy Policy before submitting.',
+        submitting: 'Submitting…',
+        success: 'Your message has been sent. We will respond shortly.',
+        offline: 'You are offline. Reconnect and try again, call +65 8965 6938, or email contact@toptec.com.sg; your entries have been kept.',
+        timeout: 'The request timed out. Please try again, call +65 8965 6938, or email contact@toptec.com.sg; your entries have been kept.',
+        httpError: 'The service could not accept the form right now. Please try again later, call +65 8965 6938, or email contact@toptec.com.sg; your entries have been kept.',
+        error: 'The form was not sent. Please try again, call +65 8965 6938, or email contact@toptec.com.sg; your entries have been kept.'
+      };
 
   const navLinks = nav ? nav.querySelectorAll('a[data-page]') : [];
   navLinks.forEach((link) => {
     if (link.dataset.page === currentPage) {
       link.classList.add('active');
+      link.setAttribute('aria-current', 'page');
     }
   });
 
   /* === Mobile navigation =================================================== */
   if (toggle && nav) {
-    const closeMenu = () => {
+    const desktopQuery = window.matchMedia('(min-width: 1025px)');
+    const compactHeaderQuery = window.matchMedia('(max-width: 420px)');
+    const languageSwitcher = document.querySelector('.site-header .language-switcher');
+    const languageHome = languageSwitcher
+      ? {
+          parent: languageSwitcher.parentNode,
+          nextSibling: languageSwitcher.nextSibling
+        }
+      : null;
+    const backgroundRegions = Array.from(
+      document.querySelectorAll('.skip-link, main, footer, .site-header .site-logo, .site-header .nav-actions')
+    );
+    const previousInertStates = new Map();
+    let focusBeforeMenu = null;
+
+    toggle.setAttribute('type', 'button');
+    toggle.querySelectorAll('span').forEach((span) => span.setAttribute('aria-hidden', 'true'));
+
+    const placeLanguageSwitcher = (useCompactLayout) => {
+      if (!languageSwitcher || !languageHome) return;
+
+      if (useCompactLayout) {
+        if (languageSwitcher.parentNode !== nav) {
+          nav.append(languageSwitcher);
+        }
+        languageSwitcher.classList.add('language-switcher--in-menu');
+        return;
+      }
+
+      if (languageSwitcher.parentNode !== languageHome.parent) {
+        languageHome.parent.insertBefore(languageSwitcher, languageHome.nextSibling);
+      }
+      languageSwitcher.classList.remove('language-switcher--in-menu');
+    };
+
+    placeLanguageSwitcher(compactHeaderQuery.matches);
+
+    const isMenuOpen = () => toggle.getAttribute('aria-expanded') === 'true';
+    const updateMenuLabel = () => {
+      const label = isMenuOpen()
+        ? (isChinesePage ? '關閉主選單' : 'Close main menu')
+        : (isChinesePage ? '開啟主選單' : 'Open main menu');
+      toggle.setAttribute('aria-label', label);
+    };
+
+    const setBackgroundInert = (shouldBeInert) => {
+      backgroundRegions.forEach((region) => {
+        if (shouldBeInert) {
+          if (!previousInertStates.has(region)) {
+            previousInertStates.set(region, Boolean(region.inert));
+          }
+          region.inert = true;
+        } else if (previousInertStates.has(region)) {
+          region.inert = previousInertStates.get(region);
+          previousInertStates.delete(region);
+        }
+      });
+    };
+
+    const syncClosedMenuState = () => {
+      nav.inert = !desktopQuery.matches;
+      updateMenuLabel();
+    };
+
+    const closeMenu = ({ restoreFocus = false } = {}) => {
+      const wasOpen = isMenuOpen();
       nav.classList.remove('open');
       toggle.setAttribute('aria-expanded', 'false');
       body.classList.remove('menu-open');
       htmlElement.classList.remove('menu-open');
+      setBackgroundInert(false);
+      syncClosedMenuState();
+
+      if (restoreFocus && wasOpen) {
+        const focusTarget = focusBeforeMenu && focusBeforeMenu.isConnected ? focusBeforeMenu : toggle;
+        focusTarget.focus({ preventScroll: true });
+      }
+      focusBeforeMenu = null;
     };
+
+    const openMenu = () => {
+      focusBeforeMenu = document.activeElement;
+      nav.inert = false;
+      nav.classList.add('open');
+      toggle.setAttribute('aria-expanded', 'true');
+      body.classList.add('menu-open');
+      htmlElement.classList.add('menu-open');
+      setBackgroundInert(true);
+      nav.scrollTop = 0;
+      updateMenuLabel();
+
+      window.requestAnimationFrame(() => {
+        const firstLink = nav.querySelector('a[href]:not([tabindex="-1"])');
+        (firstLink || toggle).focus({ preventScroll: true });
+      });
+    };
+
     // Guard against stale menu state restored by mobile browser back/forward cache.
     closeMenu();
-    body.style.top = '';
 
     toggle.addEventListener('click', () => {
-      const expanded = toggle.getAttribute('aria-expanded') === 'true';
-      if (!expanded) {
-        toggle.setAttribute('aria-expanded', 'true');
-        nav.classList.add('open');
-        body.classList.add('menu-open');
-        htmlElement.classList.add('menu-open');
-        nav.scrollTop = 0;
+      if (isMenuOpen()) {
+        closeMenu({ restoreFocus: true });
       } else {
-        closeMenu();
+        openMenu();
       }
     });
 
     navLinks.forEach((link) => {
       link.addEventListener('click', () => {
-        closeMenu();
+        closeMenu({ restoreFocus: false });
       });
     });
 
-    const desktopQuery = window.matchMedia('(min-width: 1025px)');
     const handleDesktopChange = (event) => {
       if (event.matches) {
-        closeMenu();
+        closeMenu({ restoreFocus: false });
+        nav.inert = false;
+      } else if (!isMenuOpen()) {
+        nav.inert = true;
       }
     };
     if (desktopQuery.addEventListener) {
@@ -123,50 +191,51 @@ document.addEventListener('DOMContentLoaded', () => {
       desktopQuery.addListener(handleDesktopChange);
     }
 
-    document.addEventListener('keyup', (event) => {
+    const handleCompactHeaderChange = (event) => {
+      const menuWasOpen = isMenuOpen();
+      placeLanguageSwitcher(event.matches);
+      if (menuWasOpen) {
+        closeMenu({ restoreFocus: true });
+      }
+    };
+    if (compactHeaderQuery.addEventListener) {
+      compactHeaderQuery.addEventListener('change', handleCompactHeaderChange);
+    } else {
+      compactHeaderQuery.addListener(handleCompactHeaderChange);
+    }
+
+    document.addEventListener('keydown', (event) => {
+      if (!isMenuOpen()) return;
+
       if (event.key === 'Escape') {
-        closeMenu();
+        event.preventDefault();
+        closeMenu({ restoreFocus: true });
+        return;
+      }
+
+      if (event.key === 'Tab') {
+        const focusable = [toggle, ...nav.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])')]
+          .filter((element) => !element.hidden && !element.inert && !element.closest('[inert]'));
+        if (!focusable.length) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
       }
     });
 
     window.addEventListener('pageshow', () => {
-      closeMenu();
+      closeMenu({ restoreFocus: false });
     });
   }
 
-  /* === Internationalization ================================================ */
-  let i18nElements = [];
-  let placeholderElements = [];
-
-  const registerI18nElements = (root = document) => {
-    const elements = Array.from(root.querySelectorAll('[data-i18n]'));
-    if (!elements.length) {
-      return;
-    }
-    elements.forEach((el) => {
-      if (!el.dataset.i18nEn) {
-        el.dataset.i18nEn = el.innerHTML.trim();
-      }
-    });
-    i18nElements = Array.from(new Set([...i18nElements, ...elements]));
-  };
-
-  const registerPlaceholderElements = (root = document) => {
-    const elements = Array.from(root.querySelectorAll('[data-i18n-placeholder]'));
-    if (!elements.length) {
-      return;
-    }
-    elements.forEach((el) => {
-      if (!el.dataset.i18nPlaceholderEn) {
-        el.dataset.i18nPlaceholderEn = el.getAttribute('placeholder') || '';
-      }
-    });
-    placeholderElements = Array.from(new Set([...placeholderElements, ...elements]));
-  };
-
-  registerI18nElements(document);
-  registerPlaceholderElements(document);
-
+  /* === Progressive enhancements =========================================== */
   const applyLazyLoading = () => {
     const candidates = document.querySelectorAll('img:not([loading])');
     candidates.forEach((img) => {
@@ -182,130 +251,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  function getTranslation(lang, key) {
-    if (!translations[lang]) {
-      return undefined;
-    }
-    const parts = key.split('.');
-    let value = translations[lang];
-    for (const part of parts) {
-      if (!value) {
-        return undefined;
-      }
-      value = value[part];
-    }
-    return typeof value === 'string' ? value : undefined;
-  }
-
-  const updateLangToggle = (activeLang) => {
-    if (!langToggle) return;
-    const nextLang = activeLang === 'zh-Hant' ? 'en' : 'zh-Hant';
-    langToggle.textContent = nextLang === 'zh-Hant' ? '繁中' : 'EN';
-    langToggle.setAttribute('aria-label', nextLang === 'zh-Hant' ? '切換為繁體中文' : 'Switch to English');
-    langToggle.dataset.targetLang = nextLang;
-    langToggle.setAttribute('aria-pressed', activeLang === 'zh-Hant' ? 'true' : 'false');
-  };
-
-  async function setLanguage(lang) {
-    const targetLang = lang === 'zh-Hant' ? 'zh-Hant' : 'en';
-    let appliedLang = targetLang;
-
-    if (targetLang !== 'en' && !translations[targetLang]) {
-      try {
-        const loaded = await loadTranslations(targetLang);
-        if (!loaded) {
-          appliedLang = 'en';
-        }
-      } catch (error) {
-        console.error('[i18n] Failed to apply language, falling back to English:', error);
-        appliedLang = 'en';
-      }
-    }
-
-    htmlElement.setAttribute('lang', appliedLang === 'zh-Hant' ? 'zh-Hant' : 'en');
-    body.dataset.lang = appliedLang;
-
-    updateFormMessages(appliedLang);
-    updateLangToggle(appliedLang);
-
-    langButtons.forEach((btn) => {
-      btn.classList.toggle('active', btn.dataset.lang === appliedLang);
-      btn.setAttribute('aria-pressed', btn.dataset.lang === appliedLang ? 'true' : 'false');
-    });
-
-    i18nElements.forEach((el) => {
-      const key = el.dataset.i18n;
-      if (!key) return;
-      if (appliedLang === 'en') {
-        el.innerHTML = el.dataset.i18nEn || el.innerHTML;
-      } else {
-        const translated = getTranslation(appliedLang, key);
-        el.innerHTML = translated || el.dataset.i18nEn || el.innerHTML;
-      }
-    });
-
-    placeholderElements.forEach((el) => {
-      const key = el.dataset.i18nPlaceholder;
-      if (!key) return;
-      if (appliedLang === 'en') {
-        el.setAttribute('placeholder', el.dataset.i18nPlaceholderEn || '');
-      } else {
-        const translated = getTranslation(appliedLang, key);
-        el.setAttribute('placeholder', translated || el.dataset.i18nPlaceholderEn || '');
-      }
-    });
-
-    localStorage.setItem('toptec-lang', appliedLang);
-  }
-
-  const savedLang = localStorage.getItem('toptec-lang') || 'en';
-  setLanguage(savedLang).catch((error) => console.error('[i18n] Failed to set initial language:', error));
   applyLazyLoading();
-
-  if (langToggle) {
-    langToggle.addEventListener('click', () => {
-      const next = langToggle.dataset.targetLang || (body.dataset.lang === 'zh-Hant' ? 'en' : 'zh-Hant');
-      setLanguage(next).catch((error) => console.error('[i18n] Failed to toggle language:', error));
-    });
-  }
-
-  langButtons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const lang = btn.dataset.lang || 'en';
-      setLanguage(lang).catch((error) => console.error('[i18n] Failed to apply selected language:', error));
-    });
-  });
 
   /* === Contact form ======================================================== */
   const contactForm = document.querySelector('#contact-form');
   if (contactForm) {
-    const formFields = contactForm.querySelectorAll('input[required], textarea[required]');
+    const requiredFields = contactForm.querySelectorAll('input[required], textarea[required], select[required]');
     const submitButton = contactForm.querySelector("button[type='submit']");
-    const emailField = contactForm.querySelector('#email');
     const privacyCheckbox = contactForm.querySelector('#agree-privacy');
-    const freeEmailDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com', 'aol.com', 'qq.com', '163.com', '126.com', 'protonmail.com', 'hey.com', 'msn.com', 'live.com', 'me.com', 'gmx.com'];
-
-    const isFreeDomain = (address) => {
-      const atIndex = address.indexOf('@');
-      if (atIndex === -1) return false;
-      const domain = address.slice(atIndex + 1).toLowerCase();
-      return freeEmailDomains.some((freeDomain) => domain === freeDomain || domain.endsWith('.' + freeDomain));
-    };
-
-    const validateBusinessEmail = () => {
-      if (!emailField) return;
-      const value = emailField.value.trim().toLowerCase();
-      if (value && isFreeDomain(value)) {
-        emailField.setCustomValidity(formMessages.businessEmail);
-      } else {
-        emailField.setCustomValidity('');
-      }
-    };
-
-    if (emailField) {
-      emailField.addEventListener('input', validateBusinessEmail);
-      emailField.addEventListener('blur', validateBusinessEmail);
-    }
+    const successStatus = contactForm.querySelector('[data-form-status="success"]');
+    const errorStatus = contactForm.querySelector('[data-form-status="error"]');
+    const submitLabel = submitButton ? submitButton.textContent.trim() : '';
+    let isSubmitting = false;
 
     if (privacyCheckbox) {
       privacyCheckbox.addEventListener('change', () => {
@@ -313,15 +270,18 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    formFields.forEach((field) => {
+    requiredFields.forEach((field) => {
       field.addEventListener('input', () => {
+        field.setCustomValidity('');
+      });
+      field.addEventListener('change', () => {
         field.setCustomValidity('');
       });
 
       field.addEventListener('invalid', () => {
         if (field.validity.customError) return;
         let message = formMessages.required;
-        if (field.type === 'email') {
+        if (!field.validity.valueMissing && field.type === 'email') {
           message = formMessages.email;
         } else if (privacyCheckbox && field === privacyCheckbox) {
           message = formMessages.privacy;
@@ -330,77 +290,138 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    const statusMessage = contactForm.querySelector('.success-message');
-    const showStatusMessage = (message, isError = false) => {
-      if (!statusMessage) {
-        return;
-      }
-      statusMessage.textContent = message;
-      statusMessage.classList.add('show');
-      statusMessage.classList.toggle('is-error', Boolean(isError));
-      setTimeout(() => statusMessage.classList.remove('show'), 6000);
+    const clearStatuses = () => {
+      [successStatus, errorStatus].forEach((status) => {
+        if (!status) return;
+        status.hidden = true;
+        status.textContent = '';
+      });
     };
 
-    contactForm.addEventListener('submit', async (event) => {
-      validateBusinessEmail();
-      if (privacyCheckbox) {
-        if (!privacyCheckbox.checked) {
-          privacyCheckbox.setCustomValidity(formMessages.privacy);
-        } else {
-          privacyCheckbox.setCustomValidity('');
+    const showStatus = (status, message) => {
+      clearStatuses();
+      if (!status) return;
+      status.textContent = message;
+      status.hidden = false;
+    };
+
+    // Older browsers retain the form's native POST action as a no-JavaScript
+    // fallback instead of attempting an incomplete Ajax enhancement.
+    if ('fetch' in window && 'AbortController' in window) {
+      contactForm.addEventListener('submit', async (event) => {
+        if (isSubmitting) {
+          event.preventDefault();
+          return;
         }
-      }
 
-      if (!contactForm.checkValidity()) {
+        if (privacyCheckbox) {
+          privacyCheckbox.setCustomValidity(privacyCheckbox.checked ? '' : formMessages.privacy);
+        }
+
+        if (!contactForm.checkValidity()) {
+          event.preventDefault();
+          contactForm.reportValidity();
+          return;
+        }
+
         event.preventDefault();
-        contactForm.reportValidity();
-        return;
-      }
+        clearStatuses();
 
-      event.preventDefault();
-      if (submitButton) {
-        submitButton.dataset.originalLabel = submitButton.textContent;
-        submitButton.disabled = true;
-        submitButton.textContent = formMessages.submitting;
-      }
+        if (navigator.onLine === false) {
+          showStatus(errorStatus, formMessages.offline);
+          return;
+        }
 
-      const formData = new FormData(contactForm);
-      formData.append('form-name', contactForm.getAttribute('name') || 'contact');
-      if (!formData.has('bot-field')) {
-        formData.append('bot-field', '');
-      }
+        isSubmitting = true;
+        if (submitButton) {
+          submitButton.disabled = true;
+          submitButton.setAttribute('aria-disabled', 'true');
+          submitButton.textContent = formMessages.submitting;
+        }
 
-      const encoded = new URLSearchParams();
-      formData.forEach((value, key) => {
-        if (typeof value === 'string') {
-          encoded.append(key, value);
+        const formData = new FormData(contactForm);
+        formData.set('form-name', contactForm.getAttribute('name') || 'contact');
+        if (!formData.has('bot-field')) {
+          formData.set('bot-field', '');
+        }
+
+        const encoded = new URLSearchParams();
+        formData.forEach((value, key) => {
+          if (typeof value === 'string') {
+            encoded.append(key, value);
+          }
+        });
+
+        const controller = new AbortController();
+        let timedOut = false;
+        const timeoutId = window.setTimeout(() => {
+          timedOut = true;
+          controller.abort();
+        }, 12000);
+
+        try {
+          const submissionTarget = contactForm.getAttribute('action') || '/';
+          const response = await fetch(submissionTarget, {
+            method: 'POST',
+            credentials: 'same-origin',
+            redirect: 'follow',
+            headers: {
+              Accept: 'text/html,application/xhtml+xml',
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: encoded.toString(),
+            signal: controller.signal
+          });
+
+          if (!response.ok) {
+            const httpError = new Error(`Form submission returned HTTP ${response.status}`);
+            httpError.name = 'FormHttpError';
+            throw httpError;
+          }
+
+          contactForm.reset();
+          requiredFields.forEach((field) => field.setCustomValidity(''));
+          showStatus(successStatus, formMessages.success);
+        } catch (error) {
+          let message = formMessages.error;
+          if (navigator.onLine === false) {
+            message = formMessages.offline;
+          } else if (timedOut || error.name === 'AbortError') {
+            message = formMessages.timeout;
+          } else if (error.name === 'FormHttpError') {
+            message = formMessages.httpError;
+          }
+          showStatus(errorStatus, message);
+          console.warn('[contact-form] Submission was not completed.', error.name);
+        } finally {
+          window.clearTimeout(timeoutId);
+          isSubmitting = false;
+          if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.removeAttribute('aria-disabled');
+            submitButton.textContent = submitLabel;
+          }
         }
       });
-
-      try {
-        const submissionTarget = contactForm.getAttribute('action') || '/';
-        await fetch(submissionTarget, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: encoded.toString()
-        });
-        contactForm.reset();
-        formFields.forEach((field) => field.setCustomValidity(''));
-        showStatusMessage(formMessages.success, false);
-      } catch (error) {
-        console.error('[contact-form] Submission failed:', error);
-        showStatusMessage(formMessages.error, true);
-      } finally {
-        if (submitButton) {
-          const resetText = submitButton.dataset.originalLabel || submitButton.textContent;
-          setTimeout(() => {
-            submitButton.disabled = false;
-            submitButton.textContent = resetText;
-          }, 600);
-        }
-      }
-    });
+    }
   }
+
+  /* === Privacy-preserving map loader ====================================== */
+  document.querySelectorAll('[data-map-consent]').forEach((mapConsent) => {
+    const loadButton = mapConsent.querySelector('[data-map-load]');
+    const embedUrl = mapConsent.dataset.mapEmbedUrl;
+    if (!loadButton || !embedUrl) return;
+
+    loadButton.addEventListener('click', () => {
+      const iframe = document.createElement('iframe');
+      iframe.title = isChinesePage ? 'Toptec Global 新加坡登記地址位置' : 'Toptec Global Singapore registered office location';
+      iframe.src = embedUrl;
+      iframe.loading = 'lazy';
+      iframe.referrerPolicy = 'no-referrer';
+      iframe.allowFullscreen = true;
+      mapConsent.replaceWith(iframe);
+    }, { once: true });
+  });
 
   /* === Scroll-reveal animation ============================================= */
   initScrollAnimations();
@@ -437,13 +458,15 @@ document.addEventListener('DOMContentLoaded', () => {
         orderedElements.push(element);
       }
 
-      if (!element.style.getPropertyValue('--animate-delay')) {
+      const hasDelayClass = Array.from(element.classList).some((className) => className.startsWith('animate-delay-'));
+      if (!hasDelayClass) {
         let delay = options.startDelay || 0;
         if (typeof options.stagger === 'number') {
           delay += index * options.stagger;
         }
         if (delay > 0) {
-          element.style.setProperty('--animate-delay', `${delay.toFixed(2)}s`);
+          const delayStep = Math.min(8, Math.max(1, Math.round(delay / 0.08)));
+          element.classList.add(`animate-delay-${delayStep}`);
         }
       }
     };

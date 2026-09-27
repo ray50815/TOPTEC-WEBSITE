@@ -1,0 +1,82 @@
+name: Site CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Scan repository for high-confidence secrets
+        run: npm run scan:secrets
+
+      - name: Audit locked dependencies
+        run: npm audit --audit-level=high
+
+      - name: Build allowlisted site
+        run: npm test
+
+      - name: Exercise PWA production kill switch
+        run: npm run test:pwa-kill
+
+      - name: Lint JavaScript
+        run: npm run lint:js
+
+      - name: Lint CSS
+        run: npm run lint:css
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run browser and accessibility tests
+        run: npm run test:e2e
+
+      - name: Run Lighthouse acceptance gates
+        run: npm run lighthouse
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: toptec-lighthouse-reports
+          path: .lighthouseci
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Generate CycloneDX SBOM
+        run: npm run --silent sbom -- > toptec-sbom.cdx.json
+
+      - name: Upload deploy artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: toptec-site-dist
+          path: dist
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: toptec-site-sbom
+          path: toptec-sbom.cdx.json
+          if-no-files-found: error
+          retention-days: 30

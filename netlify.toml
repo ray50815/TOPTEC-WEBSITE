@@ -1,0 +1,24 @@
+[build]
+  command = "npm ci && npm test"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "24"
+  NPM_VERSION = "11"
+
+[build.processing]
+  skip_processing = true
+
+[dev]
+  command = "npm test"
+  publish = "dist"
+  autoLaunch = false
+
+[context.deploy-preview]
+  command = "npm ci && npm test"
+
+[context.deploy-preview.environment]
+  CSP_REPORT_ONLY = "true"
+
+[context.production]
+  command = "npm ci && npm test && npm run review:gate"

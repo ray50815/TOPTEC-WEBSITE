@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.netlify/
+.lighthouseci/
+.tmp/
+playwright-report/
+test-results/
+.codex-remote-attachments/
+npm-debug.log*
+*.log
+toptec-sbom*.json
