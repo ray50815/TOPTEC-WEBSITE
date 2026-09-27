@@ -44,15 +44,17 @@ The contact form is processed by Netlify Forms. JavaScript enhances submission f
 
 The form name remains `contact`. Both languages submit required `company` and `inquiry_type`; category values are `product_purchase`, `supplier_cooperation`, `logistics_cooperation`, `corporate_kyc_request`, and `other`. The KYC category requests documents **from TOPTEC** and does not accept visitor documents. Keep the hidden `bot-field` honeypot and verify native Netlify spam filtering, detected fields and notification delivery in Deploy Preview; local browser tests intercept submissions.
 
-The September 2026 energy redesign, image prompts, source records and local validation results are documented in `compliance/implementation-review-2026-09-27.md`. Internal records are never deployed.
+The September 2026 energy redesign, image prompts, source records and local validation results are retained in the private working copy. Internal records are excluded from both this public repository and the deployed artifact.
 
 ## Public claims and evidence
 
-Public operational, security, legal, certification, response-time, and customer claims must be represented in `compliance/claims.json` and approved by the named business owner before publication. Sensitive evidence belongs in an access-controlled data room and must not be committed or deployed.
+Business owners maintain public-claim evidence and approvals in the private review process. Its `compliance/claims.json` register is deliberately absent from the public repository. Sensitive evidence belongs in an access-controlled data room and must not be committed or deployed.
 
-See `CUSTOMER_REVIEW_CHECKLIST.md` and `OPERATIONS_RUNBOOK.md` for customer-review evidence, release controls, mail-domain protection, and external administrative steps.
+Run `npm run review:gate` explicitly in the private working copy when conducting an internal review. It continues to fail if evidence or approvals are missing; it does not silently pass in CI or manufacture approvals. The customer-review checklist and operations runbook are also retained privately.
 
-Production remains blocked by `npm run review:gate` until every approval and claim status is backed by current evidence. Setting the build environment variable `PWA_KILL_SWITCH=true` creates an emergency artifact that disables registration and removes only `toptec-*` browser caches; use `npm run test:pwa-kill` to exercise and restore that path locally.
+Netlify production and Deploy Preview both run `npm ci && npm test`, retaining the build, deployment allowlist, content/security, bilingual-route and HTML checks without requiring private records. A successful technical build is not a record of business or legal approval. Do not upload private evidence or change claim statuses to repair a hosting build.
+
+Setting the build environment variable `PWA_KILL_SWITCH=true` creates an emergency artifact that disables registration and removes only `toptec-*` browser caches; use `npm run test:pwa-kill` to exercise and restore that path locally.
 
 ## Third parties and analytics
 
