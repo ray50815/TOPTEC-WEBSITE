@@ -476,6 +476,24 @@ function validateReferenceTargets(files, references) {
 }
 
 function validateHeadersAndRedirects(headers, redirects) {
+  const normalize = (value) => value.replace(/\/+$/, '') || '/';
+  const publicRoutes = ROUTES.flatMap(([, route]) => [route, zhRoute(route)]);
+  for (const line of redirects.split('\n')) {
+    const [source, target, status] = line.trim().split(/\s+/);
+    if (!source || source.startsWith('#') || !status) continue;
+    if (/^30[1278]/.test(status) && normalize(source) === normalize(target)) {
+      issue(`_redirects creates a Netlify normalized self-redirect: ${line}`);
+    }
+    if (status.startsWith('410')) {
+      const prefix = normalize(source.replace(/\/\*$/, ''));
+      for (const route of publicRoutes) {
+        const normalized = normalize(route);
+        if (normalized === prefix || (source.endsWith('/*') && normalized.startsWith(`${prefix}/`))) {
+          issue(`_redirects blocks public route ${route}: ${line}`);
+        }
+      }
+    }
+  }
   const requiredDirectives = [
     "default-src 'self'",
     "frame-ancestors 'none'",

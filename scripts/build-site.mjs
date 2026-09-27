@@ -672,7 +672,6 @@ function createRedirects() {
   const gone = [
     '/graphify-out/*',
     '/.codex-remote-attachments/*',
-    '/compliance/*',
     '/README.md',
     '/OPERATIONS_RUNBOOK.md',
     '/scripts/*',
@@ -687,25 +686,16 @@ function createRedirects() {
   ].map((source) => `${source} /404.html 410!`);
 
   const canonicalRedirects = [
+    // Netlify normalizes trailing slashes before matching. Slash-only redirects
+    // therefore match their own destination and must never be generated.
     '/index.html / 301!',
-    ...ROUTES.filter((item) => item.route !== '/').flatMap((item) => [
-      `/${item.source} ${item.route} 301!`,
-      `${item.route}/ ${item.route} 301!`
-    ]),
+    ...ROUTES.filter((item) => item.route !== '/').map((item) => `/${item.source} ${item.route} 301!`),
     '/success.html /success 301!',
-    '/success/ /success 301!',
     '/offline.html /offline 301!',
-    '/offline/ /offline 301!',
-    '/zh-hant /zh-hant/ 301!',
     '/zh-hant/index.html /zh-hant/ 301!',
-    ...ROUTES.filter((item) => item.route !== '/').flatMap((item) => [
-      `/zh-hant/${item.source} ${zhRoute(item.route)} 301!`,
-      `${zhRoute(item.route)}/ ${zhRoute(item.route)} 301!`
-    ]),
+    ...ROUTES.filter((item) => item.route !== '/').map((item) => `/zh-hant/${item.source} ${zhRoute(item.route)} 301!`),
     '/zh-hant/success.html /zh-hant/success 301!',
-    '/zh-hant/success/ /zh-hant/success 301!',
-    '/zh-hant/offline.html /zh-hant/offline 301!',
-    '/zh-hant/offline/ /zh-hant/offline 301!'
+    '/zh-hant/offline.html /zh-hant/offline 301!'
   ];
 
   const legacyRedirects = Object.entries({ electronics: 'about', services: 'about', 'case-studies': 'trading', solutions: 'trading', trust: 'compliance' }).flatMap(([old, target]) => ['', '/zh-hant'].flatMap(prefix => ['', '.html', '/'].map(suffix => `${prefix}/${old}${suffix} ${prefix}/${target} 301!`)));
