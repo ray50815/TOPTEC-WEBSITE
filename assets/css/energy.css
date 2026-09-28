@@ -396,4 +396,4 @@ address { font-style: normal; line-height: 1.8; }
 .utility-actions { display: flex; flex-wrap: wrap; gap: 1rem; }
 
 /* Keep the taller sample glassware inside the new photograph’s desktop crop. */
-.wide-image--product-sample img { max-height: 540px; object-position: center 40%; }
+.wide-image--product-sample img { height: auto; max-height: 540px; object-position: center 40%; }
