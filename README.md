@@ -34,6 +34,7 @@ npm run serve
 - The language switch is a normal link between equivalent static routes. Translation does not depend on runtime `innerHTML`, network fetches, or local storage.
 - Canonical public URLs are extensionless. Legacy `.html` URLs redirect permanently.
 - CSS and JavaScript are minified and fingerprinted by the build; production HTML references only the generated filenames.
+- Images under `assets/img/` are not fingerprinted and are cached for 30 days. When replacing an image, give the new file a new name (and update the references) instead of overwriting the old file, or returning visitors will keep seeing the cached version.
 - `site.webmanifest` and `sw.js` provide an installable website shortcut and limited offline reading of public content. They do not provide accounts, project tracking, document storage, messaging, or push notifications.
 
 - Every `data-i18n` key must translate one English source string. `npm run check` fails if the same key is reused for different English text, which would otherwise show the wrong Chinese copy.

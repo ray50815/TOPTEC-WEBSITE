@@ -428,10 +428,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function initScrollAnimations() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    // Only legal pages still use the legacy reveal groups. Energy pages are
-    // intentionally static so the hero LCP and layout stay stable.
+    // Only the legal cards use the reveal. Energy pages are intentionally
+    // static so the hero LCP and layout stay stable.
     const animationGroups = [
-      { selector: '.hero-content > *', stagger: 0.07 },
       { selector: '.legal-card', stagger: 0.08 }
     ];
 

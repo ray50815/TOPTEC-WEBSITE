@@ -49,7 +49,7 @@ const ROUTES = [
       "en": "EN590 10ppm diesel and gasoil enquiries for international wholesale requirements. Specifications and availability subject to agreement.",
       "zh": "面向國際批發需求的 EN590 10ppm 柴油及 Gasoil 詢問；規格與供應情況須個別議定。"
     },
-    "image": "/assets/img/energy-marine-1280.jpg"
+    "image": "/assets/img/products-lab-sample-1280.jpg"
   },
   {
     "source": "trading.html",
@@ -62,7 +62,7 @@ const ROUTES = [
       "en": "Commercial sourcing, cargo arrangements, documentation and physical delivery coordination for refined petroleum products.",
       "zh": "成品油商務採購、貨物安排、文件及實體交付協調。"
     },
-    "image": "/assets/img/energy-marine-1280.jpg"
+    "image": "/assets/img/trading-jetty-daylight-1280.jpg"
   },
   {
     "source": "logistics.html",
@@ -175,6 +175,14 @@ const SHARE_IMAGE_ALT = {
   '/assets/img/energy-storage-1280.jpg': {
     en: 'Petroleum storage tanks beside a marine jetty',
     zh: '海運碼頭旁的石油儲槽'
+  },
+  '/assets/img/products-lab-sample-1280.jpg': {
+    en: 'Diesel sample at a petroleum inspection laboratory',
+    zh: '石油檢驗實驗室中的柴油樣品'
+  },
+  '/assets/img/trading-jetty-daylight-1280.jpg': {
+    en: 'Loading arms at a marine product jetty',
+    zh: '成品油碼頭的裝卸臂'
   }
 };
 
