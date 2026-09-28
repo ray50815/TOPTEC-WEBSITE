@@ -238,6 +238,9 @@ main .text-link[href^='https:']::after {
 
 .wide-image img { width: 100%; max-height: 490px; object-fit: cover; border-radius: 3px; }
 
+/* Keep a subject that sits low in the frame (e.g. the sample bottle) whole. */
+.wide-image--anchor-bottom img { object-position: center bottom; }
+
 .corporate-facts { margin: 0; }
 
 .corporate-facts > div { padding: 1.25rem 0; border-top: 1px solid var(--energy-line); }
