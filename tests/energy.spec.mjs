@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('legacy English and Chinese URLs redirect directly to replacement pages', async ({ request }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-1440');
-  for (const [old, target] of Object.entries({ electronics: 'about', services: 'about', 'case-studies': 'trading', solutions: 'trading', trust: 'compliance' })) {
+  for (const [old, target] of Object.entries({ electronics: 'about', services: 'about', 'case-studies': 'trading', solutions: 'trading', trust: 'trading', compliance: 'trading' })) {
     for (const prefix of ['', '/zh-hant']) {
       for (const suffix of ['', '.html', '/']) {
         const response = await request.get(`${prefix}/${old}${suffix}?source=legacy`, { maxRedirects: 0 });
@@ -24,7 +24,7 @@ for (const prefix of ['', '/zh-hant']) {
     await expect(page.locator('#company')).toHaveAttribute('required', '');
     await expect(page.locator('input[type="file"]')).toHaveCount(0);
     await expect(page.locator('[name="bot-field"]')).toBeHidden();
-    await expect(page.locator('#sensitive-document-warning')).toContainText('KYC');
+    await expect(page.locator('#sensitive-document-warning')).toContainText(prefix ? '機密文件' : 'confidential documents');
     await page.locator('#name').fill('Test Counterparty');
     await page.locator('#company').fill('Example Energy');
     await page.locator('#email').fill('buyer@example.com');

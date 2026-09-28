@@ -78,19 +78,6 @@ const ROUTES = [
     "image": "/assets/img/energy-storage-1280.jpg"
   },
   {
-    "source": "compliance.html",
-    "route": "/compliance",
-    "title": {
-      "en": "Trade Compliance | TOPTEC Global",
-      "zh": "貿易合規｜TOPTEC Global"
-    },
-    "description": {
-      "en": "Transaction-specific counterparty, vessel, documentation and inspection review arrangements. Request corporate information from TOPTEC.",
-      "zh": "依交易需求進行交易對手、船舶、文件及檢驗安排；向 TOPTEC 申請公司資料。"
-    },
-    "image": "/assets/img/energy-marine-1280.jpg"
-  },
-  {
     "source": "contact.html",
     "route": "/contact",
     "title": {
@@ -98,8 +85,8 @@ const ROUTES = [
       "zh": "聯絡交易團隊｜TOPTEC Global"
     },
     "description": {
-      "en": "Contact TOPTEC for product enquiries, supplier cooperation, logistics arrangements or corporate and KYC documentation requests.",
-      "zh": "聯絡 TOPTEC 洽詢產品、供應商合作、物流安排，或申請公司及 KYC 文件。"
+      "en": "Contact TOPTEC for product enquiries, supplier cooperation, logistics arrangements or corporate information requests.",
+      "zh": "聯絡 TOPTEC 洽詢產品、供應商合作、物流安排，或申請公司資料。"
     },
     "image": "/assets/img/energy-marine-1280.jpg"
   },
@@ -791,7 +778,7 @@ function createRedirects() {
     '/zh-hant/offline.html /zh-hant/offline 301!'
   ];
 
-  const legacyRedirects = Object.entries({ electronics: 'about', services: 'about', 'case-studies': 'trading', solutions: 'trading', trust: 'compliance' }).flatMap(([old, target]) => ['', '/zh-hant'].flatMap(prefix => ['', '.html', '/'].map(suffix => `${prefix}/${old}${suffix} ${prefix}/${target} 301!`)));
+  const legacyRedirects = Object.entries({ electronics: 'about', services: 'about', 'case-studies': 'trading', solutions: 'trading', trust: 'trading', compliance: 'trading' }).flatMap(([old, target]) => ['', '/zh-hant'].flatMap(prefix => ['', '.html', '/'].map(suffix => `${prefix}/${old}${suffix} ${prefix}/${target} 301!`)));
   // Language-specific 404 for unknown Chinese URLs. Netlify stops at the first
   // matching rule, so this must follow every specific /zh-hant/ redirect above
   // (those legacy paths have no file and would otherwise be caught here) and

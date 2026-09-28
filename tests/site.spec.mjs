@@ -7,7 +7,6 @@ const englishRoutes = [
   '/products',
   '/logistics',
   '/trading',
-  '/compliance',
   '/contact',
   '/app',
   '/privacy',
