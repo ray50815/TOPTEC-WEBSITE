@@ -31,10 +31,6 @@ const ROUTES = [
     "/logistics"
   ],
   [
-    "compliance.html",
-    "/compliance"
-  ],
-  [
     "contact.html",
     "/contact"
   ],
@@ -441,12 +437,12 @@ function validateContactForm(documents, sourceScriptText) {
     if (!form.find('[name="bot-field"]').closest('[hidden][aria-hidden="true"]').length || form.find('[name="bot-field"]').attr('tabindex') !== '-1') {
       issue(`${file}: honeypot must remain hidden from users and assistive technology`);
     }
-    if (!/KYC/.test(form.find('#sensitive-document-warning').text())) issue(`${file}: explicit KYC warning is missing`);
+    if (!/confidential|機密/i.test(form.find('#sensitive-document-warning').text())) issue(`${file}: confidential-document warning is missing`);
     const status = form.find('[role="status"]');
     const alert = form.find('[role="alert"]');
     if (!status.length || !alert.length) issue(`${file}: separate status and alert live regions are required`);
     const text = visibleText(cheerio.load($.html()));
-    if (!/(?:passport|護照)/i.test(text) || !/KYC/.test(text)) issue(`${file}: sensitive-document warning is missing`);
+    if (!/(?:personal identification|個人身分證明)/i.test(text)) issue(`${file}: identification-document warning is missing`);
   }
 
   for (const required of ['AbortController', '12000', 'response.ok']) {
@@ -588,7 +584,7 @@ function validateHeadersAndRedirects(headers, redirects) {
     if (!redirects.includes(`/${source} ${route} 301!`)) issue(`_redirects lacks canonical redirect for /${source}`);
     if (!redirects.includes(`/zh-hant/${source} ${zhRoute(route)} 301!`)) issue(`_redirects lacks zh-Hant canonical redirect for ${source}`);
   }
-  for (const [old, target] of Object.entries({ electronics: 'about', services: 'about', 'case-studies': 'trading', solutions: 'trading', trust: 'compliance' })) {
+  for (const [old, target] of Object.entries({ electronics: 'about', services: 'about', 'case-studies': 'trading', solutions: 'trading', trust: 'trading', compliance: 'trading' })) {
     for (const prefix of ['', '/zh-hant']) {
       for (const suffix of ['', '.html', '/']) {
         const rule = `${prefix}/${old}${suffix} ${prefix}/${target} 301!`;
