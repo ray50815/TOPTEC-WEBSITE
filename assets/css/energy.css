@@ -394,3 +394,6 @@ address { font-style: normal; line-height: 1.8; }
 .utility-card p:not(.eyebrow) { color: var(--energy-muted); line-height: 1.8; margin-bottom: 2rem; }
 
 .utility-actions { display: flex; flex-wrap: wrap; gap: 1rem; }
+
+/* Keep the taller sample glassware inside the new photograph’s desktop crop. */
+.wide-image--product-sample img { max-height: 540px; object-position: center 40%; }
