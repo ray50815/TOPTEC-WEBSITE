@@ -85,3 +85,53 @@ test('every enquiry category submits in both languages without JavaScript', asyn
     await context.close();
   }
 });
+
+test('unknown Chinese URLs use the Chinese 404 while legacy Chinese URLs still redirect', async ({ request, page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop-1440');
+  const response = await page.goto('/zh-hant/this-page-does-not-exist');
+  expect(response?.status()).toBe(404);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'zh-Hant');
+  await expect(page.locator('h1')).toHaveText('找不到頁面');
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
+
+  const english = await page.goto('/this-page-does-not-exist');
+  expect(english?.status()).toBe(404);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+
+  const legacy = await request.get('/zh-hant/electronics', { maxRedirects: 0 });
+  expect(legacy.status()).toBe(301);
+  expect(legacy.headers().location).toBe('/zh-hant/about');
+});
+
+for (const prefix of ['', '/zh-hant']) {
+  test(`${prefix || 'English'} page CTAs preselect only valid enquiry types`, async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'desktop-1440');
+    await page.goto(`${prefix}/contact?inquiry=supplier_cooperation#contact-form`);
+    await expect(page.locator('#inquiry-type')).toHaveValue('supplier_cooperation');
+    await page.goto(`${prefix}/contact?inquiry=not-a-real-type#contact-form`);
+    await expect(page.locator('#inquiry-type')).toHaveValue('');
+
+    await page.goto(`${prefix}/trading`);
+    await page.locator('a[href*="inquiry=logistics_cooperation"]').click();
+    await expect(page.locator('#inquiry-type')).toHaveValue('logistics_cooperation');
+  });
+}
+
+test('Chinese footer heading and Trading copy use distinct translations', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop-1440');
+  await page.goto('/zh-hant/trading');
+  await expect(page.locator('.energy-footer h2').nth(1)).toHaveText('與我們聯絡');
+  const intro = await page.locator('.page-intro p:not(.eyebrow)').innerText();
+  const flow = await page.locator('.trade-flow').locator('xpath=preceding-sibling::p[1]').innerText();
+  expect(intro).not.toBe(flow);
+});
+
+test('header logo and decorative link arrows do not affect layout or accessible names', async ({ page }) => {
+  await page.goto('/');
+  const logo = page.locator('.site-header .site-logo img');
+  await expect(logo).toHaveAttribute('src', /toptec-logo-light/);
+  const box = await logo.boundingBox();
+  expect(box.width / box.height).toBeCloseTo(20 / 3, 1);
+  await expect(page.locator('a.text-link', { hasText: 'About TOPTEC' })).toHaveAccessibleName('About TOPTEC');
+  expect(await page.locator('main').innerText()).not.toContain('↗');
+});

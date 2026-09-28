@@ -1,6 +1,6 @@
 {
   "id": "/",
-  "name": "Toptec Global Website",
+  "name": "TOPTEC Global Website",
   "short_name": "Toptec",
   "description": "A shortcut to TOPTEC Global’s public energy trading website, company information, products and contact form.",
   "lang": "en",
@@ -29,12 +29,12 @@
   ],
   "shortcuts": [
     {
-      "name": "About Toptec Global",
+      "name": "About TOPTEC Global",
       "short_name": "About",
       "url": "/about"
     },
     {
-      "name": "Contact Toptec Global",
+      "name": "Contact TOPTEC Global",
       "short_name": "Contact",
       "url": "/contact"
     }

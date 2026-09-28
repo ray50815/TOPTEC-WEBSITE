@@ -11,22 +11,22 @@
     "hero_title": "能源與<br>成品油貿易",
     "hero_desc": "立足新加坡，從事成品油貿易與實體貨物協調，以亞洲市場為重點。",
     "hero_products": "能源產品",
-    "hero_contact": "聯絡交易團隊 ↗",
+    "hero_contact": "聯絡交易團隊",
     "hero_bottom": "成品油／實體貿易／貨物協調",
     "intro_kicker": "關於 TOPTEC",
     "intro_heading": "清晰商務。<br>協調交付。",
     "intro_desc": "TOPTEC GLOBAL PTE. LTD. 是於新加坡成立的貿易公司，從事燃料及相關石油產品的批發與國際貿易。",
     "intro_desc2": "我們與供應商、買方及服務合作夥伴協作，協調商務需求、貨物安排與實體交付，以亞洲市場為重點。",
-    "intro_more": "認識 TOPTEC ↗",
+    "intro_more": "認識 TOPTEC",
     "products_kicker": "能源產品",
     "products_heading": "聚焦實際產品需求。",
     "product_core": "核心產品",
     "product_en590": "面向國際批發需求的超低硫柴油／Gasoil。產品規格及佐證文件依個別交易議定。",
-    "product_ask": "洽詢產品需求 ↗",
+    "product_ask": "洽詢產品需求",
     "product_related": "相關產品需求",
     "product_diesel": "柴油／Gasoil",
     "product_diesel_desc": "柴油與 Gasoil 的名稱可能重疊。我們依所需等級、用途及目的地規格討論需求，不將不同名稱視為各自保證供應的產品。",
-    "product_details": "瞭解能源產品 ↗",
+    "product_details": "瞭解能源產品",
     "flow_kicker": "實體貿易與供應",
     "flow_heading": "從需求到交付。",
     "step_0": "商務需求",
@@ -42,15 +42,15 @@
     "step_5": "交付協調",
     "step_desc_5": "依約定協調交付與文件移交。",
     "flow_note": "一般流程示意；執行順序及適用步驟依個別交易而定。",
-    "flow_more": "瞭解交易協調 ↗",
+    "flow_more": "瞭解交易協調",
     "storage_kicker": "碼頭與物流",
     "storage_heading": "以協調串聯<br>每個交付環節。",
     "storage_desc": "依個別交易需求，透過第三方服務業者協調儲存、碼頭作業及海運物流。",
-    "storage_more": "瞭解碼頭與物流 ↗",
+    "storage_more": "瞭解碼頭與物流",
     "compliance_kicker": "貿易合規",
     "compliance_heading": "重視交易中的<br>關鍵細節。",
     "compliance_intro": "交易對手審查、貨物文件、船舶審查及獨立檢驗安排，可依約定納入交易範圍。",
-    "compliance_more": "瞭解合規安排 ↗",
+    "compliance_more": "瞭解合規安排",
     "market_kicker": "市場重點",
     "market_heading": "立足新加坡。<br>聚焦亞洲市場。",
     "market_desc": "我們的商務重點為亞洲市場，並就每項詢問分別評估產品適用性、目的地及物流安排。",
@@ -63,7 +63,7 @@
     "cta_kicker": "聯絡交易團隊",
     "cta_heading": "與我們討論您的需求。",
     "cta_desc": "歡迎提供產品、目的地及預計時程。",
-    "cta_button": "聯絡交易團隊 ↗",
+    "cta_button": "聯絡交易團隊",
     "footer_tag": "能源與成品油貿易",
     "footer_focus": "立足新加坡，以亞洲市場為重點。",
     "footer_explore": "探索 TOPTEC",
@@ -102,17 +102,16 @@
     "product_brief_kicker": "從需求開始",
     "product_brief_heading": "讓產品詢問更明確。",
     "product_brief_desc": "請提供所需等級或規格、預計用途、概略數量、目的地及希望的交付期間，再就擬議交易討論產品佐證文件與檢驗需求。",
-    "product_brief_cta": "提出產品詢問 ↗",
+    "product_brief_cta": "提出產品詢問",
     "trading_eyebrow": "交易與供應",
     "trading_title": "商務需求。<br>實體交付協調。",
-    "trading_desc": "我們依需求與供應商、買方、碼頭、檢驗公司及船運夥伴協調。每項交易分別約定商務條件、責任及作業要求。",
     "trading_flow_kicker": "協調方式",
     "trading_flow_heading": "相互銜接的交易流程。",
     "trading_scope_kicker": "依個別交易約定",
     "trading_scope_heading": "明確範圍。<br>交接文件。",
     "trading_scope_desc": "產品規格、檢驗要求、文件、時程及交付責任，於商務審查時討論，並記錄於相關協議。",
     "trading_scope_desc2": "依交付架構，交易可能涉及儲存或海運。一般流程不代表所有交易均使用相同設施或執行順序。",
-    "trading_compliance": "瞭解合規安排 ↗",
+    "trading_compliance": "瞭解合規安排",
     "logistics_eyebrow": "碼頭與物流",
     "logistics_title": "協調交易中的<br>實體交付環節。",
     "logistics_desc": "依個別交易，透過第三方業者協調儲存、碼頭作業及海運物流。",
@@ -146,14 +145,14 @@
     "kyc_heading": "向 TOPTEC<br>申請公司資料。",
     "kyc_desc": "經核實的交易對手可聯絡 TOPTEC，申請適當的公司及 KYC 文件。",
     "kyc_desc2": "請僅透過公開表單說明申請需求。文件交換將另行安排，敏感 KYC 文件不得透過公開表單提交。",
-    "kyc_cta": "申請公司資料 ↗",
+    "kyc_cta": "申請公司資料",
     "contact_page_eyebrow": "聯絡 TOPTEC",
     "contact_page_title": "與交易團隊<br>展開對話。",
     "contact_page_desc": "產品詢問、供應商合作、物流安排及公司資料申請。",
     "enquiry_kicker": "交易詢問",
     "enquiry_heading": "告訴我們您的需求。",
     "enquiry_intro": "請提供不含機密資訊的需求概要；如需公司文件，請說明您希望向 TOPTEC 索取的資料。",
-    "email_label": "Email",
+    "email_label": "電子郵件",
     "inquiry_label": "詢問類型",
     "inquiry_placeholder": "請選擇詢問類型",
     "inquiry_product_purchase": "產品採購詢問",
@@ -167,7 +166,7 @@
     "office": "登記地址",
     "map_note": "Google 地圖僅在您選擇查看後載入。",
     "map_load": "載入互動式地圖",
-    "map_open": "在 Google 地圖開啟 ↗",
+    "map_open": "在 Google 地圖開啟",
     "app_page_eyebrow": "網站捷徑",
     "app_page_title": "隨時開啟 TOPTEC 官網。",
     "app_page_desc": "在您的裝置上安裝公開網站捷徑。",
@@ -178,21 +177,52 @@
     "app_install": "加入主畫面",
     "app_instructions": "請於瀏覽器選單選擇「安裝應用程式」或「加入主畫面」。瀏覽器支援並提供安裝時，下方按鈕即可使用。",
     "app_button": "安裝網站捷徑",
-    "app_noaccount": "不會建立 TOPTEC 帳號，亦無需登入。"
+    "app_noaccount": "不會建立 TOPTEC 帳號，亦無需登入。",
+    "trading_flow_desc": "我們依需求與供應商、買方、碼頭、檢驗公司及船運夥伴協調。每項交易分別約定商務條件、責任及作業要求。",
+    "trading_intro": "從商務洽談到約定的交付安排，協調成品油交易。",
+    "footer_get_in_touch": "與我們聯絡",
+    "product_spec_cta": "討論您的規格需求",
+    "explainer_kicker": "產品說明",
+    "explainer_heading": "認識 EN590 10ppm。",
+    "explainer_en590": "歐洲車用柴油品質標準，規範十六烷值、密度、閃點及低溫性能等特性。",
+    "explainer_10ppm": "指硫含量上限為 10 mg/kg，因此常被稱為超低硫柴油（ULSD）。",
+    "explainer_gasoil_title": "柴油與 Gasoil",
+    "explainer_gasoil": "Gasoil 是中間餾分油的通用貿易用語；依市場不同，可能指符合 EN 590 的柴油，也可能指硫含量及品質規格不同的其他等級，因此確切規格一律以書面確認。",
+    "spec_list_heading": "每筆交易確認的項目",
+    "spec_0": "適用標準、版本及季節等級",
+    "spec_1": "硫含量及主要品質參數",
+    "spec_2": "產地及產品佐證文件",
+    "spec_3": "概略數量及交付期間",
+    "spec_4": "目的地及交付安排",
+    "spec_5": "檢驗及品質／數量文件",
+    "engage_kicker": "與 TOPTEC 合作",
+    "engage_heading": "三種洽談方式。",
+    "engage_buyers": "買方",
+    "engage_buyers_desc": "請提供產品、概略數量、目的地及時程，即可展開產品詢問。",
+    "engage_buyers_cta": "產品採購詢問",
+    "engage_suppliers": "供應商",
+    "engage_suppliers_desc": "煉油商、貿易商及生產商可提供產品供應情況及佐證文件，供我們評估。",
+    "engage_suppliers_cta": "供應商合作",
+    "engage_logistics": "儲運業者",
+    "engage_logistics_desc": "儲槽、碼頭、船運及檢驗業者可就個別交易的合作與我們聯絡。",
+    "engage_logistics_cta": "儲運合作",
+    "logistics_coop_cta": "洽談儲運合作"
   },
   "contact": {
     "form": {
       "nameLabel": "姓名",
       "companyLabel": "公司名稱",
       "titleLabel": "職稱",
-      "phoneLabel": "電話（選填）",
+      "phoneLabel": "電話",
       "messageLabel": "我們可以如何協助您？",
       "submit": "送出詢問",
       "namePlaceholder": "您的姓名",
       "companyPlaceholder": "公司名稱",
       "titlePlaceholder": "您的職稱",
       "phonePlaceholder": "國碼與電話號碼",
-      "messagePlaceholder": "產品、概略數量、目的地及預計交付期間"
+      "messagePlaceholder": "產品、概略數量、目的地及預計交付期間",
+      "optional": "（選填）",
+      "privacyConsent": "我已閱讀<a href=\"/privacy\">隱私權政策</a>，並同意為回覆本次詢問而處理我的個人資料。"
     }
   },
   "privacyPage": {
@@ -223,11 +253,11 @@
     },
     "section6": {
       "title": "6. 保存期間",
-      "body": "未形成合作的一般詢問，原則上自最後一次實質互動起保存最長 12 個月。垃圾或無效詢問得為防止濫用保存最長 90 天。合約、交易、海關、稅務、爭議及專案紀錄，得於完成後保存最長 7 年；若適用法令、進行中的請求或約定要求有必要，可能保存更久。資料不再需要時，我們會刪除或去識別化。"
+      "body": "未形成合作的一般詢問，原則上自最後一次實質互動起保存最長 12 個月。垃圾或無效詢問得為防止濫用保存最長 90 天。合約、交易、運輸、海關、稅務及爭議紀錄，得於完成後保存最長 7 年；若適用法令、進行中的請求或約定要求有必要，可能保存更久。資料不再需要時，我們會刪除或去識別化。"
     },
     "section7": {
       "title": "7. 安全措施",
-      "body": "我們依個人資料的性質與相關風險，採取旨在保護資料的組織及技術措施，並依業務需要及核准流程限制存取與揭露。任何網際網路傳輸或儲存方式都無法保證絕對安全，本公開網站也不是安全的專案文件交換平台。傳送敏感商業資料前，應先約定經核准的傳輸方式。"
+      "body": "我們依個人資料的性質與相關風險，採取旨在保護資料的組織及技術措施，並依業務需要及核准流程限制存取與揭露。任何網際網路傳輸或儲存方式都無法保證絕對安全，本公開網站也不是安全的文件交換平台。傳送敏感商業資料前，應先約定經核准的傳輸方式。"
     },
     "section8": {
       "title": "8. 網站選擇與外部服務",
@@ -241,29 +271,29 @@
       "title": "10. 聯絡方式與政策更新",
       "body": "如有隱私詢問、撤回同意、權利請求或申訴，請寄送電子郵件至 contact@toptec.com.sg，並在主旨註明「Privacy」。我們會確認收到並依適用法令處理經驗證的請求。若資料處理方式或法定義務變更，我們可能更新本政策，並於下方標示修訂日期。"
     },
-    "updated": "最後更新：2026 年 9 月 27 日"
+    "updated": "最後更新：2026 年 9 月 28 日"
   },
   "termsPage": {
     "hero": {
       "eyebrow": "網站治理",
       "title": "網站使用條款",
-      "subtitle": "本條款適用於這個公開資訊網站。任何報價、訂單、專案、運輸或其他商業合作，均以另外約定的交易文件為準。"
+      "subtitle": "本條款適用於這個公開資訊網站。任何報價、訂單、貨物、運輸或其他商業合作，均以另外約定的交易文件為準。"
     },
     "section1": {
       "title": "1. 網站營運者與條款接受",
-      "body": "本網站由 TOPTEC GLOBAL PTE. LTD.（UEN：201932202N）營運。使用本網站即表示您同意本網站使用條款；若不同意，請勿使用。本條款本身不會使 Toptec 成為您的代理人、供應商、顧問、受託人、經紀人或代表。"
+      "body": "本網站由 TOPTEC GLOBAL PTE. LTD.（UEN：201932202N）營運。使用本網站即表示您同意本網站使用條款；若不同意，請勿使用。本條款本身不會使 TOPTEC 成為您的代理人、供應商、顧問、受託人、經紀人或代表。"
     },
     "section2": {
       "title": "2. 僅供一般資訊使用",
-      "body": "網站內容僅提供一般公司與服務資訊，不構成報價、要約、保證、認證、投資建議、工程建議、法律建議、海關建議或供應承諾。"
+      "body": "網站內容僅提供一般公司與服務資訊，不構成報價、要約、保證、認證、投資建議、技術或產品規格建議、法律建議、海關建議或供應承諾。"
     },
     "section3": {
       "title": "3. 詢問與報價",
-      "body": "提交表單、電子郵件、資訊請求或報價請求不會成立合約，也不要求任何一方繼續進行。報價仍受其所載有效期間、假設、範圍、供應情況、盡職調查、核准及納入條款約束。敏感或機密專案資料只能透過雙方約定的傳輸方式提供。"
+      "body": "提交表單、電子郵件、資訊請求或報價請求不會成立合約，也不要求任何一方繼續進行。報價仍受其所載有效期間、假設、範圍、供應情況、盡職調查、核准及納入條款約束。敏感或機密交易資料只能透過雙方約定的傳輸方式提供。"
     },
     "section4": {
       "title": "4. 以簽署的交易文件為準",
-      "body": "只有在相關各方完成適用報價、訂單確認、工作說明書、合約或其他簽署交易文件所載的接受程序後，商業合作才告成立。該等文件規範範圍、規格、價格、付款、交付、所有權、風險、檢驗、驗收、保密、合規、保證、責任、準據法及爭議處理。網站內容若與簽署文件牴觸，以簽署文件為準。"
+      "body": "只有在相關各方完成適用報價、訂單確認、買賣合約或其他簽署交易文件所載的接受程序後，商業合作才告成立。該等文件規範範圍、規格、價格、付款、交付、所有權、風險、檢驗、驗收、保密、合規、保證、責任、準據法及爭議處理。網站內容若與簽署文件牴觸，以簽署文件為準。"
     },
     "section5": {
       "title": "5. 可接受的使用方式",
@@ -271,7 +301,7 @@
     },
     "section6": {
       "title": "6. 智慧財產權",
-      "body": "除非另有說明，網站文字、設計、圖像及 Toptec 品牌均由 TOPTEC GLOBAL PTE. LTD. 所有或經合法授權。您可為評估服務而瀏覽並製作有限的內部副本。本條款不授予商標授權，也不授予重新發布、修改、銷售或商業利用網站內容的權利。第三方名稱及商標屬其各自權利人所有。"
+      "body": "除非另有說明，網站文字、設計、圖像及 TOPTEC 品牌均由 TOPTEC GLOBAL PTE. LTD. 所有或經合法授權。您可為評估服務而瀏覽並製作有限的內部副本。本條款不授予商標授權，也不授予重新發布、修改、銷售或商業利用網站內容的權利。第三方名稱及商標屬其各自權利人所有。"
     },
     "section7": {
       "title": "7. 可用性與外部連結",
@@ -289,6 +319,21 @@
       "title": "10. 適用條款與聯絡方式",
       "body": "對您適用的強制法令仍持續適用。商業合作所適用的準據法、法院、調解、仲裁或其他爭議程序，必須載於其簽署交易文件；本網站不另外增訂商業爭議程序。如對本條款有疑問，請寄送電子郵件至 contact@toptec.com.sg。"
     },
-    "updated": "最後更新：2026 年 9 月 27 日"
+    "updated": "最後更新：2026 年 9 月 28 日"
+  },
+  "utility": {
+    "home": "返回首頁",
+    "contact": "聯絡 TOPTEC",
+    "products": "瀏覽能源產品",
+    "offline_home": "嘗試開啟首頁",
+    "notfound_eyebrow": "錯誤 404",
+    "notfound_title": "找不到頁面",
+    "notfound_desc": "頁面可能已移動或不再提供。",
+    "success_eyebrow": "已收到詢問",
+    "success_title": "感謝您，我們已收到您的詢問。",
+    "success_desc": "我們會審閱每一則詢問並以電子郵件回覆；如為公司資料或 KYC 文件申請，將另行安排適當的文件交換管道。",
+    "offline_eyebrow": "目前無連線",
+    "offline_title": "您目前處於離線狀態",
+    "offline_desc": "您仍可閱讀已儲存的公開頁面。請恢復網路連線後再提交聯絡表單或載入最新內容。"
   }
 }

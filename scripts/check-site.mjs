@@ -173,7 +173,16 @@ function validateLocaleMarkup(value, key) {
 
 async function validateSourceTranslations() {
   const locale = JSON.parse(await readFile(path.join(ROOT, 'locales', 'zh-Hant.json'), 'utf8'));
-  for (const [source] of ROUTES) {
+  // One key must always translate the same English source. Reusing a key for
+  // different English text silently shows the wrong Chinese copy.
+  const englishByKey = new Map();
+  const targetAttribute = {
+    'data-i18n-placeholder': 'placeholder',
+    'data-i18n-title': 'title',
+    'data-i18n-aria-label': 'aria-label',
+    'data-i18n-alt': 'alt'
+  };
+  for (const source of [...ROUTES.map(([file]) => file), ...SPECIAL_FILES]) {
     const sourcePath = path.join(ROOT, source);
     const html = await readFile(sourcePath, 'utf8');
     const $ = cheerio.load(html);
@@ -181,6 +190,14 @@ async function validateSourceTranslations() {
       for (const attribute of ['data-i18n', 'data-i18n-placeholder', 'data-i18n-title', 'data-i18n-aria-label', 'data-i18n-alt']) {
         const key = $(element).attr(attribute);
         if (!key) continue;
+        const english = (attribute === 'data-i18n' ? $(element).html() : $(element).attr(targetAttribute[attribute]) || '')
+          .replace(/\s+/g, ' ').trim();
+        const seen = englishByKey.get(`${attribute}:${key}`);
+        if (seen && seen.english !== english) {
+          issue(`${source}: i18n key ${key} maps to different English text than in ${seen.source} ("${english.slice(0, 50)}" vs "${seen.english.slice(0, 50)}")`);
+        } else if (!seen) {
+          englishByKey.set(`${attribute}:${key}`, { english, source });
+        }
         const value = nestedValue(locale, key);
         if (value === undefined) {
           issue(`${source}: missing locale key ${key}`);
@@ -255,6 +272,9 @@ async function validateHtml(files, headers) {
       const image = $(element);
       if (image.attr('alt') === undefined) issue(`${file}: image is missing alt`);
       if (!image.attr('width') || !image.attr('height')) issue(`${file}: image is missing intrinsic dimensions`);
+      if (!['eager', 'lazy'].includes(image.attr('loading') || '') && !image.closest('.site-header, .utility-card').length) {
+        issue(`${file}: image must declare loading="eager" or loading="lazy" (${image.attr('src')})`);
+      }
     });
     $('button.mobile-toggle').each((_, element) => {
       const button = $(element);
@@ -327,7 +347,7 @@ async function validateHtml(files, headers) {
       const reference = $(element).attr('href');
       if (!reference || /^(?:mailto:|tel:|sms:|https?:\/\/|\/\/)/i.test(reference)) return;
       const hashIndex = reference.indexOf('#');
-      const pathname = hashIndex === -1 ? reference : reference.slice(0, hashIndex);
+      const pathname = (hashIndex === -1 ? reference : reference.slice(0, hashIndex)).split('?', 1)[0];
       const fragment = hashIndex === -1 ? '' : decodeURIComponent(reference.slice(hashIndex + 1));
       const currentPath = file === 'index.html' ? '/' : file === 'zh-hant/index.html' ? '/zh-hant/' : `/${file.replace(/\.html$/, '')}`;
       const targetPath = pathname || currentPath;
@@ -360,6 +380,28 @@ async function validateHtml(files, headers) {
         issue(`${file}: incomplete reciprocal hreflang set`);
       }
       if ($('meta[property="og:url"]').attr('content') !== expectedSelf) issue(`${file}: og:url does not match canonical`);
+      for (const property of ['og:site_name', 'og:image:alt', 'og:image:width', 'og:image:height']) {
+        if (!$(`meta[property="${property}"]`).attr('content')?.trim()) issue(`${file}: ${property} is missing`);
+      }
+      const jsonLd = $('script[type="application/ld+json"]');
+      if (jsonLd.length !== 1) {
+        issue(`${file}: expected exactly one JSON-LD block`);
+      } else {
+        try {
+          const graph = JSON.parse(jsonLd.html())['@graph'] || [];
+          const organization = graph.find((node) => node['@type'] === 'Organization');
+          const webPage = graph.find((node) => /Page$/.test(node['@type'] || ''));
+          if (organization?.legalName !== 'TOPTEC GLOBAL PTE. LTD.' || organization?.identifier?.value !== '201932202N') {
+            issue(`${file}: JSON-LD organization legal name or UEN is incorrect`);
+          }
+          if (webPage?.url !== expectedSelf || webPage?.inLanguage !== (language === 'zh' ? 'zh-Hant' : 'en')) {
+            issue(`${file}: JSON-LD WebPage url/inLanguage does not match the page`);
+          }
+          if (route !== '/' && !graph.some((node) => node['@type'] === 'BreadcrumbList')) issue(`${file}: JSON-LD breadcrumb is missing`);
+        } catch {
+          // Invalid JSON is reported by the generic JSON-LD check above.
+        }
+      }
       if (!$('title').text().trim() || !$('meta[name="description"]').attr('content')?.trim()) issue(`${file}: title or description missing`);
     }
   }
@@ -368,7 +410,8 @@ async function validateHtml(files, headers) {
     for (const file of [special, `zh-hant/${special}`]) {
       const { $ } = documents.get(file);
       if (!$('meta[name="robots"]').attr('content')?.toLowerCase().includes('noindex')) issue(`${file}: special page must be noindex`);
-      if ($('link[rel="canonical"]').length) issue(`${file}: special utility page should not be canonicalized`);
+      if ($('link[rel="canonical"]').length || $('link[rel="alternate"][hreflang]').length) issue(`${file}: special utility page should not be canonicalized or have hreflang`);
+      if ($('script[type="application/ld+json"]').length) issue(`${file}: special utility page must not carry structured data`);
     }
   }
 
@@ -403,7 +446,7 @@ function validateContactForm(documents, sourceScriptText) {
     const alert = form.find('[role="alert"]');
     if (!status.length || !alert.length) issue(`${file}: separate status and alert live regions are required`);
     const text = visibleText(cheerio.load($.html()));
-    if (!/(?:sensitive|BOM|drawing|credential|password|敏感|圖紙|密碼)/i.test(text)) issue(`${file}: sensitive-document warning is missing`);
+    if (!/(?:passport|護照)/i.test(text) || !/KYC/.test(text)) issue(`${file}: sensitive-document warning is missing`);
   }
 
   for (const required of ['AbortController', '12000', 'response.ok']) {
@@ -428,19 +471,26 @@ function validateClaims(documents) {
   });
   for (const [file, { html }] of documents) {
     const text = visibleText(cheerio.load(html));
+    // Scan the full public HTML (including meta and JSON-LD), not only visible text.
     if (/Paya Lebar|409051|Taipei|Taiwan office|台北|臺北|供應鏈治理|Supply Chain Governance/i.test(html)) issue(`${file}: obsolete company information or positioning remains`);
-    if (/Sambu|our terminal|our refinery|our fleet|\b(?:CIF|FOB)\b/i.test(text)) issue(`${file}: unpublished facility or delivery claim remains`);
+    if (/Sambu|our terminal|our refinery|our fleet|\b(?:CIF|FOB)\b/i.test(html)) issue(`${file}: unpublished facility or delivery claim remains`);
+    if (/electronic components?|engineering advice|statement of work|工程建議|工作說明書/i.test(html)) issue(`${file}: legacy electronics or project wording remains`);
     if (!file.endsWith('about.html') && /electronics|電子(?:零|產品|相關)/i.test(text)) issue(`${file}: electronics content is only permitted in About history`);
   }
   for (const file of ['index.html', 'about.html', 'zh-hant/index.html', 'zh-hant/about.html']) {
     const text = visibleText(cheerio.load(documents.get(file).html));
     if (!text.includes('SSIC 46610') || !text.includes('711 Geylang Road') || !text.includes('201932202N')) issue(`${file}: current corporate facts are incomplete`);
+    const zh = file.startsWith('zh-hant/');
+    const positioning = zh ? ['能源與成品油貿易', '燃料及相關產品批發'] : ['Energy & Refined Products Trading', 'Wholesale of Fuels and Related Products'];
+    for (const phrase of positioning) {
+      if (!text.includes(phrase)) issue(`${file}: required positioning phrase is missing: ${phrase}`);
+    }
   }
 }
 
 async function validateAssets(files, references) {
   const manifest = JSON.parse(await readFile(path.join(DIST, 'site.webmanifest'), 'utf8'));
-  if (manifest.id !== '/' || manifest.start_url !== '/' || manifest.name !== 'Toptec Global Website') issue('manifest identity/start URL is incorrect');
+  if (manifest.id !== '/' || manifest.start_url !== '/' || manifest.name !== 'TOPTEC Global Website') issue('manifest identity/start URL is incorrect');
   if (!manifest.icons?.some((icon) => icon.sizes === '512x512' && /maskable/.test(icon.purpose || ''))) issue('manifest has no 512px maskable icon');
   for (const icon of manifest.icons || []) references.add(icon.src);
 
@@ -518,6 +568,20 @@ function validateHeadersAndRedirects(headers, redirects) {
     if (!new RegExp(`^${route.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace('\\*', '.*')} .* 410!$`, 'm').test(redirects)) {
       issue(`_redirects lacks 410 rule for ${route}`);
     }
+  }
+  // The Chinese 404 must follow every specific /zh-hant/ rule (Netlify stops at
+  // the first match) and precede any broader site-wide /* rule.
+  const rules = redirects.split('\n').map((line) => line.trim().split(/\s+/)).filter(([source]) => source);
+  const zhNotFound = rules.findIndex(([source, target, status]) => source === '/zh-hant/*' && target === '/zh-hant/404.html' && status === '404');
+  if (zhNotFound === -1) {
+    issue('_redirects lacks the /zh-hant/* Chinese 404 rule');
+  } else {
+    rules.forEach(([source], index) => {
+      if (index > zhNotFound && source.startsWith('/zh-hant/') && source !== '/zh-hant/*') {
+        issue(`_redirects: specific rule ${source} is shadowed by the earlier /zh-hant/* 404 rule`);
+      }
+      if (index < zhNotFound && source === '/*') issue('_redirects: a site-wide /* rule precedes the /zh-hant/* 404 rule');
+    });
   }
   for (const [source, route] of ROUTES) {
     if (route === '/') continue;

@@ -20,7 +20,7 @@
 <header class="site-header">
 <div class="container nav-container">
 <a href="/" class="site-logo">
-<img src="/assets/img/toptec-logo.svg" alt="Toptec Global" width="200" height="50" decoding="async">
+<img src="/assets/img/toptec-logo-light.svg" alt="TOPTEC Global" width="200" height="30" decoding="async">
 </a>
 <button class="mobile-toggle site-header__toggle" type="button" aria-label="Open main menu" aria-expanded="false" aria-controls="primary-navigation">
 <span>
@@ -77,8 +77,7 @@
 <div class="form-field">
 <label for="title">
 <span data-i18n="contact.form.titleLabel">Job title</span>
-<span class="lang-en field-optional">(optional)</span>
-<span class="lang-zh field-optional" lang="zh-Hant">（選填）</span>
+<span class="field-optional" data-i18n="contact.form.optional">(optional)</span>
 </label>
 <input id="title" name="title" type="text" maxlength="100" placeholder="e.g. Procurement Manager" data-i18n-placeholder="contact.form.titlePlaceholder" autocomplete="organization-title">
 </div>
@@ -89,11 +88,14 @@
 <input id="email" name="email" type="email" maxlength="254" placeholder="name@example.com" autocomplete="email" inputmode="email" required="">
 </div>
 <div class="form-field">
-<label for="phone" data-i18n="contact.form.phoneLabel">Phone (optional)</label>
+<label for="phone">
+<span data-i18n="contact.form.phoneLabel">Phone</span>
+<span class="field-optional" data-i18n="contact.form.optional">(optional)</span>
+</label>
 <input id="phone" name="phone" type="tel" maxlength="40" placeholder="Country code + number" data-i18n-placeholder="contact.form.phonePlaceholder" autocomplete="tel" inputmode="tel">
 </div>
 <div class="form-field">
-<label data-i18n="energy.inquiry_label" for="inquiry-type">Inquiry Type</label>
+<label data-i18n="energy.inquiry_label" for="inquiry-type">Enquiry Type</label>
 <select id="inquiry-type" name="inquiry_type" required="" aria-describedby="inquiry-help">
 <option data-i18n="energy.inquiry_placeholder" value="" disabled="" selected="">Select an enquiry type</option>
 <option data-i18n="energy.inquiry_product_purchase" value="product_purchase">Product Purchase Enquiry</option>
@@ -115,11 +117,10 @@
 <div class="form-field checkbox-field">
 <input id="agree-privacy" name="agree_privacy" type="checkbox" required="">
 <label for="agree-privacy">
-<span class="lang-en">I have read the <a href="/privacy">Privacy Policy</a> and agree that my personal data may be processed to respond to this enquiry.</span>
-<span class="lang-zh" lang="zh-Hant">我已閱讀<a href="/zh-hant/privacy">隱私權政策</a>，並同意為回覆本次詢問而處理我的個人資料。</span>
+<span data-i18n="contact.form.privacyConsent">I have read the <a href="/privacy">Privacy Policy</a> and agree that my personal data may be processed to respond to this enquiry.</span>
 </label>
 </div>
-<div class="form-status form-status--success" data-form-status="success" role="status" aria-live="polite" hidden="">
+<div class="form-status form-status--success" data-form-status="success" role="status" aria-live="polite" tabindex="-1" hidden="">
 </div>
 <div class="form-status form-status--error" data-form-status="error" role="alert" aria-live="assertive" hidden="">
 </div>
@@ -138,7 +139,7 @@
 <p data-i18n="energy.map_note">Google Maps loads only when you choose to view it.</p>
 <div class="map-actions">
 <button data-i18n="energy.map_load" class="btn btn--outline" type="button" data-map-load>Load interactive map</button>
-<a data-i18n="energy.map_open" href="https://www.google.com/maps/search/?api=1&amp;query=711%20Geylang%20Road%2C%20%2303-01%2C%20Oriental%20Venture%20Building%2C%20Singapore%20389626" class="text-link">Open in Google Maps ↗</a>
+<a data-i18n="energy.map_open" href="https://www.google.com/maps/search/?api=1&amp;query=711%20Geylang%20Road%2C%20%2303-01%2C%20Oriental%20Venture%20Building%2C%20Singapore%20389626" class="text-link">Open in Google Maps</a>
 </div>
 </div>
 </div>
@@ -152,7 +153,7 @@
 <div class="footer-grid">
 <div>
 <a class="site-logo" href="/">
-<img src="/assets/img/toptec-logo.svg" alt="Toptec Global" width="200" height="50" loading="lazy" decoding="async">
+<img src="/assets/img/toptec-logo-light.svg" alt="TOPTEC Global" width="200" height="30" loading="lazy" decoding="async">
 </a>
 <p data-i18n="energy.footer_tag">Energy &amp; Refined Products Trading</p>
 <p data-i18n="energy.footer_focus">Singapore-based. Focused on Asian markets.</p>
@@ -167,7 +168,7 @@
 <a data-i18n="energy.footer_contact" href="/contact" class="text-link">Contact</a>
 </div>
 <div>
-<h2 data-i18n="energy.footer_contact">Get in touch</h2>
+<h2 data-i18n="energy.footer_get_in_touch">Get in touch</h2>
 <a href="mailto:contact@toptec.com.sg">contact@toptec.com.sg</a>
 <a href="tel:+6589656938">+65 8965 6938</a>
 <p data-i18n="energy.registered" class="footer-label">Registered Office</p>
