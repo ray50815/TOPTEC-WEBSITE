@@ -233,6 +233,49 @@ function validateAllowlist(files) {
   }));
 }
 
+// Reads width/height from a baseline or progressive JPEG's SOF segment, so the
+// declared og:image size can be checked without an image-processing dependency.
+function jpegSize(buffer) {
+  let offset = 2;
+  while (offset + 9 < buffer.length) {
+    if (buffer[offset] !== 0xff) return null;
+    const marker = buffer[offset + 1];
+    // SOF0–SOF15, excluding DHT (C4), JPG (C8) and DAC (CC).
+    if (marker >= 0xc0 && marker <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marker)) {
+      return { height: buffer.readUInt16BE(offset + 5), width: buffer.readUInt16BE(offset + 7) };
+    }
+    offset += 2 + buffer.readUInt16BE(offset + 2);
+  }
+  return null;
+}
+
+const shareImageSizes = new Map();
+
+async function checkShareImageSize(file, $) {
+  const url = $('meta[property="og:image"]').attr('content') || '';
+  if (!url.startsWith(`${SITE_ORIGIN}/`) || !url.endsWith('.jpg')) return;
+  const pathname = url.slice(SITE_ORIGIN.length);
+  if (!shareImageSizes.has(pathname)) {
+    try {
+      shareImageSizes.set(pathname, jpegSize(await readFile(path.join(DIST, pathname))));
+    } catch {
+      shareImageSizes.set(pathname, null);
+    }
+  }
+  const size = shareImageSizes.get(pathname);
+  if (!size) {
+    issue(`${file}: og:image ${pathname} is missing from dist or is not a readable JPEG`);
+    return;
+  }
+  const declared = {
+    width: Number($('meta[property="og:image:width"]').attr('content')),
+    height: Number($('meta[property="og:image:height"]').attr('content'))
+  };
+  if (declared.width !== size.width || declared.height !== size.height) {
+    issue(`${file}: og:image size ${declared.width}x${declared.height} does not match ${pathname} (${size.width}x${size.height})`);
+  }
+}
+
 async function validateHtml(files, headers) {
   const htmlFiles = files.filter((file) => file.endsWith('.html'));
   const documents = new Map();
@@ -379,6 +422,7 @@ async function validateHtml(files, headers) {
       for (const property of ['og:site_name', 'og:image:alt', 'og:image:width', 'og:image:height']) {
         if (!$(`meta[property="${property}"]`).attr('content')?.trim()) issue(`${file}: ${property} is missing`);
       }
+      await checkShareImageSize(file, $);
       const jsonLd = $('script[type="application/ld+json"]');
       if (jsonLd.length !== 1) {
         issue(`${file}: expected exactly one JSON-LD block`);

@@ -62,7 +62,7 @@ const ROUTES = [
       "en": "Commercial sourcing, cargo arrangements, documentation and physical delivery coordination for refined petroleum products.",
       "zh": "成品油商務採購、貨物安排、文件及實體交付協調。"
     },
-    "image": "/assets/img/trading-jetty-daylight-v2-1280.jpg"
+    "image": "/assets/img/trading-jetty-daylight-v3-1280.jpg"
   },
   {
     "source": "logistics.html",
@@ -164,23 +164,31 @@ const SPECIAL_PAGES = [
   }
 ];
 
-// Share-image metadata. Dimensions are the measured size of the 1280px JPEG
-// variants; alt text describes a general industry scene only.
-const SHARE_IMAGE_SIZE = { width: '1280', height: '720' };
-const SHARE_IMAGE_ALT = {
+// Share-image metadata. `width`/`height` must be the measured size of each
+// 1280px JPEG (check-site verifies them against the file); alt text describes
+// a general industry scene only.
+const SHARE_IMAGES = {
   '/assets/img/energy-marine-1280.jpg': {
+    width: '1280',
+    height: '720',
     en: 'Oil tanker at a marine terminal',
     zh: '海運碼頭旁的油輪'
   },
   '/assets/img/energy-storage-1280.jpg': {
+    width: '1280',
+    height: '720',
     en: 'Petroleum storage tanks beside a marine jetty',
     zh: '海運碼頭旁的石油儲槽'
   },
   '/assets/img/products-lab-sample-v2-1280.jpg': {
+    width: '1280',
+    height: '853',
     en: 'Diesel sample at a petroleum inspection laboratory',
     zh: '石油檢驗實驗室中的柴油樣品'
   },
-  '/assets/img/trading-jetty-daylight-v2-1280.jpg': {
+  '/assets/img/trading-jetty-daylight-v3-1280.jpg': {
+    width: '1280',
+    height: '853',
     en: 'Loading arms at a marine product jetty',
     zh: '成品油碼頭的裝卸臂'
   }
@@ -426,12 +434,13 @@ function setIndexableMetadata($, route, language) {
   upsertMeta($, 'meta[property="og:description"]', { property: 'og:description', content: pageDescription });
   upsertMeta($, 'meta[property="og:type"]', { property: 'og:type', content: 'website' });
   upsertMeta($, 'meta[property="og:url"]', { property: 'og:url', content: selfUrl });
-  const imageAlt = SHARE_IMAGE_ALT[route.image]?.[key];
+  const shareImage = SHARE_IMAGES[route.image];
+  const imageAlt = shareImage?.[key];
   if (!imageAlt) fail(`${route.source}: share image ${route.image} has no alt text`);
   upsertMeta($, 'meta[property="og:site_name"]', { property: 'og:site_name', content: 'TOPTEC Global' });
   upsertMeta($, 'meta[property="og:image"]', { property: 'og:image', content: `${SITE_ORIGIN}${route.image}` });
-  upsertMeta($, 'meta[property="og:image:width"]', { property: 'og:image:width', content: SHARE_IMAGE_SIZE.width });
-  upsertMeta($, 'meta[property="og:image:height"]', { property: 'og:image:height', content: SHARE_IMAGE_SIZE.height });
+  upsertMeta($, 'meta[property="og:image:width"]', { property: 'og:image:width', content: shareImage.width });
+  upsertMeta($, 'meta[property="og:image:height"]', { property: 'og:image:height', content: shareImage.height });
   upsertMeta($, 'meta[property="og:image:alt"]', { property: 'og:image:alt', content: imageAlt });
   // Open Graph expects language_TERRITORY locales; hreflang and JSON-LD keep BCP 47 tags.
   upsertMeta($, 'meta[property="og:locale"]', { property: 'og:locale', content: language === 'zh' ? 'zh_TW' : 'en_SG' });
